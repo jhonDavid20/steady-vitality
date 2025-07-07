@@ -1,0 +1,453 @@
+// This is your Prisma schema file for Steady Vitality
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  CLIENT
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHTLY_ACTIVE
+  MODERATELY_ACTIVE
+  VERY_ACTIVE
+  EXTREMELY_ACTIVE
+}
+
+enum GoalCategory {
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  ENDURANCE
+  STRENGTH
+  GENERAL_FITNESS
+  HABIT_FORMATION
+  NUTRITION
+}
+
+enum MeasurementType {
+  WEIGHT
+  BODY_FAT
+  MUSCLE_MASS
+  WAIST
+  CHEST
+  ARMS
+  THIGHS
+  BLOOD_PRESSURE
+  HEART_RATE
+}
+
+enum ExerciseType {
+  STRENGTH
+  CARDIO
+  FLEXIBILITY
+  HIIT
+  YOGA
+  PILATES
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  PRE_WORKOUT
+  POST_WORKOUT
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  avatar    String?
+  role      UserRole @default(CLIENT)
+  isActive  Boolean  @default(true)
+  isVerified Boolean @default(false)
+  lastLoginAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  profile         UserProfile?
+  sessions        Session[]
+  healthMetrics   HealthMetric[]
+  workoutSessions WorkoutSession[]
+  nutritionEntries NutritionEntry[]
+  goals           Goal[]
+  habitTracking   HabitTracking[]
+  progressPhotos  ProgressPhoto[]
+  measurements    BodyMeasurement[]
+  messages        Message[]
+  
+  @@map("users")
+}
+
+model UserProfile {
+  id       String @id @default(uuid())
+  userId   String @unique
+  
+  // Personal Information
+  dateOfBirth     DateTime?
+  gender          String?
+  phone           String?
+  timezone        String?
+  
+  // Physical Metrics
+  height          Float?  // in cm
+  activityLevel   ActivityLevel?
+  
+  // Health History
+  medicalConditions    String[]
+  medications          String[]
+  previousDietAttempts String?
+  exerciseExperience   String?
+  
+  // Goals & Preferences
+  primaryGoal          GoalCategory?
+  dietaryRestrictions  String[]
+  allergies           String[]
+  exercisePreferences String[]
+  
+  // Coach Notes
+  coachNotes      String?
+  onboardingCompleted Boolean @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_profiles")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  refreshToken String?
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("sessions")
+}
+
+model HealthMetric {
+  id     String @id @default(uuid())
+  userId String
+  
+  // Metric details
+  type       MeasurementType
+  value      Float
+  unit       String
+  notes      String?
+  
+  // Context
+  timeOfDay  String? // morning, afternoon, evening
+  conditions String? // fasted, post_meal, post_workout
+  
+  recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("health_metrics")
+}
+
+model BodyMeasurement {
+  id     String @id @default(uuid())
+  userId String
+  
+  // Measurements
+  weight     Float?
+  bodyFat    Float?
+  muscleMass Float?
+  waist      Float?
+  chest      Float?
+  arms       Float?
+  thighs     Float?
+  
+  // Additional metrics
+  bmi        Float?
+  notes      String?
+  
+  recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("body_measurements")
+}
+
+model ProgressPhoto {
+  id       String @id @default(uuid())
+  userId   String
+  
+  // Photo details
+  frontView String? // S3 URL
+  sideView  String? // S3 URL
+  backView  String? // S3 URL
+  
+  // Metadata
+  notes     String?
+  isPrivate Boolean @default(false)
+  
+  takenAt   DateTime @default(now())
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("progress_photos")
+}
+
+model WorkoutSession {
+  id     String @id @default(uuid())
+  userId String
+  
+  // Session details
+  name           String
+  type           ExerciseType
+  duration       Int?     // in minutes
+  caloriesBurned Int?
+  notes          String?
+  difficulty     Int?     // 1-10 scale
+  
+  // Performance metrics
+  totalVolume    Float?   // total weight lifted
+  avgHeartRate   Int?
+  maxHeartRate   Int?
+  
+  startedAt   DateTime
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises WorkoutExercise[]
+  
+  @@map("workout_sessions")
+}
+
+model WorkoutExercise {
+  id        String @id @default(uuid())
+  sessionId String
+  
+  // Exercise details
+  name        String
+  sets        Int?
+  reps        Int?
+  weight      Float?   // in kg
+  duration    Int?     // in seconds
+  distance    Float?   // in meters
+  restTime    Int?     // in seconds
+  notes       String?
+  order       Int      // order in workout
+  
+  // Performance tracking
+  rpe         Int?     // Rate of Perceived Exertion (1-10)
+  tempo       String?  // e.g., "3-1-2-1"
+  
+  createdAt DateTime @default(now())
+  
+  // Relations
+  session WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  @@map("workout_exercises")
+}
+
+model NutritionEntry {
+  id     String @id @default(uuid())
+  userId String
+  
+  // Food details
+  foodName    String
+  brand       String?
+  servingSize Float
+  servingUnit String
+  
+  // Nutritional info (per serving)
+  calories      Float
+  protein       Float?  // in grams
+  carbohydrates Float?  // in grams
+  fat           Float?  // in grams
+  fiber         Float?  // in grams
+  sugar         Float?  // in grams
+  sodium        Float?  // in mg
+  
+  // Micronutrients (optional)
+  vitamins Json?
+  minerals Json?
+  
+  // Timing and context
+  mealType   MealType
+  consumedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("nutrition_entries")
+}
+
+model Goal {
+  id     String @id @default(uuid())
+  userId String
+  
+  // Goal details
+  title       String
+  description String?
+  category    GoalCategory
+  
+  // Targets
+  targetValue    Float?
+  currentValue   Float?
+  unit           String?
+  
+  // Timeline
+  targetDate     DateTime?
+  isCompleted    Boolean   @default(false)
+  completedAt    DateTime?
+  
+  // Progress tracking
+  milestones     Json?     // Array of milestone objects
+  priority       String    @default("medium") // low, medium, high
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("goals")
+}
+
+model HabitTracking {
+  id     String @id @default(uuid())
+  userId String
+  
+  // Habit details
+  habitName   String
+  description String?
+  category    String  // hydration, sleep, exercise, nutrition, mindfulness
+  
+  // Tracking data
+  targetValue Float?  // e.g., 8 glasses of water
+  actualValue Float?
+  unit        String? // glasses, hours, minutes
+  
+  // Status
+  isCompleted Boolean  @default(false)
+  streak      Int      @default(0)
+  
+  // Timing
+  trackedDate DateTime @default(now())
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("habit_tracking")
+}
+
+model Message {
+  id       String @id @default(uuid())
+  userId   String
+  
+  // Message details
+  content   String
+  type      String   @default("text") // text, image, file
+  fileUrl   String?  // For file attachments
+  
+  // Metadata
+  isFromAdmin Boolean @default(false)
+  isRead      Boolean @default(false)
+  
+  sentAt    DateTime @default(now())
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("messages")
+}
+
+model EducationalContent {
+  id       String @id @default(uuid())
+  
+  // Content details
+  title       String
+  description String?
+  content     String?  // Rich text content
+  fileUrl     String?  // PDF, video URL
+  thumbnailUrl String?
+  
+  // Organization
+  category    String   // nutrition, exercise, mindset, habit_formation
+  tags        String[]
+  difficulty  String   @default("beginner") // beginner, intermediate, advanced
+  
+  // Metadata
+  isPublished Boolean  @default(false)
+  views       Int      @default(0)
+  duration    Int?     // reading/watching time in minutes
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("educational_content")
+}
+
+model SystemSettings {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+  description String?
+  category    String? // app, email, features, etc.
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("system_settings")
+}
+
+model AuditLog {
+  id       String @id @default(uuid())
+  userId   String?
+  
+  // Action details
+  action   String   // LOGIN, LOGOUT, CREATE_GOAL, UPDATE_PROFILE, etc.
+  entity   String?  // users, goals, workouts, etc.
+  entityId String?
+  
+  // Changes (for updates)
+  oldValues Json?
+  newValues Json?
+  
+  // Request metadata
+  ipAddress String?
+  userAgent String?
+  
+  createdAt DateTime @default(now())
+  
+  @@map("audit_logs")
+}

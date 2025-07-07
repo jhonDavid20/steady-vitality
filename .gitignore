@@ -1,0 +1,5 @@
+/node_modules
+/dist
+.env
+/init-scripts
+docker-compose.yml
