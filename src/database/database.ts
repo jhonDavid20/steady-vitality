@@ -1,6 +1,11 @@
+// src/database/database.ts
+
+// IMPORTANT: Load environment config first
+import '../config/env';
+import { config } from '../config/env';
+
 import { AppDataSource } from './data-source';
 import { User, UserRole } from './entities/User';
-import { SystemSettings } from './entities/SystemSettings';
 import * as bcrypt from 'bcryptjs';
 
 export class DatabaseManager {
@@ -39,7 +44,6 @@ export class DatabaseManager {
   private static async runInitialSetup(): Promise<void> {
     try {
       await this.createDefaultAdmin();
-      await this.seedSystemSettings();
       console.log('✅ Initial database setup completed');
     } catch (error) {
       console.error('❌ Error during initial setup:', error);
@@ -53,49 +57,40 @@ export class DatabaseManager {
   private static async createDefaultAdmin(): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
     
-    // Check if any admin user exists
-    const adminExists = await userRepository.findOne({
-      where: { role: UserRole.ADMIN }
+    // Check if any admin user exists or if user with same email/username exists
+    const [adminExists, emailExists, usernameExists] = await Promise.all([
+      userRepository.findOne({ where: { role: UserRole.ADMIN } }),
+      userRepository.findOne({ where: { email: config.admin.email } }),
+      userRepository.findOne({ where: { username: config.admin.username } })
+    ]);
+
+    if (adminExists) {
+      console.log('ℹ️  Admin user already exists');
+      return;
+    }
+
+    if (emailExists || usernameExists) {
+      console.log('ℹ️  User with admin email or username already exists');
+      return;
+    }
+
+    const defaultAdmin = userRepository.create({
+      email: config.admin.email,
+      username: config.admin.username,
+      password: config.admin.password,
+      firstName: 'System',
+      lastName: 'Administrator',
+      role: UserRole.ADMIN,
+      isActive: true,
+      isEmailVerified: true,
     });
 
-    if (!adminExists) {
-      const defaultAdmin = userRepository.create({
-        email: process.env.DEFAULT_ADMIN_EMAIL || 'admin@steadyvitality.com',
-        username: process.env.DEFAULT_ADMIN_USERNAME || 'admin',
-        password: process.env.DEFAULT_ADMIN_PASSWORD || 'Admin123!',
-        firstName: 'System',
-        lastName: 'Administrator',
-        role: UserRole.ADMIN,
-        isActive: true,
-        isEmailVerified: true,
-      });
-
-      await userRepository.save(defaultAdmin);
-      console.log('✅ Default admin user created');
-    }
+    await userRepository.save(defaultAdmin);
+    console.log('✅ Default admin user created');
+    console.log(`   Email: ${config.admin.email}`);
+    console.log(`   Username: ${config.admin.username}`);
   }
 
-  /**
-   * Seed system settings with default values
-   */
-  private static async seedSystemSettings(): Promise<void> {
-    const settingsRepository = AppDataSource.getRepository(SystemSettings);
-    
-    const defaultSettings = SystemSettings.getDefaultSettings();
-
-    for (const setting of defaultSettings) {
-      const exists = await settingsRepository.findOne({
-        where: { key: setting.key }
-      });
-
-      if (!exists) {
-        const newSetting = settingsRepository.create(setting);
-        await settingsRepository.save(newSetting);
-      }
-    }
-
-    console.log('✅ System settings seeded');
-  }
 
   /**
    * Check database health
@@ -117,8 +112,8 @@ export class DatabaseManager {
           isConnected: false,
           error: 'Database not initialized',
           details: {
-            host: AppDataSource.options.host as string,
-            database: AppDataSource.options.database as string,
+            host: process.env.DB_HOST || 'localhost',
+            database: process.env.DB_NAME || 'steady_vitality',
             isInitialized: false,
           },
         };
@@ -130,8 +125,8 @@ export class DatabaseManager {
       return {
         isConnected: true,
         details: {
-          host: AppDataSource.options.host as string,
-          database: AppDataSource.options.database as string,
+          host: config.database.host,
+          database: config.database.name,
           isInitialized: true,
         },
       };
@@ -140,8 +135,8 @@ export class DatabaseManager {
         isConnected: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         details: {
-          host: AppDataSource.options.host as string,
-          database: AppDataSource.options.database as string,
+          host: config.database.host,
+          database: config.database.name,
           isInitialized: AppDataSource.isInitialized,
         },
       };
@@ -178,7 +173,7 @@ export class DatabaseManager {
    * Drop all tables (USE WITH CAUTION!)
    */
   static async dropDatabase(): Promise<void> {
-    if (process.env.NODE_ENV === 'production') {
+    if (config.nodeEnv === 'production') {
       throw new Error('Cannot drop database in production environment');
     }
 
@@ -195,7 +190,7 @@ export class DatabaseManager {
    * Synchronize database schema (USE WITH CAUTION!)
    */
   static async synchronizeSchema(): Promise<void> {
-    if (process.env.NODE_ENV === 'production') {
+    if (config.nodeEnv === 'production') {
       throw new Error('Cannot synchronize schema in production environment');
     }
 
@@ -266,7 +261,7 @@ export class DatabaseUtils {
   /**
    * Get repository for an entity
    */
-  static getRepository<T>(entity: any) {
+  static getRepository<T extends object>(entity: new () => T) {
     return AppDataSource.getRepository<T>(entity);
   }
 
@@ -281,7 +276,7 @@ export class DatabaseUtils {
    * Clear all data from a table (USE WITH CAUTION!)
    */
   static async clearTable(tableName: string): Promise<void> {
-    if (process.env.NODE_ENV === 'production') {
+    if (config.nodeEnv === 'production') {
       throw new Error('Cannot clear tables in production environment');
     }
 
@@ -338,6 +333,6 @@ export const getDatabaseStatus = () => {
   return {
     isInitialized: AppDataSource.isInitialized,
     hasMetadata: AppDataSource.hasMetadata,
-    isConnected: AppDataSource.isInitialized && !AppDataSource.isDestroyed,
+    isConnected: AppDataSource.isInitialized,
   };
 };

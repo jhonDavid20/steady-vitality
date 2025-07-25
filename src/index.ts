@@ -1,14 +1,17 @@
+// src/index.ts
+
+// IMPORTANT: Load environment variables FIRST before any other imports
+import './config/env';
+
+// Now import everything else
 import 'reflect-metadata';
-import dotenv from 'dotenv';
 import { DatabaseManager } from './database/database';
 import app from './app';
-
-// Load environment variables
-dotenv.config();
+import { config } from './config/env';
 
 // Configuration
-const PORT = parseInt(process.env.PORT || '3000');
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const PORT = config.port;
+const NODE_ENV = config.nodeEnv;
 
 /**
  * Graceful shutdown handler
@@ -55,31 +58,6 @@ process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 /**
- * Validate required environment variables
- */
-function validateEnvironment(): void {
-  const requiredVars = [
-    'DB_HOST',
-    'DB_PORT', 
-    'DB_USERNAME',
-    'DB_PASSWORD',
-    'DB_NAME',
-    'JWT_SECRET'
-  ];
-
-  const missingVars = requiredVars.filter(varName => !process.env[varName]);
-  
-  if (missingVars.length > 0) {
-    console.error('❌ Missing required environment variables:');
-    missingVars.forEach(varName => {
-      console.error(`   - ${varName}`);
-    });
-    console.error('\nPlease check your .env file and ensure all required variables are set.');
-    process.exit(1);
-  }
-}
-
-/**
  * Display startup banner
  */
 function displayBanner(): void {
@@ -88,7 +66,7 @@ function displayBanner(): void {
   console.log('='.repeat(60));
   console.log(`📊 Environment: ${NODE_ENV.toUpperCase()}`);
   console.log(`🚀 Port: ${PORT}`);
-  console.log(`🗄️  Database: ${process.env.DB_NAME}@${process.env.DB_HOST}:${process.env.DB_PORT}`);
+  console.log(`🗄️  Database: ${config.database.name}@${config.database.host}:${config.database.port}`);
   console.log(`⚡ Node.js: ${process.version}`);
   console.log(`🕐 Started: ${new Date().toISOString()}`);
   console.log('='.repeat(60) + '\n');
@@ -139,11 +117,6 @@ async function startServer(): Promise<void> {
   try {
     // Display startup banner
     displayBanner();
-    
-    // Validate environment
-    console.log('🔧 Validating environment variables...');
-    validateEnvironment();
-    console.log('✅ Environment validation passed');
     
     // Initialize database
     console.log('🗄️  Initializing database connection...');

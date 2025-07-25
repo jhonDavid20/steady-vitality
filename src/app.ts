@@ -1,3 +1,9 @@
+// src/app.ts
+
+// IMPORTANT: Load environment config first
+import './config/env';
+import { config } from './config/env';
+
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,7 +15,7 @@ import { DatabaseManager } from './database/database';
 
 // Create Express application
 const app: Application = express();
-require('dotenv').config();
+
 // Trust proxy if behind reverse proxy (like nginx, AWS ALB, etc.)
 app.set('trust proxy', 1);
 
@@ -31,7 +37,7 @@ app.use(helmet({
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
+  origin: config.nodeEnv === 'production' 
     ? [
         'https://steadyvitality.com',
         'https://www.steadyvitality.com',
@@ -55,7 +61,7 @@ app.use(cors(corsOptions));
  */
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // limit each IP
+  max: config.nodeEnv === 'production' ? 100 : 1000, // limit each IP
   message: {
     error: 'Too many requests from this IP, please try again later.',
     retryAfter: '15 minutes'
@@ -101,7 +107,7 @@ app.use(express.urlencoded({
 }));
 
 // Logging middleware
-if (process.env.NODE_ENV === 'development') {
+if (config.nodeEnv === 'development') {
   app.use(morgan('dev'));
 } else {
   app.use(morgan('combined'));
@@ -120,7 +126,7 @@ app.get('/health', async (req: Request, res: Response) => {
       timestamp: new Date().toISOString(),
       uptime: `${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s`,
       version: '1.0.0',
-      environment: process.env.NODE_ENV,
+      environment: config.nodeEnv,
       database: {
         connected: dbHealth.isConnected,
         host: dbHealth.details.host,
@@ -155,7 +161,7 @@ app.get('/health/detailed', async (req: Request, res: Response) => {
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       version: '1.0.0',
-      environment: process.env.NODE_ENV,
+      environment: config.nodeEnv,
       database: {
         connected: dbHealth.isConnected,
         details: dbHealth.details,
@@ -190,21 +196,19 @@ app.get('/', (req: Request, res: Response) => {
     version: '1.0.0',
     documentation: '/api/docs',
     health: '/health',
-    environment: process.env.NODE_ENV,
+    environment: config.nodeEnv,
     timestamp: new Date().toISOString()
   });
 });
 
 /**
- * API Routes will be added here
+ * API Routes
  */
-// Authentication routes with rate limiting
-app.use('/api/auth', authLimiter);
+// Route imports
+import authRoutes from './routes/auth.routes';
 
-// TODO: Add route imports here
-// app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/admin', adminRoutes);
+// Authentication routes with rate limiting
+app.use('/api/auth', authLimiter, authRoutes);
 
 // Placeholder for API routes
 app.get('/api', (req: Request, res: Response) => {
@@ -239,7 +243,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('💥 Unhandled error:', error);
   
   // Don't expose error details in production
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDevelopment = config.nodeEnv === 'development';
   
   const errorResponse = {
     error: 'Internal Server Error',

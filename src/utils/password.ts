@@ -1,8 +1,9 @@
 // src/utils/password.ts
 import bcrypt from 'bcryptjs'
 import { PasswordValidation } from '../types/auth'
+import { config } from '../config/env'
 
-const SALT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || '12')
+const SALT_ROUNDS = config.bcrypt.rounds
 
 export class PasswordService {
   /**

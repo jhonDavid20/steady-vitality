@@ -1,10 +1,11 @@
 // src/utils/jwt.ts
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken'
 import { JWTPayload, AuthError } from '../types/auth'
+import { config } from '../config/env'
 
-const JWT_SECRET = process.env.JWT_SECRET!
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRE || '1h'
-const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRE || '7d'
+const JWT_SECRET = config.jwt.secret
+const JWT_EXPIRES_IN = config.jwt.expiresIn
+const JWT_REFRESH_EXPIRES_IN = config.jwt.refreshExpiresIn
 
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required')

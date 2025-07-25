@@ -14,8 +14,6 @@ import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from 'class-validato
 import * as bcrypt from 'bcryptjs';
 import { UserProfile } from './UserProfile';
 import { Session } from './Session';
-import { AuditLog } from './AuditLog';
-import { CoachTraineeAssignment } from './CoachTraineeAssignment';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -111,15 +109,6 @@ export class User {
   })
   sessions: Session[];
 
-  @OneToMany(() => AuditLog, (auditLog) => auditLog.user)
-  auditLogs: AuditLog[];
-
-  // Coach-Client relationships
-  @OneToMany(() => CoachTraineeAssignment, (assignment) => assignment.coach)
-  coachAssignments: CoachTraineeAssignment[];
-
-  @OneToMany(() => CoachTraineeAssignment, (assignment) => assignment.trainee)
-  traineeAssignments: CoachTraineeAssignment[];
 
   // Virtual properties
   get fullName(): string {
