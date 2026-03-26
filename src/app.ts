@@ -44,10 +44,10 @@ const corsOptions = {
         'https://app.steadyvitality.com'
       ]
     : [
-        'http://localhost:3000',
+        'http://localhost:3005',
         'http://localhost:3001', 
         'http://localhost:5173', // Vite default port
-        'http://127.0.0.1:3000'
+        'http://127.0.0.1:3005'
       ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -75,7 +75,7 @@ app.use('/api/', limiter);
 // More strict rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  max: config.nodeEnv === 'production' ? 5 : 100, // 5 in prod, 100 in dev
   message: {
     error: 'Too many authentication attempts, please try again later.',
     retryAfter: '15 minutes'
@@ -206,9 +206,28 @@ app.get('/', (req: Request, res: Response) => {
  */
 // Route imports
 import authRoutes from './routes/auth.routes';
+import authjsRoutes from './routes/authjs.routes';
+import adminRoutes from './routes/admin.routes';
+
+// Swagger imports
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './config/swagger';
 
 // Authentication routes with rate limiting
 app.use('/api/auth', authLimiter, authRoutes);
+
+// Auth.js compatible routes (no rate limiting for internal callbacks)
+app.use('/api/authjs', authjsRoutes);
+
+// Admin routes
+app.use('/api/admin', adminRoutes);
+
+// Swagger Documentation
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Steady Vitality API Documentation'
+}));
 
 // Placeholder for API routes
 app.get('/api', (req: Request, res: Response) => {
@@ -217,6 +236,7 @@ app.get('/api', (req: Request, res: Response) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
+      authjs: '/api/authjs',
       users: '/api/users',
       admin: '/api/admin',
       health: '/health'

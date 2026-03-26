@@ -127,13 +127,24 @@ export class User {
     return this.role === UserRole.CLIENT;
   }
 
+  // Private flag to prevent double hashing
+  private _shouldHashPassword = false;
+
   // Lifecycle hooks
   @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword(): Promise<void> {
-    if (this.password) {
+  async hashPasswordOnInsert(): Promise<void> {
+    if (this.password && !this.password.startsWith('$2')) {
       const saltRounds = 12;
       this.password = await bcrypt.hash(this.password, saltRounds);
+    }
+  }
+
+  @BeforeUpdate()
+  async hashPasswordOnUpdate(): Promise<void> {
+    if (this._shouldHashPassword && this.password && !this.password.startsWith('$2')) {
+      const saltRounds = 12;
+      this.password = await bcrypt.hash(this.password, saltRounds);
+      this._shouldHashPassword = false;
     }
   }
 
@@ -148,6 +159,12 @@ export class User {
   // Instance methods
   async validatePassword(plainPassword: string): Promise<boolean> {
     return bcrypt.compare(plainPassword, this.password);
+  }
+
+  // Method to set password that will be hashed on next save
+  setPassword(newPassword: string): void {
+    this.password = newPassword;
+    this._shouldHashPassword = true;
   }
 
   async generatePasswordResetToken(): Promise<string> {

@@ -48,7 +48,7 @@ if (missingVars.length > 0) {
 // Export environment configuration
 export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
-  port: parseInt(process.env.PORT || '3000'),
+  port: parseInt(process.env.PORT || '3001'),
   database: {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432'),

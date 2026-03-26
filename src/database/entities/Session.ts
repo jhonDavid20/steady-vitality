@@ -26,11 +26,12 @@ export class Session {
   @IsUUID()
   userId: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'text', unique: true, nullable: true })
   @IsString()
-  token: string;
+  @IsOptional()
+  token?: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true })
   @IsOptional()
   @IsString()
   refreshToken?: string;
@@ -111,18 +112,20 @@ export class Session {
   // Lifecycle hooks
   @BeforeInsert()
   generateTokens(): void {
+    // Only generate tokens if not provided (for custom auth)
+    // NextAuth will provide its own JWT tokens
     if (!this.token) {
       this.token = this.generateSecureToken();
     }
-    if (!this.refreshToken) {
+    if (!this.refreshToken && this.refreshToken !== null) {
       this.refreshToken = this.generateSecureToken();
     }
     if (!this.expiresAt) {
       // Default session expires in 24 hours
       this.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
     }
-    if (!this.refreshTokenExpiresAt) {
-      // Refresh token expires in 7 days
+    if (!this.refreshTokenExpiresAt && this.refreshToken) {
+      // Refresh token expires in 7 days (only if refresh token exists)
       this.refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     }
   }

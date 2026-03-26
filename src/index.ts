@@ -8,6 +8,7 @@ import 'reflect-metadata';
 import { DatabaseManager } from './database/database';
 import app from './app';
 import { config } from './config/env';
+import { cleanupService } from './services/cleanup.service';
 
 // Configuration
 const PORT = config.port;
@@ -20,6 +21,9 @@ async function gracefulShutdown(signal: string): Promise<void> {
   console.log(`\n🔄 Received ${signal}. Starting graceful shutdown...`);
   
   try {
+    // Stop cleanup service
+    cleanupService.stop();
+
     // Close database connections
     await DatabaseManager.close();
     console.log('✅ Database connections closed');
@@ -125,9 +129,12 @@ async function startServer(): Promise<void> {
     
     // Check database health
     await checkDatabaseHealth();
-    
+
     // Display statistics
     await displayStatistics();
+
+    // Start cleanup service
+    cleanupService.start();
     
     // Start Express server
     console.log(`🚀 Starting Express server on port ${PORT}...`);

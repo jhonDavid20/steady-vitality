@@ -2,18 +2,26 @@ import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { AuthService } from '../services/auth.service';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
-import { 
-  LoginRequest, 
-  RegisterRequest, 
+import {
+  LoginRequest,
+  RegisterRequest,
   RefreshTokenRequest,
   ChangePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
-  VerifyEmailRequest
+  VerifyEmailRequest,
+  UpdateProfileRequest
 } from '../types/auth';
 
 const router = Router();
 const authService = new AuthService();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: User authentication and authorization
+ */
 
 // Validation middleware
 const validateRegister = [
@@ -89,6 +97,28 @@ const validateRefreshToken = [
     .withMessage('Refresh token is required')
 ];
 
+const validateUpdateProfile = [
+  body('firstName')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('First name must be between 1 and 50 characters'),
+  body('lastName')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Last name must be between 1 and 50 characters'),
+  body('username')
+    .optional()
+    .isLength({ min: 3, max: 30 })
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage('Username must be 3-30 characters and contain only letters, numbers, and underscores'),
+  body('avatar')
+    .optional()
+    .isURL()
+    .withMessage('Avatar must be a valid URL')
+];
+
 // Helper function to handle validation errors
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
@@ -110,9 +140,64 @@ const getClientInfo = (req: Request) => ({
 });
 
 /**
- * @route POST /api/auth/register
- * @desc Register a new user
- * @access Public
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - username
+ *               - password
+ *               - firstName
+ *               - lastName
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               username:
+ *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 30
+ *                 example: johndoe
+ *               password:
+ *                 type: string
+ *                 minLength: 8
+ *                 example: SecurePass123!
+ *               firstName:
+ *                 type: string
+ *                 maxLength: 50
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 maxLength: 50
+ *                 example: Doe
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       409:
+ *         description: User already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/register', validateRegister, async (req: Request, res: Response) => {
   try {
@@ -138,9 +223,51 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
 });
 
 /**
- * @route POST /api/auth/login
- * @desc Login user
- * @access Public
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: SecurePass123!
+ *               rememberMe:
+ *                 type: boolean
+ *                 default: false
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/login', validateLogin, async (req: Request, res: Response) => {
   try {
@@ -258,9 +385,32 @@ router.post('/refresh', validateRefreshToken, async (req: Request, res: Response
 });
 
 /**
- * @route GET /api/auth/me
- * @desc Get current user info
- * @access Private
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current user profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get('/me', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -302,6 +452,96 @@ router.get('/me', authenticate, async (req: AuthenticatedRequest, res: Response)
     console.error('Get current user route error:', error);
     res.status(500).json({
       error: 'Failed to get user info',
+      message: 'Internal server error'
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   patch:
+ *     summary: Update current user profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 maxLength: 50
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 maxLength: 50
+ *                 example: Doe
+ *               username:
+ *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 30
+ *                 example: johndoe
+ *               avatar:
+ *                 type: string
+ *                 format: uri
+ *                 example: https://example.com/avatar.png
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Validation error or username taken
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.patch('/me', authenticate, validateUpdateProfile, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(400).json({
+        error: 'User not found',
+        message: 'Invalid user session'
+      });
+      return;
+    }
+
+    const updateData: UpdateProfileRequest = req.body;
+    const result = await authService.updateProfile(userId, updateData);
+
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error('Update profile route error:', error);
+    res.status(500).json({
+      error: 'Profile update failed',
       message: 'Internal server error'
     });
   }

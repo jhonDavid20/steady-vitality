@@ -3,15 +3,16 @@ import { User, UserRole } from '../database/entities/User';
 import { Session } from '../database/entities/Session';
 import { PasswordService } from '../utils/password';
 import { JWTService } from '../utils/jwt';
-import { 
-  AuthResponse, 
-  LoginRequest, 
-  RegisterRequest, 
+import {
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
   RefreshTokenRequest,
   ChangePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
-  VerifyEmailRequest
+  VerifyEmailRequest,
+  UpdateProfileRequest
 } from '../types/auth';
 
 export class AuthService {
@@ -265,7 +266,7 @@ export class AuthService {
         };
       }
 
-      user.password = data.newPassword; // Will be hashed by the entity hook
+      user.setPassword(data.newPassword); // Will be hashed by the entity hook
       await this.userRepository.save(user);
 
       // Revoke all other sessions except current one
@@ -354,7 +355,7 @@ export class AuthService {
         };
       }
 
-      user.password = data.newPassword; // Will be hashed by the entity hook
+      user.setPassword(data.newPassword); // Will be hashed by the entity hook
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
       await this.userRepository.save(user);
@@ -460,6 +461,53 @@ export class AuthService {
     };
   }
 
+  async updateProfile(userId: string, data: UpdateProfileRequest): Promise<{ success: boolean; message: string; user?: Partial<User> }> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: userId, isActive: true }
+      });
+
+      if (!user) {
+        return { success: false, message: 'User not found' };
+      }
+
+      if (data.username && data.username !== user.username) {
+        const existingUser = await this.userRepository.findOne({
+          where: { username: data.username }
+        });
+        if (existingUser) {
+          return { success: false, message: 'Username already taken' };
+        }
+        user.username = data.username;
+      }
+
+      if (data.firstName !== undefined) user.firstName = data.firstName;
+      if (data.lastName !== undefined) user.lastName = data.lastName;
+      if (data.avatar !== undefined) user.avatar = data.avatar;
+
+      const savedUser = await this.userRepository.save(user);
+
+      return {
+        success: true,
+        message: 'Profile updated successfully',
+        user: {
+          id: savedUser.id,
+          email: savedUser.email,
+          username: savedUser.username,
+          firstName: savedUser.firstName,
+          lastName: savedUser.lastName,
+          avatar: savedUser.avatar,
+          role: savedUser.role,
+          isEmailVerified: savedUser.isEmailVerified,
+          updatedAt: savedUser.updatedAt
+        }
+      };
+    } catch (error) {
+      console.error('Update profile error:', error);
+      return { success: false, message: 'Profile update failed' };
+    }
+  }
+
   async getCurrentUser(userId: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { id: userId, isActive: true },
@@ -484,5 +532,65 @@ export class AuthService {
       where: { userId, isActive: true },
       order: { lastAccessedAt: 'DESC' }
     });
+  }
+
+  // NextAuth specific methods
+  async createNextAuthSession(
+    userId: string,
+    sessionToken: string,
+    expires: Date,
+    ipAddress?: string,
+    userAgent?: string
+  ): Promise<Session> {
+    const session = this.sessionRepository.create({
+      userId,
+      token: sessionToken, // NextAuth JWT token
+      expiresAt: expires,
+      ipAddress,
+      userAgent,
+      isActive: true,
+      refreshToken: null // NextAuth handles its own refresh logic
+    });
+
+    if (userAgent) {
+      session.parseUserAgent(userAgent);
+    }
+
+    return await this.sessionRepository.save(session);
+  }
+
+  async getSessionByToken(token: string): Promise<Session | null> {
+    return await this.sessionRepository.findOne({
+      where: { token, isActive: true },
+      relations: ['user']
+    });
+  }
+
+  async updateSessionExpiry(sessionToken: string, expires: Date): Promise<Session | null> {
+    const session = await this.sessionRepository.findOne({
+      where: { token: sessionToken, isActive: true }
+    });
+
+    if (session) {
+      session.expiresAt = expires;
+      session.updateLastAccessed();
+      return await this.sessionRepository.save(session);
+    }
+
+    return null;
+  }
+
+  async deleteSessionByToken(sessionToken: string): Promise<boolean> {
+    const session = await this.sessionRepository.findOne({
+      where: { token: sessionToken }
+    });
+
+    if (session) {
+      session.revoke('NextAuth logout', 'nextauth');
+      await this.sessionRepository.save(session);
+      return true;
+    }
+
+    return false;
   }
 }
