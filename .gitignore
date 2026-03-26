@@ -3,3 +3,4 @@
 .env
 /init-scripts
 docker-compose.yml
+package-lock.json
