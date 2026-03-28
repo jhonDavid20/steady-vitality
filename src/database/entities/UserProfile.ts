@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { IsOptional, IsNumber, IsString, IsEnum, Min, Max } from 'class-validator';
 import { User } from './User';
+import { dateTransformer } from '../transformers/date.transformer';
 
 export enum Gender {
   MALE = 'male',
@@ -146,9 +147,9 @@ export class UserProfile {
   @IsString()
   notes?: string;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'date', nullable: true, transformer: dateTransformer })
   @IsOptional()
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()

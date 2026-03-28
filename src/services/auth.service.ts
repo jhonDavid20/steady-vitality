@@ -74,7 +74,8 @@ export class AuthService {
           firstName: savedUser.firstName,
           lastName: savedUser.lastName,
           role: savedUser.role,
-          isEmailVerified: savedUser.isEmailVerified
+          isEmailVerified: savedUser.isEmailVerified,
+          hasCompletedOnboarding: savedUser.hasCompletedOnboarding
         },
         tokens
       };
@@ -130,7 +131,8 @@ export class AuthService {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
-          isEmailVerified: user.isEmailVerified
+          isEmailVerified: user.isEmailVerified,
+          hasCompletedOnboarding: user.hasCompletedOnboarding
         },
         tokens
       };
@@ -224,7 +226,8 @@ export class AuthService {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
-          isEmailVerified: user.isEmailVerified
+          isEmailVerified: user.isEmailVerified,
+          hasCompletedOnboarding: user.hasCompletedOnboarding
         },
         tokens
       };
@@ -520,10 +523,11 @@ export class AuthService {
         role: true,
         isActive: true,
         isEmailVerified: true,
+        hasCompletedOnboarding: true,
         lastLoginAt: true,
         createdAt: true,
         updatedAt: true
-      }
+      },
     });
   }
 
@@ -544,19 +548,18 @@ export class AuthService {
   ): Promise<Session> {
     const session = this.sessionRepository.create({
       userId,
-      token: sessionToken, // NextAuth JWT token
+      token: sessionToken,
       expiresAt: expires,
       ipAddress,
       userAgent,
       isActive: true,
-      refreshToken: null // NextAuth handles its own refresh logic
-    });
+    } as Session);
 
     if (userAgent) {
       session.parseUserAgent(userAgent);
     }
 
-    return await this.sessionRepository.save(session);
+    return await this.sessionRepository.save(session) as Session;
   }
 
   async getSessionByToken(token: string): Promise<Session | null> {

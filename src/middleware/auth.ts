@@ -53,6 +53,7 @@ export const authenticate = async (
           role: true,
           isActive: true,
           isEmailVerified: true,
+          hasCompletedOnboarding: true,
           lastLoginAt: true,
           createdAt: true,
           updatedAt: true

@@ -1,6 +1,19 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response } from 'express';
+import { body, query, param, validationResult } from 'express-validator';
 import { authenticate, requireAdmin, AuthenticatedRequest } from '../middleware/auth';
 import { cleanupService } from '../services/cleanup.service';
+import { AppDataSource } from '../database/data-source';
+import { User, UserRole } from '../database/entities/User';
+import { Session } from '../database/entities/Session';
+
+const handleValidationErrors = (req: Request, res: Response): boolean => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ error: 'Validation failed', message: 'Please check your input data', details: errors.array() });
+    return true;
+  }
+  return false;
+};
 
 const router = Router();
 
@@ -80,6 +93,139 @@ router.post('/cleanup/sessions', authenticate, requireAdmin, async (req: Authent
       error: 'Cleanup failed',
       message: 'Internal server error',
     });
+  }
+});
+
+// ─── User management ─────────────────────────────────────────────────────────
+
+/**
+ * GET /api/admin/users
+ * Paginated user list with optional filters: role, isActive.
+ */
+router.get('/users', authenticate, requireAdmin, [
+  query('page').optional().isInt({ min: 1 }),
+  query('limit').optional().isInt({ min: 1, max: 100 }),
+  query('role').optional().isIn(Object.values(UserRole)).withMessage(`role must be one of: ${Object.values(UserRole).join(', ')}`),
+  query('isActive').optional().isBoolean().withMessage('isActive must be a boolean'),
+], async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const skip = (page - 1) * limit;
+
+    const where: Record<string, any> = {};
+    if (req.query.role) where.role = req.query.role;
+    if (req.query.isActive !== undefined) where.isActive = req.query.isActive === 'true';
+
+    const userRepository = AppDataSource.getRepository(User);
+    const [users, total] = await userRepository.findAndCount({
+      where,
+      select: {
+        id: true, email: true, username: true, firstName: true, lastName: true,
+        role: true, isActive: true, isEmailVerified: true, hasCompletedOnboarding: true,
+        lastLoginAt: true, createdAt: true, updatedAt: true,
+      },
+      skip,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    res.status(200).json({ success: true, data: users, total, page, limit });
+  } catch (error) {
+    console.error('Admin list users error:', error);
+    res.status(500).json({ error: 'Failed to list users', message: 'Internal server error' });
+  }
+});
+
+/**
+ * PATCH /api/admin/users/:id/role
+ * Change a user's role.
+ */
+router.patch('/users/:id/role', authenticate, requireAdmin, [
+  param('id').isUUID().withMessage('id must be a valid UUID'),
+  body('role').isIn(Object.values(UserRole)).withMessage(`role must be one of: ${Object.values(UserRole).join(', ')}`),
+], async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({ where: { id: req.params.id } });
+
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    user.role = req.body.role as UserRole;
+    await userRepository.save(user);
+
+    res.status(200).json({ success: true, message: 'Role updated', user: { id: user.id, role: user.role } });
+  } catch (error) {
+    console.error('Admin update role error:', error);
+    res.status(500).json({ error: 'Failed to update role', message: 'Internal server error' });
+  }
+});
+
+/**
+ * PATCH /api/admin/users/:id/status
+ * Toggle a user's isActive flag.
+ */
+router.patch('/users/:id/status', authenticate, requireAdmin, [
+  param('id').isUUID().withMessage('id must be a valid UUID'),
+  body('isActive').isBoolean().withMessage('isActive must be a boolean'),
+], async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({ where: { id: req.params.id } });
+
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    user.isActive = req.body.isActive;
+    await userRepository.save(user);
+
+    res.status(200).json({ success: true, message: 'Status updated', user: { id: user.id, isActive: user.isActive } });
+  } catch (error) {
+    console.error('Admin update status error:', error);
+    res.status(500).json({ error: 'Failed to update status', message: 'Internal server error' });
+  }
+});
+
+/**
+ * GET /api/admin/stats
+ * Aggregate counts: total users, coaches, clients, sessions today.
+ */
+router.get('/stats', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userRepository = AppDataSource.getRepository(User);
+    const sessionRepository = AppDataSource.getRepository(Session);
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const [totalUsers, totalCoaches, totalClients, sessionsToday] = await Promise.all([
+      userRepository.count({ where: { isActive: true } }),
+      userRepository.count({ where: { role: UserRole.COACH, isActive: true } }),
+      userRepository.count({ where: { role: UserRole.CLIENT, isActive: true } }),
+      sessionRepository
+        .createQueryBuilder('session')
+        .where('session.createdAt >= :todayStart', { todayStart })
+        .getCount(),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: { totalUsers, totalCoaches, totalClients, sessionsToday },
+    });
+  } catch (error) {
+    console.error('Admin stats error:', error);
+    res.status(500).json({ error: 'Failed to get stats', message: 'Internal server error' });
   }
 });
 

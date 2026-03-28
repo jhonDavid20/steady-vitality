@@ -8,6 +8,10 @@ import { DataSource } from 'typeorm';
 import { User } from './entities/User';
 import { UserProfile } from './entities/UserProfile';
 import { Session } from './entities/Session';
+import { CoachProfile } from './entities/CoachProfile';
+import { ClientCoachRelationship } from './entities/ClientCoachRelationship';
+import { Package } from './entities/Package';
+import { ClientPackage } from './entities/ClientPackage';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -40,8 +44,16 @@ export const AppDataSource = new DataSource({
   entities: [
     User,
     UserProfile,
-    Session
+    Session,
+    CoachProfile,
+    ClientCoachRelationship,
+    Package,
+    ClientPackage,
   ],
+
+  // Migrations
+  migrations: ['src/database/migrations/*.ts'],
+  migrationsTableName: 'migrations',
   
   
   // Cache configuration (disabled for now)

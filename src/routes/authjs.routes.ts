@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { AuthService } from '../services/auth.service';
 import { AppDataSource } from '../database/data-source';
-import { User } from '../database/entities/User';
+import { User, UserRole } from '../database/entities/User';
 import { Session } from '../database/entities/Session';
 
 const router = Router();
@@ -159,10 +159,10 @@ router.post('/user', [
       firstName: userFirstName || 'User',
       lastName: userLastName || '',
       avatar: image,
-      password: 'oauth_user', // Placeholder for OAuth users
-      isEmailVerified: true, // OAuth users are typically pre-verified
-      role: 'client'
-    });
+      password: 'oauth_user',
+      isEmailVerified: true,
+      role: UserRole.CLIENT,
+    } as User);
 
     const savedUser = await userRepository.save(newUser);
 
@@ -443,6 +443,11 @@ router.put('/session/:sessionToken(*)', [
       decodedToken, 
       expires ? new Date(expires) : session.expiresAt
     );
+
+    if (!updatedSession) {
+      res.status(404).json({ error: 'Session not found' });
+      return;
+    }
 
     res.json({
       id: updatedSession.id,

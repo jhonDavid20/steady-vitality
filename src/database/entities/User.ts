@@ -14,6 +14,9 @@ import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from 'class-validato
 import * as bcrypt from 'bcryptjs';
 import { UserProfile } from './UserProfile';
 import { Session } from './Session';
+import { CoachProfile } from './CoachProfile';
+import { ClientCoachRelationship } from './ClientCoachRelationship';
+import { ClientPackage } from './ClientPackage';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -71,6 +74,9 @@ export class User {
   @Column({ type: 'boolean', default: false })
   isEmailVerified: boolean;
 
+  @Column({ type: 'boolean', default: false })
+  hasCompletedOnboarding: boolean;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
   emailVerificationToken?: string;
@@ -109,6 +115,20 @@ export class User {
   })
   sessions: Session[];
 
+  @OneToOne(() => CoachProfile, (cp) => cp.user)
+  coachProfile: CoachProfile;
+
+  @OneToMany(() => ClientCoachRelationship, (r) => r.client)
+  clientRelationships: ClientCoachRelationship[];
+
+  @OneToMany(() => ClientCoachRelationship, (r) => r.coach)
+  coachRelationships: ClientCoachRelationship[];
+
+  @OneToMany(() => ClientPackage, (cp) => cp.client)
+  clientPackages: ClientPackage[];
+
+  @OneToMany(() => ClientPackage, (cp) => cp.coach)
+  coachClientPackages: ClientPackage[];
 
   // Virtual properties
   get fullName(): string {

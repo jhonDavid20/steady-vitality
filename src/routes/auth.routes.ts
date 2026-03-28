@@ -35,7 +35,8 @@ const validateRegister = [
     .withMessage('Username must be 3-30 characters and contain only letters, numbers, and underscores'),
   body('password')
     .isLength({ min: 8 })
-    .withMessage('Password must be at least 8 characters long'),
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/)
+    .withMessage('Password must be at least 8 characters and include uppercase, lowercase, number, and special character'),
   body('firstName')
     .trim()
     .isLength({ min: 1, max: 50 })
@@ -444,6 +445,7 @@ router.get('/me', authenticate, async (req: AuthenticatedRequest, res: Response)
         lastName: user.lastName,
         role: user.role,
         isEmailVerified: user.isEmailVerified,
+        hasCompletedOnboarding: user.hasCompletedOnboarding,
         lastLoginAt: user.lastLoginAt,
         createdAt: user.createdAt
       }

@@ -208,6 +208,10 @@ app.get('/', (req: Request, res: Response) => {
 import authRoutes from './routes/auth.routes';
 import authjsRoutes from './routes/authjs.routes';
 import adminRoutes from './routes/admin.routes';
+import usersRoutes from './routes/users.routes';
+import coachesRoutes from './routes/coaches.routes';
+import relationshipsRoutes from './routes/relationships.routes';
+import packagesRoutes from './routes/packages.routes';
 
 // Swagger imports
 import swaggerUi from 'swagger-ui-express';
@@ -221,6 +225,14 @@ app.use('/api/authjs', authjsRoutes);
 
 // Admin routes
 app.use('/api/admin', adminRoutes);
+
+// User routes
+app.use('/api/users', usersRoutes);
+
+// Coaching platform routes
+app.use('/api/coaches', coachesRoutes);
+app.use('/api/relationships', relationshipsRoutes);
+app.use('/api/packages', packagesRoutes);
 
 // Swagger Documentation
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, {
@@ -236,8 +248,10 @@ app.get('/api', (req: Request, res: Response) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
-      authjs: '/api/authjs',
       users: '/api/users',
+      coaches: '/api/coaches',
+      relationships: '/api/relationships',
+      packages: '/api/packages',
       admin: '/api/admin',
       health: '/health'
     },

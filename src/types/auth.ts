@@ -42,6 +42,7 @@ export interface AuthResponse {
     lastName: string;
     role: string;
     isEmailVerified: boolean;
+    hasCompletedOnboarding: boolean;
   };
   tokens?: {
     accessToken: string;
