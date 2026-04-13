@@ -1,3 +1,6 @@
+import path from 'path';
+import fs from 'fs';
+import multer from 'multer';
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
@@ -7,6 +10,38 @@ import { OnboardingRequest } from '../services/users.service';
 
 const router = Router();
 const usersService = new UsersService();
+
+// ─── Avatar upload config ─────────────────────────────────────────────────────
+const UPLOADS_ROOT = path.join(__dirname, '..', '..', 'uploads');
+const AVATARS_DIR  = path.join(UPLOADS_ROOT, 'avatars');
+
+// Ensure the directory exists at startup (safe on every cold start)
+fs.mkdirSync(AVATARS_DIR, { recursive: true });
+
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+const avatarStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, AVATARS_DIR),
+  filename: (req: AuthenticatedRequest, _file, cb) => {
+    // Use userId as the base name so re-uploads always overwrite the same slot.
+    // Keep the original extension to preserve MIME-type hints.
+    const ext = _file.originalname.split('.').pop()?.toLowerCase() ?? 'jpg';
+    cb(null, `${req.user!.id}.${ext}`);
+  },
+});
+
+const avatarUpload = multer({
+  storage: avatarStorage,
+  limits: { fileSize: MAX_FILE_SIZE_BYTES },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`Unsupported file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`));
+    }
+  },
+});
 
 // Helper: handle express-validator errors (same pattern as auth.routes.ts)
 const handleValidationErrors = (req: Request, res: Response): boolean => {
@@ -475,6 +510,83 @@ router.patch('/me/password', authenticate, validateChangePassword, async (req: A
   } catch (error) {
     console.error('Change password route error:', error);
     res.status(500).json({ error: 'Failed to change password', message: 'Internal server error' });
+  }
+});
+
+/**
+ * PATCH /api/users/me/avatar
+ * Upload a profile photo. Accepts multipart/form-data with field name "file".
+ * Replaces any previous local avatar file on disk, then updates users.avatar.
+ */
+router.patch(
+  '/me/avatar',
+  authenticate,
+  (req: AuthenticatedRequest, res: Response, next) => {
+    avatarUpload.single('file')(req as any, res, (err) => {
+      if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+        res.status(400).json({ message: 'File too large. Maximum size is 5 MB.' });
+        return;
+      }
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      next();
+    });
+  },
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const file = (req as any).file as Express.Multer.File | undefined;
+
+      if (!file) {
+        res.status(400).json({ message: 'No file uploaded. Send a file under the "file" field.' });
+        return;
+      }
+
+      // Before saving the new record we need to delete the *old* file if it has a
+      // different filename (different extension). When extensions match, multer's
+      // diskStorage already overwrites the file on disk — nothing extra needed.
+      const user = await usersService.getUserAvatarPath(req.user!.id);
+      if (user?.avatar && user.avatar.includes('/uploads/avatars/')) {
+        const oldFilename = user.avatar.split('/uploads/avatars/')[1];
+        const newFilename = file.filename;
+        if (oldFilename !== newFilename) {
+          const oldPath = path.join(AVATARS_DIR, oldFilename);
+          if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        }
+      }
+
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const url = `${baseUrl}/uploads/avatars/${file.filename}`;
+
+      const result = await usersService.updateAvatar(req.user!.id, file.path, url);
+
+      if (!result.success) {
+        // Clean up the just-uploaded file to avoid orphans
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        res.status(500).json({ message: result.message });
+        return;
+      }
+
+      res.status(200).json({ url: result.url, message: result.message });
+    } catch (error) {
+      console.error('Avatar upload route error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  },
+);
+
+/**
+ * DELETE /api/users/me/avatar
+ * Remove the current avatar — deletes the local file and sets users.avatar to null.
+ */
+router.delete('/me/avatar', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const result = await usersService.deleteAvatar(req.user!.id, UPLOADS_ROOT);
+    res.status(result.success ? 200 : 400).json({ message: result.message });
+  } catch (error) {
+    console.error('Delete avatar route error:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

@@ -44,6 +44,7 @@ export interface AuthResponse {
     role: string;
     isEmailVerified: boolean;
     hasCompletedOnboarding: boolean;
+    coachId?: string;
   };
   tokens?: {
     accessToken: string;

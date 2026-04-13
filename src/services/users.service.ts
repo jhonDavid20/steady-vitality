@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { AppDataSource } from '../database/data-source';
 import { User } from '../database/entities/User';
 import { UserProfile, ActivityLevel, FitnessGoal, Gender } from '../database/entities/UserProfile';
@@ -193,6 +194,94 @@ export class UsersService {
     } catch (error) {
       console.error('Change password error:', error);
       return { success: false, message: 'Failed to change password' };
+    }
+  }
+
+  /** Lightweight fetch of just the avatar field — used in the upload route. */
+  async getUserAvatarPath(userId: string): Promise<{ avatar: string | null } | null> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        select: { avatar: true },
+      });
+      return user ? { avatar: user.avatar ?? null } : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Save a new avatar file path to users.avatar and delete the old local file if present.
+   * @param userId  Owner of the avatar
+   * @param newPath Absolute disk path of the newly saved file
+   * @param url     Public URL to store in the database
+   */
+  async updateAvatar(
+    userId: string,
+    newPath: string,
+    url: string,
+  ): Promise<{ success: boolean; url?: string; message: string }> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: userId, isActive: true },
+        select: { id: true, avatar: true },
+      });
+
+      if (!user) return { success: false, message: 'User not found' };
+
+      // Delete the old local file if it exists and points to /uploads/
+      if (user.avatar && user.avatar.includes('/uploads/avatars/')) {
+        try {
+          const oldPath = newPath.replace(
+            /\/uploads\/avatars\/.+$/,
+            user.avatar.replace(/^https?:\/\/[^/]+/, ''),
+          );
+          if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        } catch {
+          // Non-fatal — the new file is already saved
+        }
+      }
+
+      await this.userRepository.update({ id: userId }, { avatar: url });
+
+      return { success: true, url, message: 'Avatar updated' };
+    } catch (error) {
+      console.error('Update avatar error:', error);
+      return { success: false, message: 'Failed to update avatar' };
+    }
+  }
+
+  /**
+   * Remove the user's avatar: delete the local file and set users.avatar = null.
+   */
+  async deleteAvatar(
+    userId: string,
+    uploadsRoot: string,
+  ): Promise<{ success: boolean; message: string }> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: userId, isActive: true },
+        select: { id: true, avatar: true },
+      });
+
+      if (!user) return { success: false, message: 'User not found' };
+
+      if (user.avatar && user.avatar.includes('/uploads/avatars/')) {
+        try {
+          const filename = user.avatar.split('/uploads/avatars/')[1];
+          const filePath = `${uploadsRoot}/avatars/${filename}`;
+          if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        } catch {
+          // Non-fatal
+        }
+      }
+
+      await this.userRepository.update({ id: userId }, { avatar: null as any });
+
+      return { success: true, message: 'Avatar removed' };
+    } catch (error) {
+      console.error('Delete avatar error:', error);
+      return { success: false, message: 'Failed to remove avatar' };
     }
   }
 

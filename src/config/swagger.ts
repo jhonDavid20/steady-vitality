@@ -978,6 +978,44 @@ On success, read \`user.hasCompletedOnboarding\` from the response and update yo
       },
     },
 
+    '/api/users/me/avatar': {
+      patch: {
+        tags: ['Users'],
+        summary: 'Upload or replace profile avatar',
+        description: 'Accepts `multipart/form-data` with a single file under the `file` field. Allowed types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`. Max size: 5 MB. If the user already has a local avatar it is deleted from disk before the new one is saved. The stored URL is returned and also persisted to `users.avatar`.',
+        requestBody: {
+          required: true,
+          content: {
+            'multipart/form-data': {
+              schema: {
+                type: 'object',
+                required: ['file'],
+                properties: {
+                  file: { type: 'string', format: 'binary', description: 'Image file (jpeg / png / webp / gif, max 5 MB)' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: 'Avatar saved', content: { 'application/json': { example: { url: 'http://localhost:3001/uploads/avatars/550e8400-e29b-41d4-a716-446655440000.jpg', message: 'Avatar updated' } } } },
+          400: { description: 'No file, wrong type, or file too large', content: { 'application/json': { example: { message: 'File too large. Maximum size is 5 MB.' } } } },
+          401: { $ref: '#/components/responses/Unauthorized' },
+          500: { $ref: '#/components/responses/InternalError' },
+        },
+      },
+      delete: {
+        tags: ['Users'],
+        summary: 'Remove profile avatar',
+        description: 'Deletes the local avatar file from disk (if present) and sets `users.avatar` to `null`.',
+        responses: {
+          200: { description: 'Avatar removed', content: { 'application/json': { example: { message: 'Avatar removed' } } } },
+          401: { $ref: '#/components/responses/Unauthorized' },
+          500: { $ref: '#/components/responses/InternalError' },
+        },
+      },
+    },
+
     // ═══════════════════════════════════════════════════════════════════════
     // COACHES
     // ═══════════════════════════════════════════════════════════════════════

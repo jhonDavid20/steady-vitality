@@ -4,6 +4,7 @@
 import './config/env';
 import { config } from './config/env';
 
+import path from 'path';
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -260,6 +261,13 @@ app.get('/api', (req: Request, res: Response) => {
     documentation: '/api/docs'
   });
 });
+
+/**
+ * Static file serving
+ * Serves uploaded files (avatars, etc.) at /uploads/*
+ * Example: GET /uploads/avatars/abc123.jpg
+ */
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 /**
  * Error Handling Middleware

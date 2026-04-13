@@ -5,3 +5,7 @@
 docker-compose.yml
 package-lock.json
 postman/
+
+# Uploaded files — keep directory structure but ignore actual uploads
+/uploads/avatars/*
+!/uploads/avatars/.gitkeep
