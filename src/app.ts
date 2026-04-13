@@ -212,6 +212,7 @@ import usersRoutes from './routes/users.routes';
 import coachesRoutes from './routes/coaches.routes';
 import relationshipsRoutes from './routes/relationships.routes';
 import packagesRoutes from './routes/packages.routes';
+import invitesRoutes from './routes/invites.routes';
 
 // Swagger imports
 import swaggerUi from 'swagger-ui-express';
@@ -233,6 +234,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api/coaches', coachesRoutes);
 app.use('/api/relationships', relationshipsRoutes);
 app.use('/api/packages', packagesRoutes);
+app.use('/api/invites', invitesRoutes);
 
 // Swagger Documentation
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, {

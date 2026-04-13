@@ -1,7 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { AuthService } from '../services/auth.service';
-import { authenticate, AuthenticatedRequest } from '../middleware/auth';
+import { InvitesService } from '../services/invites.service';
+import { CoachesService } from '../services/coaches.service';
+import { CoachingType } from '../database/entities/CoachProfile';
+import { authenticate, requireCoach, AuthenticatedRequest } from '../middleware/auth';
 import {
   LoginRequest,
   RegisterRequest,
@@ -15,6 +18,8 @@ import {
 
 const router = Router();
 const authService = new AuthService();
+const invitesService = new InvitesService();
+const coachesService = new CoachesService();
 
 /**
  * @swagger
@@ -703,6 +708,219 @@ router.post('/verify-email', validateVerifyEmail, async (req: Request, res: Resp
     });
   }
 });
+
+/**
+ * @route GET /api/auth/coach/setup/:token
+ * @desc Validate a coach invite token and return the pre-filled email
+ * @access Public
+ */
+router.get('/coach/setup/:token', async (req: Request, res: Response) => {
+  try {
+    const result = await invitesService.validate(req.params.token);
+
+    if (!result.success || !result.data) {
+      res.status(400).json({
+        valid: false,
+        message: result.message ?? 'Invalid invite token',
+      });
+      return;
+    }
+
+    res.status(200).json({ valid: true, email: result.data.email });
+  } catch (error) {
+    console.error('Coach setup route error:', error);
+    res.status(500).json({ valid: false, message: 'Internal server error' });
+  }
+});
+
+const validateCoachRegister = [
+  body('token')
+    .notEmpty()
+    .withMessage('Invite token is required'),
+  body('firstName')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('First name is required and must be less than 50 characters'),
+  body('lastName')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Last name is required and must be less than 50 characters'),
+  body('password')
+    .isLength({ min: 8 })
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/)
+    .withMessage('Password must be at least 8 characters and include uppercase, lowercase, number, and special character'),
+  body('confirmPassword')
+    .notEmpty()
+    .withMessage('Please confirm your password'),
+];
+
+/**
+ * @route POST /api/auth/coach/register
+ * @desc Register a coach account via an invite token
+ * @access Public
+ */
+router.post('/coach/register', validateCoachRegister, async (req: Request, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const { token, firstName, lastName, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      res.status(400).json({
+        error: 'Validation failed',
+        message: 'Passwords do not match',
+      });
+      return;
+    }
+
+    const { ipAddress, userAgent } = getClientInfo(req);
+    const result = await authService.registerCoach(
+      { token, firstName, lastName, password },
+      ipAddress,
+      userAgent
+    );
+
+    if (!result.success) {
+      const status = result.errorCode === 'EMAIL_EXISTS' ? 409 : 400;
+      res.status(status).json({ error: 'Registration failed', message: result.message });
+      return;
+    }
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error('Coach register route error:', error);
+    res.status(500).json({ error: 'Registration failed', message: 'Internal server error' });
+  }
+});
+
+// ─── Client register via coach invite ─────────────────────────────────────────
+
+const validateClientRegister = [
+  body('token')
+    .notEmpty()
+    .withMessage('Invite token is required'),
+  body('firstName')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('First name is required and must be less than 50 characters'),
+  body('lastName')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Last name is required and must be less than 50 characters'),
+  body('password')
+    .isLength({ min: 8 })
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/)
+    .withMessage('Password must be at least 8 characters and include uppercase, lowercase, number, and special character'),
+  body('confirmPassword')
+    .notEmpty()
+    .withMessage('Please confirm your password'),
+];
+
+/**
+ * @route POST /api/auth/client/register
+ * @desc Register a client account via a coach-issued invite token
+ * @access Public
+ */
+router.post('/client/register', validateClientRegister, async (req: Request, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const { token, firstName, lastName, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      res.status(400).json({ error: 'Validation failed', message: 'Passwords do not match' });
+      return;
+    }
+
+    const { ipAddress, userAgent } = getClientInfo(req);
+    const result = await authService.registerClient(
+      { token, firstName, lastName, password },
+      ipAddress,
+      userAgent,
+    );
+
+    if (!result.success) {
+      const status = result.errorCode === 'EMAIL_EXISTS' ? 409 : 400;
+      res.status(status).json({ error: 'Registration failed', message: result.message });
+      return;
+    }
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error('Client register route error:', error);
+    res.status(500).json({ error: 'Registration failed', message: 'Internal server error' });
+  }
+});
+
+// ─── Coach onboarding ─────────────────────────────────────────────────────────
+
+const validateOnboarding = [
+  // Step 1 – Story
+  body('bio').optional().isString().trim().isLength({ max: 2000 }).withMessage('Bio must be under 2000 characters'),
+  body('profileHeadline').optional().isString().trim().isLength({ max: 160 }).withMessage('Headline must be under 160 characters'),
+  body('videoIntroUrl').optional({ nullable: true }).isURL().withMessage('videoIntroUrl must be a valid URL'),
+
+  // Step 2 – Expertise
+  body('specialties').optional().isArray(),
+  body('specialties.*').optional().isString().trim(),
+  body('trainingModalities').optional().isArray(),
+  body('trainingModalities.*').optional().isString().trim(),
+  body('targetClientTypes').optional().isArray(),
+  body('targetClientTypes.*').optional().isString().trim(),
+  body('yearsOfExperience').optional().isInt({ min: 0, max: 60 }).withMessage('Years of experience must be 0–60'),
+  body('certifications').optional().isArray(),
+  body('certifications.*').optional().isString().trim(),
+
+  // Step 3 – Coaching style
+  body('coachingType').optional().isIn(Object.values(CoachingType)).withMessage(`Must be one of: ${Object.values(CoachingType).join(', ')}`),
+  body('languagesSpoken').optional().isArray(),
+  body('languagesSpoken.*').optional().isString().trim(),
+  body('instagramHandle').optional().isString().trim().isLength({ max: 100 }),
+  body('websiteUrl').optional({ nullable: true }).isURL().withMessage('websiteUrl must be a valid URL'),
+
+  // Step 4 – Availability
+  body('timezone').optional().isString().trim().isLength({ max: 64 }),
+  body('sessionDurationMinutes').optional().isInt({ min: 15, max: 480 }),
+  body('maxClientCapacity').optional().isInt({ min: 1 }),
+  body('acceptingClients').optional().isBoolean(),
+  body('totalClientsTrained').optional().isInt({ min: 0 }),
+
+  // Step 5 – Pricing
+  body('sessionRateUSD').optional().isFloat({ min: 0 }),
+  body('trialSessionAvailable').optional().isBoolean(),
+  body('trialSessionRateUSD').optional().isFloat({ min: 0 }),
+];
+
+/**
+ * @route POST /api/auth/coach/onboarding
+ * @desc  Upsert the CoachProfile for the authenticated coach and flip
+ *        `hasCompletedOnboarding = true` on their User record (single transaction).
+ *        The frontend wizard submits all steps here on the final step.
+ * @access Private — coach or admin
+ */
+router.post(
+  '/coach/onboarding',
+  authenticate,
+  requireCoach,
+  validateOnboarding,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (handleValidationErrors(req, res)) return;
+
+      const result = await coachesService.completeOnboarding(req.user!.id, req.body);
+
+      if (!result.success) {
+        res.status(400).json(result);
+        return;
+      }
+
+      res.status(200).json(result);
+    } catch (error) {
+      console.error('Coach onboarding route error:', error);
+      res.status(500).json({ error: 'Onboarding failed', message: 'Internal server error' });
+    }
+  },
+);
 
 /**
  * @route GET /api/auth/status

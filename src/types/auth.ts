@@ -34,6 +34,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   success: boolean;
   message?: string;
+  errorCode?: string;
   user?: {
     id: string;
     email: string;

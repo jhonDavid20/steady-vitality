@@ -8,12 +8,13 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
 import { User } from './User';
 import { Package } from './Package';
 
 export enum ClientPackageStatus {
-  ACTIVE = 'active',
+  PENDING   = 'pending',
+  ACTIVE    = 'active',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
 }
@@ -51,6 +52,22 @@ export class ClientPackage {
   @Column({ type: 'timestamptz', nullable: true })
   @IsOptional()
   endDate?: Date;
+
+  /** How many sessions the client has completed under this package. */
+  @Column({ type: 'int', default: 0 })
+  @IsInt()
+  @Min(0)
+  sessionsCompleted: number;
+
+  /** Coach-written note specific to this client's assignment. */
+  @Column({ type: 'text', nullable: true })
+  @IsOptional()
+  notes?: string | null;
+
+  /** Goals set by the coach for this client under this package. */
+  @Column({ type: 'text', array: true, nullable: true })
+  @IsOptional()
+  goals?: string[] | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

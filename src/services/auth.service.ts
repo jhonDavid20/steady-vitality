@@ -1,6 +1,8 @@
+import { randomBytes } from 'crypto';
 import { AppDataSource } from '../database/data-source';
 import { User, UserRole } from '../database/entities/User';
 import { Session } from '../database/entities/Session';
+import { Invite, InviteType } from '../database/entities/Invite';
 import { PasswordService } from '../utils/password';
 import { JWTService } from '../utils/jwt';
 import {
@@ -86,6 +88,227 @@ export class AuthService {
         message: 'Registration failed. Please try again.'
       };
     }
+  }
+
+  async registerCoach(
+    data: { token: string; firstName: string; lastName: string; password: string },
+    ipAddress?: string,
+    userAgent?: string
+  ): Promise<AuthResponse> {
+    const passwordValidation = PasswordService.validatePassword(data.password);
+    if (!passwordValidation.isValid) {
+      return {
+        success: false,
+        message: passwordValidation.errors.join(', '),
+        errorCode: 'INVALID_PASSWORD',
+      };
+    }
+
+    let savedUser: User;
+
+    try {
+      savedUser = await AppDataSource.transaction(async (manager) => {
+        // 1. Validate invite
+        const invite = await manager.findOne(Invite, { where: { token: data.token } });
+
+        if (!invite) {
+          const err = new Error('Invalid invite token');
+          (err as any).errorCode = 'INVALID_TOKEN';
+          throw err;
+        }
+        if (invite.used) {
+          const err = new Error('This invite has already been used');
+          (err as any).errorCode = 'INVALID_TOKEN';
+          throw err;
+        }
+        if (invite.isExpired) {
+          const err = new Error('This invite has expired. Ask an admin for a new one');
+          (err as any).errorCode = 'INVALID_TOKEN';
+          throw err;
+        }
+
+        // Check for existing user with that email
+        const existingUser = await manager.findOne(User, { where: { email: invite.email } });
+        if (existingUser) {
+          const err = new Error('An account with this email already exists');
+          (err as any).errorCode = 'EMAIL_EXISTS';
+          throw err;
+        }
+
+        // Derive a unique username from the email local-part
+        const base = invite.email
+          .split('@')[0]
+          .replace(/[^a-zA-Z0-9_]/g, '_')
+          .slice(0, 25);
+        let username = base;
+        const taken = await manager.findOne(User, { where: { username: base } });
+        if (taken) {
+          username = `${base}_${randomBytes(3).toString('hex')}`;
+        }
+
+        // 2. Create user with role COACH
+        const user = manager.create(User, {
+          email: invite.email,
+          username,
+          password: data.password, // hashed by @BeforeInsert
+          firstName: data.firstName.trim(),
+          lastName: data.lastName.trim(),
+          role: UserRole.COACH,
+          isActive: true,
+          isEmailVerified: true, // validated by invite flow
+        });
+
+        const saved = await manager.save(User, user);
+
+        // 3. Redeem invite
+        invite.used = true;
+        await manager.save(Invite, invite);
+
+        return saved;
+      });
+    } catch (error: any) {
+      if (error.errorCode === 'INVALID_TOKEN') {
+        return { success: false, message: error.message, errorCode: 'INVALID_TOKEN' };
+      }
+      if (error.errorCode === 'EMAIL_EXISTS') {
+        return { success: false, message: error.message, errorCode: 'EMAIL_EXISTS' };
+      }
+      console.error('Coach registration error:', error);
+      return { success: false, message: 'Registration failed. Please try again.' };
+    }
+
+    const session = await this.createSession(savedUser, ipAddress, userAgent);
+    const tokens = this.generateTokens(savedUser, session);
+
+    return {
+      success: true,
+      message: 'Coach account created successfully.',
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        username: savedUser.username,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName,
+        role: savedUser.role,
+        isEmailVerified: savedUser.isEmailVerified,
+        hasCompletedOnboarding: savedUser.hasCompletedOnboarding,
+      },
+      tokens,
+    };
+  }
+
+  /**
+   * Registers a new client via a coach-issued client invite token.
+   * Creates the user, links them to the coach, and marks the invite as used.
+   */
+  async registerClient(
+    data: { token: string; firstName: string; lastName: string; password: string },
+    ipAddress?: string,
+    userAgent?: string
+  ): Promise<AuthResponse> {
+    const passwordValidation = PasswordService.validatePassword(data.password);
+    if (!passwordValidation.isValid) {
+      return {
+        success: false,
+        message: passwordValidation.errors.join(', '),
+        errorCode: 'INVALID_PASSWORD',
+      };
+    }
+
+    let savedUser: User;
+
+    try {
+      savedUser = await AppDataSource.transaction(async (manager) => {
+        // 1. Validate client invite
+        const invite = await manager.findOne(Invite, {
+          where: { token: data.token, type: InviteType.CLIENT },
+        });
+
+        if (!invite) {
+          const err = new Error('Invalid invite token');
+          (err as any).errorCode = 'INVALID_TOKEN';
+          throw err;
+        }
+        if (invite.used) {
+          const err = new Error('This invite has already been used');
+          (err as any).errorCode = 'INVALID_TOKEN';
+          throw err;
+        }
+        if (invite.isExpired) {
+          const err = new Error('This invite has expired. Ask your coach for a new one');
+          (err as any).errorCode = 'INVALID_TOKEN';
+          throw err;
+        }
+
+        // 2. Guard duplicate email
+        const existingUser = await manager.findOne(User, { where: { email: invite.email } });
+        if (existingUser) {
+          const err = new Error('An account with this email already exists');
+          (err as any).errorCode = 'EMAIL_EXISTS';
+          throw err;
+        }
+
+        // 3. Derive unique username — prefer firstName.lastName (e.g. jane.smith)
+        const cleanFirst = data.firstName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        const cleanLast  = data.lastName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        const base = `${cleanFirst}.${cleanLast}`.slice(0, 28) || invite.email.split('@')[0].slice(0, 28);
+        let username = base;
+        const taken = await manager.findOne(User, { where: { username: base } });
+        if (taken) {
+          username = `${base}${Math.floor(100 + Math.random() * 900)}`; // e.g. jane.smith421
+        }
+
+        // 4. Create client user — link to the coach who sent the invite
+        const user = manager.create(User, {
+          email: invite.email,
+          username,
+          password: data.password,
+          firstName: data.firstName.trim(),
+          lastName: data.lastName.trim(),
+          role: UserRole.CLIENT,
+          isActive: true,
+          isEmailVerified: true,
+          coachId: invite.coachId ?? null,
+        });
+
+        const saved = await manager.save(User, user);
+
+        // 5. Mark invite as used
+        invite.used = true;
+        await manager.save(Invite, invite);
+
+        return saved;
+      });
+    } catch (error: any) {
+      if (error.errorCode === 'INVALID_TOKEN') {
+        return { success: false, message: error.message, errorCode: 'INVALID_TOKEN' };
+      }
+      if (error.errorCode === 'EMAIL_EXISTS') {
+        return { success: false, message: error.message, errorCode: 'EMAIL_EXISTS' };
+      }
+      console.error('Client registration error:', error);
+      return { success: false, message: 'Registration failed. Please try again.' };
+    }
+
+    const session = await this.createSession(savedUser, ipAddress, userAgent);
+    const tokens = this.generateTokens(savedUser, session);
+
+    return {
+      success: true,
+      message: 'Client account created successfully.',
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        username: savedUser.username,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName,
+        role: savedUser.role,
+        isEmailVerified: savedUser.isEmailVerified,
+        hasCompletedOnboarding: savedUser.hasCompletedOnboarding,
+        coachId: savedUser.coachId ?? undefined,
+      },
+      tokens,
+    };
   }
 
   async login(data: LoginRequest, ipAddress?: string, userAgent?: string): Promise<AuthResponse> {

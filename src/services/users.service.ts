@@ -61,6 +61,7 @@ export class UsersService {
           lastName: true,
           avatar: true,
           role: true,
+          coachId: true,
           isEmailVerified: true,
           hasCompletedOnboarding: true,
           lastLoginAt: true,

@@ -123,8 +123,9 @@ export const requireRole = (roles: UserRole | UserRole[]) => {
   };
 };
 
-export const requireAdmin = requireRole(UserRole.ADMIN);
-export const requireCoach = requireRole([UserRole.ADMIN, UserRole.COACH]);
+export const requireAdmin  = requireRole(UserRole.ADMIN);
+export const requireCoach  = requireRole([UserRole.ADMIN, UserRole.COACH]);
+export const requireClient = requireRole(UserRole.CLIENT);
 
 export const optionalAuth = async (
   req: AuthenticatedRequest,

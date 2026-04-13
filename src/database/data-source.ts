@@ -12,6 +12,8 @@ import { CoachProfile } from './entities/CoachProfile';
 import { ClientCoachRelationship } from './entities/ClientCoachRelationship';
 import { Package } from './entities/Package';
 import { ClientPackage } from './entities/ClientPackage';
+import { Invite } from './entities/Invite';
+import { ConnectionRequest } from './entities/ConnectionRequest';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -34,8 +36,8 @@ export const AppDataSource = new DataSource({
     idleTimeoutMillis: 30000,
   },
   
-  // Synchronize only in development
-  synchronize: config.nodeEnv === 'development',
+  // Never synchronize — use migrations instead
+  synchronize: false,
   
   // Logging
   logging: config.nodeEnv === 'development' ? 'all' : ['error'],
@@ -49,6 +51,8 @@ export const AppDataSource = new DataSource({
     ClientCoachRelationship,
     Package,
     ClientPackage,
+    Invite,
+    ConnectionRequest,
   ],
 
   // Migrations

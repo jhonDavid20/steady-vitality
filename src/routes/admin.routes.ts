@@ -4,7 +4,7 @@ import { authenticate, requireAdmin, AuthenticatedRequest } from '../middleware/
 import { cleanupService } from '../services/cleanup.service';
 import { AppDataSource } from '../database/data-source';
 import { User, UserRole } from '../database/entities/User';
-import { Session } from '../database/entities/Session';
+import { StatsService } from '../services/stats.service';
 
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
@@ -197,35 +197,20 @@ router.patch('/users/:id/status', authenticate, requireAdmin, [
   }
 });
 
+const statsService = new StatsService();
+
 /**
  * GET /api/admin/stats
- * Aggregate counts: total users, coaches, clients, sessions today.
+ * Rich aggregate stats: user counts by role, new-this-week, invite summary,
+ * and a 30-day signup-by-day series (gaps filled with 0).
  */
 router.get('/stats', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userRepository = AppDataSource.getRepository(User);
-    const sessionRepository = AppDataSource.getRepository(Session);
-
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-
-    const [totalUsers, totalCoaches, totalClients, sessionsToday] = await Promise.all([
-      userRepository.count({ where: { isActive: true } }),
-      userRepository.count({ where: { role: UserRole.COACH, isActive: true } }),
-      userRepository.count({ where: { role: UserRole.CLIENT, isActive: true } }),
-      sessionRepository
-        .createQueryBuilder('session')
-        .where('session.createdAt >= :todayStart', { todayStart })
-        .getCount(),
-    ]);
-
-    res.status(200).json({
-      success: true,
-      data: { totalUsers, totalCoaches, totalClients, sessionsToday },
-    });
+    const stats = await statsService.getStats();
+    res.status(200).json({ success: true, stats });
   } catch (error) {
     console.error('Admin stats error:', error);
-    res.status(500).json({ error: 'Failed to get stats', message: 'Internal server error' });
+    res.status(500).json({ success: false, message: 'Failed to retrieve stats' });
   }
 });
 

@@ -9,7 +9,7 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { IsBoolean, IsInt, IsNumber, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsInt, IsNumber, IsOptional, IsString, Min, MinLength } from 'class-validator';
 import { CoachProfile } from './CoachProfile';
 import { ClientPackage } from './ClientPackage';
 
@@ -51,6 +51,11 @@ export class Package {
   @Column({ type: 'boolean', default: true })
   @IsBoolean()
   isActive: boolean;
+
+  /** Bullet-point list of what's included in this package (e.g. "Nutrition plan", "Weekly calls"). */
+  @Column({ type: 'text', array: true, nullable: true })
+  @IsOptional()
+  features?: string[] | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

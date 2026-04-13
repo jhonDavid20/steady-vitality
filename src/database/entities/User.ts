@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
   OneToOne,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
   Index,
   BeforeInsert,
   BeforeUpdate,
@@ -97,6 +99,11 @@ export class User {
   @IsOptional()
   lastLoginAt?: Date;
 
+  /** Direct FK to the coach assigned via invite or accepted connection request. */
+  @Column({ type: 'uuid', nullable: true })
+  @IsOptional()
+  coachId?: string | null;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
@@ -117,6 +124,11 @@ export class User {
 
   @OneToOne(() => CoachProfile, (cp) => cp.user)
   coachProfile: CoachProfile;
+
+  /** The coach this client is linked to (set on client invite acceptance or request acceptance). */
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: false })
+  @JoinColumn({ name: 'coachId' })
+  coach?: User | null;
 
   @OneToMany(() => ClientCoachRelationship, (r) => r.client)
   clientRelationships: ClientCoachRelationship[];
