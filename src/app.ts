@@ -267,7 +267,10 @@ app.get('/api', (req: Request, res: Response) => {
  * Serves uploaded files (avatars, etc.) at /uploads/*
  * Example: GET /uploads/avatars/abc123.jpg
  */
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use('/uploads', (_req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static(path.join(__dirname, '..', 'uploads')));
 
 /**
  * Error Handling Middleware
