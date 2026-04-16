@@ -14,10 +14,10 @@ export class AddPendingToClientPackageStatus1743500000000 implements MigrationIn
           FROM pg_enum
           WHERE enumlabel = 'pending'
             AND enumtypid = (
-              SELECT oid FROM pg_type WHERE typname = 'client_packages_status_enum'
+              SELECT oid FROM pg_type WHERE typname = 'client_package_status_enum'
             )
         ) THEN
-          ALTER TYPE "client_packages_status_enum" ADD VALUE 'pending';
+          ALTER TYPE "client_package_status_enum" ADD VALUE 'pending';
         END IF;
       END
       $$;
