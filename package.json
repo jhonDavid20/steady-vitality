@@ -14,7 +14,9 @@
     "migration:run": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts",
     "migration:revert": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:revert -d src/database/data-source.ts",
     "migration:generate": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:generate -d src/database/data-source.ts",
-    "migration:show": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:show -d src/database/data-source.ts"
+    "migration:show": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:show -d src/database/data-source.ts",
+    "migration:run:prod": "node ./node_modules/typeorm/cli.js migration:run -d dist/database/data-source.js",
+    "seed:admin:prod": "node dist/database/seeds/seed-admin.js"
   },
   "keywords": [
     "fitness",
