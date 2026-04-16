@@ -488,6 +488,7 @@ export class CoachesService {
             lastName: client.lastName,
             email: client.email,
             username: client.username,
+            avatar: client.avatar ?? null,
             joinedAt: client.createdAt,
             profile: profile
               ? {
