@@ -1,0 +1,71 @@
+services:
+  - type: web
+    name: steady-vitality-api
+    runtime: node
+    region: oregon
+    plan: free
+
+    # Build: install deps then compile TypeScript
+    buildCommand: npm install && npm run build
+
+    # Start the compiled server
+    startCommand: npm start
+
+    # Run migrations automatically on every deploy (before traffic switches over)
+    # Render runs this as a pre-deploy step when set via the dashboard, or you
+    # can use the preDeployCommand field (available on paid plans).
+    # On the free plan: trigger migrations manually via the Shell tab or a
+    # one-off job (see below).
+
+    healthCheckPath: /health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 3001
+
+      # Render injects DATABASE_URL automatically when you link a Postgres instance.
+      # The key below tells Render to pull it from the linked database.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: steady-vitality-db
+          property: connectionString
+
+      # Generate a strong secret: openssl rand -hex 64
+      - key: JWT_SECRET
+        generateValue: true
+
+      - key: JWT_EXPIRE
+        value: 1h
+
+      - key: JWT_REFRESH_EXPIRE
+        value: 7d
+
+      - key: BCRYPT_ROUNDS
+        value: "12"
+
+      # Set these in the Render dashboard (sensitive — do not commit values)
+      - key: DEFAULT_ADMIN_EMAIL
+        sync: false
+      - key: DEFAULT_ADMIN_USERNAME
+        sync: false
+      - key: DEFAULT_ADMIN_PASSWORD
+        sync: false
+
+      # Optional: SMTP for email (set in dashboard)
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+
+databases:
+  - name: steady-vitality-db
+    databaseName: steady_vitality
+    region: oregon
+    plan: free

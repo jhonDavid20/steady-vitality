@@ -26,20 +26,19 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-// Validate critical environment variables
-const requiredVars = [
-  'DB_HOST',
-  'DB_PORT',
-  'DB_USERNAME',
-  'DB_PASSWORD',
-  'DB_NAME'
-];
+// Validate critical environment variables.
+// DATABASE_URL (provided by Render / cloud platforms) satisfies all DB vars.
+const hasDatabaseUrl = !!process.env.DATABASE_URL;
+
+const requiredVars = hasDatabaseUrl
+  ? [] // DATABASE_URL covers all individual DB vars
+  : ['DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD', 'DB_NAME'];
 
 const missingVars = requiredVars.filter(varName => !process.env[varName]);
 
 if (missingVars.length > 0) {
   console.error('❌ Missing required environment variables:', missingVars.join(', '));
-  
+
   if (process.env.NODE_ENV === 'production') {
     process.exit(1);
   }
