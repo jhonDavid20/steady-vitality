@@ -317,11 +317,12 @@ export class AuthService {
         where: { email: data.email.toLowerCase().trim() }
       });
 
-      if (!user || !user.isActive) {
-        return {
-          success: false,
-          message: 'Invalid email or password'
-        };
+      if (!user) {
+        return { success: false, message: 'Invalid email or password' };
+      }
+
+      if (!user.isActive) {
+        return { success: false, message: 'Your account has been suspended. Please contact support.' };
       }
 
       const isPasswordValid = await user.validatePassword(data.password);
