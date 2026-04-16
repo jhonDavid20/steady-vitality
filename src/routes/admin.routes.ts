@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs';
 import { Router, Request, Response } from 'express';
 import { body, query, param, validationResult } from 'express-validator';
 import { authenticate, requireAdmin, AuthenticatedRequest } from '../middleware/auth';
@@ -125,7 +127,7 @@ router.get('/users', authenticate, requireAdmin, [
       select: {
         id: true, email: true, username: true, firstName: true, lastName: true,
         role: true, isActive: true, isEmailVerified: true, hasCompletedOnboarding: true,
-        lastLoginAt: true, createdAt: true, updatedAt: true,
+        lastLoginAt: true, createdAt: true, updatedAt: true, avatar: true,
       },
       skip,
       take: limit,
@@ -194,6 +196,81 @@ router.patch('/users/:id/status', authenticate, requireAdmin, [
   } catch (error) {
     console.error('Admin update status error:', error);
     res.status(500).json({ error: 'Failed to update status', message: 'Internal server error' });
+  }
+});
+
+/**
+ * PATCH /api/admin/users/:id
+ * Update isActive (lock / unlock) for any non-admin user.
+ * Guards: cannot lock another admin account.
+ */
+router.patch('/users/:id', authenticate, requireAdmin, [
+  param('id').isUUID().withMessage('id must be a valid UUID'),
+  body('isActive').isBoolean().withMessage('isActive must be a boolean'),
+], async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({ where: { id: req.params.id } });
+
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    if (user.role === UserRole.ADMIN && req.body.isActive === false) {
+      res.status(400).json({ success: false, message: 'Admin accounts cannot be locked' });
+      return;
+    }
+
+    user.isActive = req.body.isActive;
+    await userRepository.save(user);
+
+    res.status(200).json({ success: true, message: 'User updated' });
+  } catch (error) {
+    console.error('Admin update user error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+/**
+ * DELETE /api/admin/users/:id/avatar
+ * Remove a user's avatar: delete local file and null out users.avatar.
+ */
+router.delete('/users/:id/avatar', authenticate, requireAdmin, [
+  param('id').isUUID().withMessage('id must be a valid UUID'),
+], async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({
+      where: { id: req.params.id },
+      select: { id: true, avatar: true },
+    });
+
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    if (user.avatar && user.avatar.includes('/uploads/avatars/')) {
+      try {
+        const filename = user.avatar.split('/uploads/avatars/')[1];
+        const filePath = path.join(process.cwd(), 'uploads', 'avatars', filename);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      } catch {
+        // Non-fatal — proceed to null out the DB field
+      }
+    }
+
+    await userRepository.update({ id: req.params.id }, { avatar: null as any });
+
+    res.status(200).json({ success: true, message: 'Avatar removed' });
+  } catch (error) {
+    console.error('Admin delete avatar error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
 
