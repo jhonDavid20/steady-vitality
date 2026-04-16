@@ -267,10 +267,20 @@ app.get('/api', (req: Request, res: Response) => {
  * Serves uploaded files (avatars, etc.) at /uploads/*
  * Example: GET /uploads/avatars/abc123.jpg
  */
-app.use('/uploads', (_req, res, next) => {
+const uploadsPath = path.join(process.cwd(), 'uploads');
+console.log('[static] uploads root:', uploadsPath);
+
+app.get('/uploads/avatars/:filename', (req: Request, res: Response) => {
+  const filePath = path.join(uploadsPath, 'avatars', req.params.filename);
+  console.log('[static] serving file:', filePath);
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-  next();
-}, express.static(path.join(__dirname, '..', 'uploads')));
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error('[static] sendFile error:', err.message, '| path:', filePath);
+      res.status(404).json({ message: 'File not found' });
+    }
+  });
+});
 
 /**
  * Error Handling Middleware

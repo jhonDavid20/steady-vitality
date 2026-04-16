@@ -218,29 +218,15 @@ export class UsersService {
    */
   async updateAvatar(
     userId: string,
-    newPath: string,
     url: string,
   ): Promise<{ success: boolean; url?: string; message: string }> {
     try {
       const user = await this.userRepository.findOne({
         where: { id: userId, isActive: true },
-        select: { id: true, avatar: true },
+        select: { id: true },
       });
 
       if (!user) return { success: false, message: 'User not found' };
-
-      // Delete the old local file if it exists and points to /uploads/
-      if (user.avatar && user.avatar.includes('/uploads/avatars/')) {
-        try {
-          const oldPath = newPath.replace(
-            /\/uploads\/avatars\/.+$/,
-            user.avatar.replace(/^https?:\/\/[^/]+/, ''),
-          );
-          if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-        } catch {
-          // Non-fatal — the new file is already saved
-        }
-      }
 
       await this.userRepository.update({ id: userId }, { avatar: url });
 

@@ -12,7 +12,7 @@ const router = Router();
 const usersService = new UsersService();
 
 // ─── Avatar upload config ─────────────────────────────────────────────────────
-const UPLOADS_ROOT = path.join(__dirname, '..', '..', 'uploads');
+const UPLOADS_ROOT = path.join(process.cwd(), 'uploads');
 const AVATARS_DIR  = path.join(UPLOADS_ROOT, 'avatars');
 
 // Ensure the directory exists at startup (safe on every cold start)
@@ -537,6 +537,7 @@ router.patch(
   async (req: AuthenticatedRequest, res: Response) => {
     try {
       const file = (req as any).file as Express.Multer.File | undefined;
+      console.log('[avatar] req.file:', file);
 
       if (!file) {
         res.status(400).json({ message: 'No file uploaded. Send a file under the "file" field.' });
@@ -559,7 +560,7 @@ router.patch(
       const baseUrl = `${req.protocol}://${req.get('host')}`;
       const url = `${baseUrl}/uploads/avatars/${file.filename}`;
 
-      const result = await usersService.updateAvatar(req.user!.id, file.path, url);
+      const result = await usersService.updateAvatar(req.user!.id, url);
 
       if (!result.success) {
         // Clean up the just-uploaded file to avoid orphans
