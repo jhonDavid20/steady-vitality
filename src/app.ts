@@ -42,7 +42,8 @@ const corsOptions = {
     ? [
         'https://steadyvitality.com',
         'https://www.steadyvitality.com',
-        'https://app.steadyvitality.com'
+        'https://app.steadyvitality.com',
+        'https://steadyvitality-4pcjat885-jhondavid20s-projects.vercel.app'
       ]
     : [
         'http://localhost:3005',
