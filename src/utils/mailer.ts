@@ -120,7 +120,7 @@ export async function sendCoachInviteEmail(to: string, inviteUrl: string): Promi
       buttonUrl:   inviteUrl,
     });
 
-    await client.testing.sendMail({
+    await client.sendMail({
       from:     { email: FROM_EMAIL, name: FROM_NAME },
       to:       [{ email: to }],
       subject:  "You're invited to join as a Coach",
@@ -157,7 +157,7 @@ export async function sendClientInviteEmail(
       buttonUrl:   inviteUrl,
     });
 
-    await client.testing.sendMail({
+    await client.sendMail({
       from:     { email: FROM_EMAIL, name: FROM_NAME },
       to:       [{ email: to }],
       subject:  `${coachName} invited you to their coaching platform`,
