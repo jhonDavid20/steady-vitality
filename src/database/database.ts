@@ -75,6 +75,10 @@ export class DatabaseManager {
 
     if (adminExists) {
       console.log('ℹ️  Admin user already exists');
+      if (!adminExists.hasCompletedOnboarding) {
+        await userRepository.update(adminExists.id, { hasCompletedOnboarding: true });
+        console.log('✅ Admin onboarding flag updated');
+      }
       return;
     }
 
@@ -92,6 +96,7 @@ export class DatabaseManager {
       role: UserRole.ADMIN,
       isActive: true,
       isEmailVerified: true,
+      hasCompletedOnboarding: true,
     });
 
     await userRepository.save(defaultAdmin);
