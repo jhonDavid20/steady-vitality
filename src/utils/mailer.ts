@@ -1,18 +1,16 @@
-import nodemailer from 'nodemailer';
+import { MailtrapClient } from 'mailtrap';
 
-// ── Transport (singleton) ─────────────────────────────────────────────────────
+// ── Client (singleton) ────────────────────────────────────────────────────────
 
-const transporter = nodemailer.createTransport({
-  host:   process.env.SMTP_HOST   ?? 'sandbox.smtp.mailtrap.io',
-  port:   Number(process.env.SMTP_PORT ?? 587),
-  secure: false, // STARTTLS on port 587
-  auth: {
-    user: process.env.SMTP_USER ?? '',
-    pass: process.env.SMTP_PASS ?? '',
-  },
+const TOKEN       = process.env.MAILTRAP_TOKEN    ?? '';
+const INBOX_ID    = Number(process.env.MAILTRAP_INBOX_ID ?? '4513531');
+const FROM_EMAIL  = process.env.EMAIL_FROM_ADDRESS ?? 'noreply@steadyvitality.com';
+const FROM_NAME   = process.env.EMAIL_FROM_NAME    ?? 'Steady Vitality';
+
+const client = new MailtrapClient({
+  token: TOKEN,
+  testInboxId: INBOX_ID,
 });
-
-const FROM = process.env.EMAIL_FROM ?? 'Coaching Platform <noreply@coachingplatform.dev>';
 
 // ── Shared HTML shell ─────────────────────────────────────────────────────────
 
@@ -31,7 +29,6 @@ function buildEmail(opts: {
   <title>${opts.heading}</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f4f5;font-family:'Segoe UI',Arial,sans-serif;">
-  <!-- preheader (hidden preview text) -->
   <span style="display:none;max-height:0;overflow:hidden;">${opts.preheader}</span>
 
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:40px 0;">
@@ -43,11 +40,11 @@ function buildEmail(opts: {
 
           <!-- Header bar -->
           <tr>
-            <td style="background:#1a1a2e;padding:28px 40px;">
+            <td style="background:#1B4332;padding:28px 40px;">
               <p style="margin:0;color:#ffffff;font-size:22px;font-weight:700;letter-spacing:-0.3px;">
                 Steady Vitality
               </p>
-              <p style="margin:4px 0 0;color:#a0a0c0;font-size:13px;">
+              <p style="margin:4px 0 0;color:#a0c4b0;font-size:13px;">
                 Coaching Platform
               </p>
             </td>
@@ -66,7 +63,7 @@ function buildEmail(opts: {
               <!-- CTA button -->
               <table cellpadding="0" cellspacing="0" style="margin:32px 0 0;">
                 <tr>
-                  <td style="border-radius:8px;background:#4f46e5;">
+                  <td style="border-radius:8px;background:#1B4332;">
                     <a href="${opts.buttonUrl}"
                        style="display:inline-block;padding:14px 32px;color:#ffffff;
                               font-size:15px;font-weight:600;text-decoration:none;
@@ -81,7 +78,7 @@ function buildEmail(opts: {
               <p style="margin:24px 0 0;color:#8080a0;font-size:12px;line-height:1.6;">
                 If the button doesn't work, copy and paste this link into your browser:<br />
                 <a href="${opts.buttonUrl}"
-                   style="color:#4f46e5;word-break:break-all;">${opts.buttonUrl}</a>
+                   style="color:#1B4332;word-break:break-all;">${opts.buttonUrl}</a>
               </p>
             </td>
           </tr>
@@ -123,11 +120,12 @@ export async function sendCoachInviteEmail(to: string, inviteUrl: string): Promi
       buttonUrl:   inviteUrl,
     });
 
-    await transporter.sendMail({
-      from:    FROM,
-      to,
-      subject: "You're invited to join as a Coach",
+    await client.testing.send({
+      from:     { email: FROM_EMAIL, name: FROM_NAME },
+      to:       [{ email: to }],
+      subject:  "You're invited to join as a Coach",
       html,
+      category: 'Coach Invite',
     });
 
     console.log(`[mailer] Coach invite sent → ${to}`);
@@ -141,9 +139,9 @@ export async function sendCoachInviteEmail(to: string, inviteUrl: string): Promi
  * Fire-and-forget — errors are caught and logged; they never bubble up.
  */
 export async function sendClientInviteEmail(
-  to:        string,
-  inviteUrl: string,
-  coachName: string,
+    to:        string,
+    inviteUrl: string,
+    coachName: string,
 ): Promise<void> {
   try {
     const html = buildEmail({
@@ -159,11 +157,12 @@ export async function sendClientInviteEmail(
       buttonUrl:   inviteUrl,
     });
 
-    await transporter.sendMail({
-      from:    FROM,
-      to,
-      subject: `${coachName} invited you to their coaching platform`,
+    await client.testing.send({
+      from:     { email: FROM_EMAIL, name: FROM_NAME },
+      to:       [{ email: to }],
+      subject:  `${coachName} invited you to their coaching platform`,
       html,
+      category: 'Client Invite',
     });
 
     console.log(`[mailer] Client invite sent → ${to}`);
