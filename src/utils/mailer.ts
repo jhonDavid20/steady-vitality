@@ -9,6 +9,7 @@ const FROM_NAME   = process.env.EMAIL_FROM_NAME    ?? 'Steady Vitality';
 
 const client = new MailtrapClient({
   token: TOKEN,
+  sandbox: true,
   testInboxId: INBOX_ID,
 });
 
