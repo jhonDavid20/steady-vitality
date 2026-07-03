@@ -18,6 +18,7 @@ Backend REST API for the Steady Vitality health & fitness coaching platform. Bui
   - [Packages](#packages)
   - [Invites](#invites)
   - [Admin](#admin)
+  - [Leads](#leads)
 - [Authentication](#authentication)
 - [Roles](#roles)
 - [Error Responses](#error-responses)
@@ -132,6 +133,7 @@ pnpm run migration:run
 | `*-AddInviteType` | Coach vs. client invite types |
 | `*-AddPendingToClientPackageStatus` | Adds `pending` enum value |
 | `*-EnrichPackageColumns` | `sessionsCompleted`, `notes`, `goals`, `features` columns |
+| `*-CreateLeadsTable` | Landing-page assessment leads table |
 
 ---
 
@@ -348,6 +350,32 @@ Password requirements: min 8 chars, uppercase, lowercase, digit, and special cha
 | PATCH | `/api/admin/users/:id/role` | Admin | Change a user's role |
 | PATCH | `/api/admin/users/:id/status` | Admin | Activate or deactivate a user |
 | POST | `/api/admin/cleanup/sessions` | Admin | Manually trigger expired-session cleanup |
+
+### Leads
+
+Captured from the public landing-page assessment form.
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| POST | `/api/leads` | Public | Submit an assessment (creates a lead; BMI computed server-side) |
+| GET | `/api/leads` | Admin | Paginated list of leads (optional `status` filter) |
+| PATCH | `/api/leads/:id/status` | Admin | Update a lead's status (`new` / `contacted` / `converted` / `archived`) |
+
+**Create lead request body:**
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "age": "26-35",
+  "gender": "female",
+  "height": 170,
+  "weight": 65,
+  "activityLevel": "moderate",
+  "goal": "lose-weight",
+  "experience": "Been running for a year...",
+  "locale": "en"
+}
+```
 
 ---
 
