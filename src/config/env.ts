@@ -55,11 +55,6 @@ export const config = {
     password: process.env.DB_PASSWORD || 'password',
     name: process.env.DB_NAME || 'steady_vitality',
   },
-  redis: {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
-    password: process.env.REDIS_PASSWORD,
-  },
   jwt: {
     secret: process.env.JWT_SECRET || 'default_jwt_secret_change_me',
     expiresIn: process.env.JWT_EXPIRE || '1h',
