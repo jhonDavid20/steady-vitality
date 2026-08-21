@@ -18,6 +18,9 @@ out/
 apps/api/uploads/avatars/*
 !apps/api/uploads/avatars/.gitkeep
 
+# Claude Code — personal overrides (keep shared .claude/settings.json)
+.claude/settings.local.json
+
 # Misc
 /init-scripts
 docker-compose.yml
