@@ -41,7 +41,7 @@ Derivados del "qué NO es" del founder + research de retención/hábitos:
 | Rol | Qué busca | Cómo lo enamoramos |
 |---|---|---|
 | **Cliente** | Lograr su objetivo sin sentirse perdido | Vista "Hoy" clara, ver progreso real, micro-logros, IA que lo guía |
-| **Coach** | Gestionar clientes sin caos y captar más | **Reputación (ClutchScore)** + visibilidad, herramientas e IA de seguimiento |
+| **Coach** | Gestionar clientes sin caos y captar más | **Reputación (VitalityScore)** + visibilidad, herramientas e IA de seguimiento |
 | **Admin/Plataforma** | Salud del negocio y calidad | Métricas, moderación, gestión de comisiones y disputas |
 
 Regla central: **relación comprometida** — al comprar a un coach quedas atado a un plan por
@@ -85,7 +85,7 @@ Cuando el cliente abre la app ve, en orden de foco:
 ### 5.5 Wearables *(fase 2)*
 - Apple Watch, Whoop, Fitbit… Datos: pasos, HR, **sueño**, calorías activas, recuperación/HRV.
 
-### 5.6 Reputación del coach → **ClutchScore** (ver §7)
+### 5.6 Reputación del coach → **VitalityScore** (ver §7)
 
 ---
 
@@ -122,7 +122,7 @@ activo + add-ons.
 
 ---
 
-## 7. Reputación del coach — ClutchScore
+## 7. Reputación del coach — VitalityScore
 
 Basado en best practices de marketplaces de coaching:
 
@@ -148,7 +148,7 @@ Basado en prácticas de paquetes prepagos de PT:
   - **Excepción médica documentada** → sí.
   - **Ventana de arrepentimiento** antes de que arranque el plan.
 - **Al terminar el plan:** nudge para **renovar** (mismo coach), **upsell** (plan más largo/alto),
-  o **feedback + reseña estructurada** (alimenta el ClutchScore). Auto-recordatorio antes de expirar.
+  o **feedback + reseña estructurada** (alimenta el VitalityScore). Auto-recordatorio antes de expirar.
 
 > Nota: esto debe reflejarse en Términos/Políticas claras (reduce disputas). Revisar con enfoque legal por mercado.
 
@@ -161,12 +161,12 @@ Basado en prácticas de paquetes prepagos de PT:
 - Descubrimiento de coach + **compra de paquete comprometido** (pagos).
 - **Coach:** plan builder (nutrición + entrenos desde librería, habilitar por cliente, subir videos).
 - **Cliente:** **vista "Hoy"** (entreno marcar-hecho, adherencia nutricional + agua, racha, progreso, chat con coach).
-- **Reseñas básicas** (recolectar; ClutchScore completo viene después).
+- **Reseñas básicas** (recolectar; VitalityScore completo viene después).
 
 ### v1.5 — IA + reputación + loop de retención
 - **IA panorama** (insights cliente + dashboard de riesgo del coach) tras el **paywall Premium**.
 - **Educación de macros** según condición.
-- **ClutchScore** compuesto + badges.
+- **VitalityScore** compuesto + badges.
 - **Renovación / feedback** al terminar el plan.
 - Tiers Premium (cliente y coach) + comisión diferenciada.
 
