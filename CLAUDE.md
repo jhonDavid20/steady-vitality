@@ -43,6 +43,11 @@ Middlewares de auth: `authenticate`, `requireAdmin`, `requireCoach`, `requireRol
 - No re-corras `pnpm install` si ya existe `node_modules`; no recompiles `shared` si no lo tocaste.
 - Valida con `pnpm typecheck` o `--filter` del paquete afectado, no con `pnpm build` completo.
 
+## Commits
+- Conventional Commits (`feat`/`fix`/`refactor`/`chore`/`docs`…); imperativo, conciso.
+- **Nunca** agregar `Co-Authored-By`, `Claude-Session`, ni atribución de IA/modelo en commits, PRs o código.
+- Trabajar sobre `develop` (feature → PR a `develop` → `main`); no commitear directo a `main`.
+
 ## Especialistas y skills
 - Subagentes: `api-dev` (backend), `web-dev` (frontend).
 - Skills: `add-endpoint`, `add-landing-section`.

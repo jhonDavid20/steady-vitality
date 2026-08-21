@@ -25,5 +25,5 @@ Examples:
 - One logical change per commit; stage intentionally (`git add -p` when a diff mixes concerns).
 - Never commit secrets, `.env`, `node_modules`, `dist`, or `.next`.
 - Run typecheck/build before committing when you changed code.
-- Add a `Co-authored-by:` trailer when pairing.
+- **Never** add `Co-Authored-By`, `Claude-Session`, or any AI/model attribution to commits, PR titles/bodies, or code. Keep messages to the change itself.
 - Branch off the default branch for new work; don't commit straight to `main`/`master` unless asked.
