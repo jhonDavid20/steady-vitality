@@ -3,7 +3,6 @@ import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 import './globals.css';
 import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from '@/components/navbar';
 
 
 export default async function RootLayout({
@@ -24,7 +23,6 @@ export default async function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <NextIntlClientProvider>
-            <Navbar />
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export * from "./auth";
+
 /**
  * @steady/shared — single source of truth for cross-app contracts.
  *

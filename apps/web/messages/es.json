@@ -1,4 +1,34 @@
 {   
+  "Auth": {
+    "loginTitle": "Bienvenido de nuevo",
+    "loginSubtitle": "Inicia sesión para continuar",
+    "loginCta": "Iniciar sesión",
+    "loginError": "Email o contraseña incorrectos.",
+    "noAccount": "¿No tienes cuenta?",
+    "registerTitle": "Crea tu cuenta",
+    "registerSubtitle": "Empieza a construir mejores hábitos",
+    "registerCta": "Registrarse",
+    "registerError": "No se pudo crear tu cuenta.",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "email": "Email",
+    "password": "Contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "username": "Usuario",
+    "submitting": "Espera…"
+  },
+  "AppNav": {
+    "logout": "Cerrar sesión",
+    "role": {
+      "admin": "Admin",
+      "coach": "Coach",
+      "client": "Cliente"
+    }
+  },
+  "Today": {
+    "greeting": "¡Hola, {name}!",
+    "placeholder": "Aquí vivirá tu foco del día — entreno, comidas y progreso de hoy."
+  },
   "NavBarSection": {
     "Home": "Inicio",
     "Assessment": "Evaluación",

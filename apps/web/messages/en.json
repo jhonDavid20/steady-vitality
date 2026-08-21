@@ -1,4 +1,34 @@
 {
+  "Auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to continue",
+    "loginCta": "Sign in",
+    "loginError": "Invalid email or password.",
+    "noAccount": "Don't have an account?",
+    "registerTitle": "Create your account",
+    "registerSubtitle": "Start building better habits",
+    "registerCta": "Sign up",
+    "registerError": "Could not create your account.",
+    "haveAccount": "Already have an account?",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "username": "Username",
+    "submitting": "Please wait…"
+  },
+  "AppNav": {
+    "logout": "Log out",
+    "role": {
+      "admin": "Admin",
+      "coach": "Coach",
+      "client": "Client"
+    }
+  },
+  "Today": {
+    "greeting": "Hi, {name}!",
+    "placeholder": "Your daily focus will live here — today's workout, meals and progress."
+  },
   "NavBarSection": {
     "Home": "Home",
     "Assessment": "Assessment",
