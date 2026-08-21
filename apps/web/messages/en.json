@@ -1,0 +1,171 @@
+{
+  "NavBarSection": {
+    "Home": "Home",
+    "Assessment": "Assessment",
+    "Services": "Services",
+    "Appointment": "Make your Appointment",
+    "About": "About"
+  },
+  "HeroSection": {
+    "title": "Transform Your Body & Life",
+    "content": "Get personalized fitness and nutrition coaching that fits your lifestyle. Science-based approach, sustainable results.",
+    "AssessmentButton": "Get Your Free Assessment",
+    "BookACallButton": "Book Discovery Call"
+  },
+  "AssessmentSection": {
+    "title": "Free Fitness Assessment",
+    "content": "Discover your unique fitness profile with our free assessment. Understand your body, set realistic goals, and start your journey to a healthier you.",
+    "BackToFormButton": "New Assessment",
+    "Name": "Name",
+    "NameRequired": "Name is required",
+    "Email": "Email",
+    "EmailRequired": "Email is required",
+    "Age": "Age",
+    "AgePlaceholder": "Select age range",
+    "Gender": "Gender",
+    "GenderPlaceholder": "Select gender",
+    "Male": "Male",
+    "Female": "Female",
+    "Other": "Other",
+    "Height": "Height (cm)",
+    "Weight": "Weight (kg)",
+    "ActivityLevel": "Activity Level",
+    "ActivityLevelPlaceholder": "Select activity level",
+    "Sedentary": "Sedentary",
+    "Light": "Light",
+    "Moderate": "Moderate",
+    "VeryActive": "Very Active",
+    "ExtremelyActive": "Extremely Active",
+    "Goal": "Primary Goal",
+    "GoalPlaceholder": "Select your goal",
+    "LoseWeight": "Lose Weight",
+    "BuildMuscle": "Build Muscle",
+    "ToneUp": "Tone Up",
+    "ImproveFitness": "Improve Fitness",
+    "MaintainWeight": "Maintain Weight",
+    "AthleticPerformance": "Athletic Performance",
+    "FitnessExperience": "Fitness Experience",
+    "ExperiencePlaceholder": "Tell us about your fitness background, any injuries, or specific concerns...",
+    "BMI": "BMI",
+    "InitialRecommendations": "Initial Recommendations:",
+    "GetMyCustomPlan": "Get My Custom Plan",
+    "Submitting": "Submitting...",
+    "SubmitError": "Something went wrong. Please try again."
+  },
+  "AboutSection": {
+    "title": "Your Transformation Partner",
+    "content": "With over a decade of experience in fitness and nutrition coaching, I've helped hundreds of clients achieve sustainable transformations. My approach combines scientific principles with practical, real-world application.",
+    "credentials": [
+      "Certified Personal Trainer (NASM-CPT)",
+      "Precision Nutrition Level 1 Certified",
+      "10+ years coaching experience",
+      "500+ successful client transformations"
+    ],
+    "cta": "Ready to start your transformation?",
+    "button": "Schedule Consultation",
+    "photoPlaceholder": " Photo "
+  },
+  "AssessmentSuccess": {
+    "title": "Thank You for Your Assessment!",
+    "content1": "Your custom fitness plan is being prepared. Want faster results and personalized guidance?",
+    "content2": "Book a free 15-minute strategy call to accelerate your transformation.",
+    "button": "Schedule Free Strategy Call"
+  },
+  "ServicesSection": {
+    "title": "Comprehensive Coaching Services",
+    "services": [
+      {
+        "title": "Personal Training",
+        "description": "Customized workout programs designed for your goals, fitness level, and schedule. Progressive training that adapts as you grow stronger."
+      },
+      {
+        "title": "Nutrition Coaching",
+        "description": "Evidence-based nutrition strategies that fit your lifestyle. Learn sustainable eating habits for long-term success."
+      },
+      {
+        "title": "Progress Tracking",
+        "description": "Comprehensive monitoring of your transformation journey. Data-driven adjustments to optimize your results."
+      }
+    ]
+  },
+  "CalSection": {
+    "title": "Ready to Start Your Transformation?",
+    "content": "Based on your assessment, let's create your personalized plan. Book a free 15-minute consultation to discuss your results and next steps."
+  },
+  "philosophy": {
+    "title": "Why Do Diets Fail?",
+    "subtitle": "Stop Starting Diets Every Monday",
+    "stats": [
+      { "number": "95%", "label": "of diets fail within a year" },
+      { "number": "0", "label": "extreme restrictions" },
+      { "number": "100%", "label": "education first" }
+    ],
+    "keyPoints": [
+      {
+        "title": "🔍 Education Before Restriction",
+        "text": "Instead of cutting out foods, I help you understand what your body truly needs. We identify what isn’t working in your current eating patterns."
+      },
+      {
+        "title": "🎯 Sustainable Habits",
+        "text": "We build habits that become part of who you are, not just what you do for 12 weeks. No more relying on willpower alone."
+      }
+    ],
+    "analogy": {
+      "icon": "🏎️",
+      "title": "Your Body is a Machine",
+      "text": "Just like you wouldn’t put cheap fuel in a Ferrari, why fuel your body with foods that don’t serve its needs?"
+    },
+    "cta": {
+      "title": "Ready to Break the Diet Cycle?",
+      "text": "Let’s build habits that truly last",
+      "button": "Discover My Full Philosophy"
+    }
+  },
+  "PhilosophyFullPage": {
+    "breadcrumb": "Home → My Nutrition Philosophy",
+    "heroTitle": "My Nutrition Philosophy",
+    "heroSubtitle": "Breaking the Diet Cycle for Good",
+    "problemTitle": "The Problem with Traditional Diets",
+    "problemHighlight1": "Most people approach nutrition backwards.",
+    "problemHighlight2": "This approach fails because it treats symptoms, not causes.",
+    "problemText": "After years of processed foods and unconscious eating, we've lost touch with how nutrition truly affects our bodies. We're so used to nutrient-poor foods that we don't even notice how they make us feel sluggish, tired, and unsatisfied.",
+    "approachTitle": "My Approach: Education Before Transformation",
+    "approachIntro": "Instead of starting with restriction, I believe in starting with awareness. My philosophy centers on three core principles:",
+    "principles": {
+      "1": {
+        "title": "Identify the Root Cause",
+        "text": "Before making any changes, we need to understand what's really wrong with your current diet. You can't fix what you don't understand."
+      },
+      "2": {
+        "title": "Treat Your Body Like a Machine",
+        "text": "Your body is an incredible machine that requires the right fuel to function optimally. Just like you wouldn't put cheap gas in a Ferrari, why fuel your body with foods that don't serve its needs?"
+      },
+      "3": {
+        "title": "Lifestyle Integration",
+        "text": "Sustainable nutrition isn't about following a diet for 12 weeks—it's about building eating habits that become part of who you are. It's a lifelong journey of learning and adaptation."
+      }
+    },
+    "educationSection": {
+      "title": "The Power of Nutrition Education",
+      "content": "Understanding the 'why' and 'how' of nutrition empowers you to make better choices. My role is to provide you with the knowledge and tools you need to take charge of your health."
+    },
+    "transformationStories": {
+      "title": "Real People, Real Transformations",
+      "testimonials": [
+        {
+          "name": "John Doe",
+          "statement": "I never understood how my diet was affecting my life until I started working with [Your Name]. The education I received was a game changer."
+        },
+        {
+          "name": "Jane Smith",
+          "statement": "This is not just another diet plan. It's a complete shift in mindset and habits. I've never felt better."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Are You Ready to Transform Your Relationship with Food?",
+      "text": "Let's embark on this journey together and break the diet cycle for good.",
+      "button": "Schedule Your Free Consultation"
+    }
+  }
+}

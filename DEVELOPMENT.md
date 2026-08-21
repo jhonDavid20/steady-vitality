@@ -1,56 +1,68 @@
 # Guía de Desarrollo — Steady Vitality
 
-> Guía práctica para seguir desarrollando la plataforma (frontend + backend).
+> Guía práctica para seguir desarrollando la plataforma (monorepo).
 > Para el estado/alcance del producto ver [`PROJECT_OVERVIEW.md`](./PROJECT_OVERVIEW.md).
-> Última actualización: 2026-07-03
+> Última actualización: 2026-08-21
 
 ---
 
-## 1. Arquitectura en dos repos
+## 1. Arquitectura del monorepo
+
+Un solo repositorio (pnpm workspace) con tres paquetes:
 
 ```
-┌─────────────────────────┐        HTTP (server-side)        ┌──────────────────────────┐
-│   coaching-landing       │  POST /api/assessment            │   steady-vitality (API)   │
-│   (Next.js · Vercel)     │ ───────────────────────────────▶ │   (Express · Render)      │
-│                          │   route → fetch API_URL/api/leads │                          │
-│  · Landing pública       │                                   │  · REST API + PostgreSQL │
-│  · Assessment + BMI      │ ◀─────────────────────────────── │  · Auth JWT / roles      │
-│  · Cal.com embed         │        201 { success }            │  · Leads, coaches, etc.  │
-└─────────────────────────┘                                   └──────────────────────────┘
+steady-vitality/
+├── apps/
+│   ├── api/          @steady/api    — Express · TypeORM · PostgreSQL  (:3001)
+│   └── web/          @steady/web    — Next.js · Tailwind · next-intl  (:3000)
+└── packages/
+    └── shared/       @steady/shared — Zod + tipos compartidos (contrato único)
 ```
 
-**Punto clave:** el navegador nunca llama directo al backend. El formulario hace
-`POST` a la ruta interna de Next `/api/assessment`, que corre **server-side** y
-reenvía al backend (`API_URL/api/leads`). Esto evita CORS y mantiene la URL del
-backend fuera del cliente. Si `API_URL` no está definida, la ruta degrada con
-gracia: registra el lead en logs y responde `success` (la landing sigue viva sin backend).
+Flujo del assessment (el navegador nunca llama directo al backend):
+
+```
+web (form) ──POST /api/assessment──▶ web route (server-side) ──POST API_URL/api/leads──▶ api
+                                     valida con @steady/shared        crea Lead (+ BMI)
+```
+
+**Puntos clave:**
+- El formulario postea a la ruta interna de Next `/api/assessment`, que corre
+  **server-side**, valida con el schema Zod de `@steady/shared` y reenvía al backend.
+  Evita CORS y mantiene la URL del backend fuera del cliente. Si `API_URL` no está
+  definida, degrada con gracia (loguea y responde `success`).
+- **`@steady/shared` es la fuente única de verdad.** El tipo del formulario
+  (`AssessmentFormValues`) y el schema de validación (`assessmentPayloadSchema`)
+  viven ahí y los consumen tanto `web` como `api`. Se acabó la triplicación de tipos.
 
 ---
 
 ## 2. Puesta en marcha local
 
-### Backend (`steady-vitality`)
 ```bash
-cd steady-vitality
+# En la raíz del repo
 pnpm install
-cp .env.example .env         # completar DB, JWT, SMTP
-# Levantar PostgreSQL (local o docker) y luego:
-pnpm run migration:run       # aplica migraciones (incluida CreateLeadsTable)
-pnpm run seed:admin          # crea el usuario admin
-pnpm run dev                 # http://localhost:3001 · Swagger en /api/docs
+pnpm build:shared            # compila @steady/shared (lo consumen api y web)
+
+# Entornos
+cp apps/api/.env.example apps/api/.env         # DB, JWT, SMTP…
+cp apps/web/.env.example apps/web/.env.local   # API_URL=http://localhost:3001, NEXT_PUBLIC_CAL_*
+
+# Base de datos (backend)
+pnpm --filter @steady/api migration:run        # aplica migraciones (incl. CreateLeadsTable)
+pnpm --filter @steady/api seed:admin           # crea el usuario admin
+
+# Levantar (dos terminales)
+pnpm dev:api                 # http://localhost:3001 · Swagger en /api/docs
+pnpm dev:web                 # http://localhost:3000
 ```
 
-### Frontend (`coaching-landing`)
-```bash
-cd coaching-landing
-pnpm install
-cp .env.example .env.local   # API_URL=http://localhost:3001, NEXT_PUBLIC_CAL_*
-pnpm run dev                 # http://localhost:3000
-```
+> Si editas los tipos de `@steady/shared`, recompílalo (`pnpm build:shared`) o
+> déjalo en watch (`pnpm --filter @steady/shared dev`) para que api y web vean los cambios.
 
 ### Flujo completo en local
-1. Backend corriendo en `:3001` con la migración de `leads` aplicada.
-2. Frontend en `:3000` con `API_URL=http://localhost:3001`.
+1. `@steady/shared` compilado; backend en `:3001` con migraciones aplicadas.
+2. Frontend en `:3000` con `API_URL=http://localhost:3001` en `apps/web/.env.local`.
 3. Completar el assessment en `/es` o `/en` → se crea un registro en la tabla `leads`.
 4. Ver los leads: `GET http://localhost:3001/api/leads` con un `Bearer` token de admin.
 

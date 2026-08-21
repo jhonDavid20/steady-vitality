@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
+import { assessmentPayloadSchema } from '@steady/shared';
 import { authenticate, requireAdmin, AuthenticatedRequest } from '../middleware/auth';
 import { LeadsService } from '../services/leads.service';
 import { LeadStatus } from '../database/entities/Lead';
@@ -20,23 +21,20 @@ const handleValidationErrors = (req: Request, res: Response): boolean => {
  * POST /api/leads
  * Public — capture an assessment submission from the landing page.
  */
-router.post('/', [
-  body('name').isString().trim().notEmpty().withMessage('name is required'),
-  body('email').isEmail().withMessage('a valid email is required'),
-  body('age').optional({ nullable: true }).isString(),
-  body('gender').optional({ nullable: true }).isString(),
-  body('height').optional({ nullable: true }),
-  body('weight').optional({ nullable: true }),
-  body('activityLevel').optional({ nullable: true }).isString(),
-  body('goal').optional({ nullable: true }).isString(),
-  body('experience').optional({ nullable: true }).isString(),
-  body('bmi').optional({ nullable: true }),
-  body('locale').optional({ nullable: true }).isString(),
-], async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
-    if (handleValidationErrors(req, res)) return;
+    // Validate with the shared Zod contract (same schema the web app uses).
+    const parsed = assessmentPayloadSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({
+        error: 'Validation failed',
+        message: 'Please check your input data',
+        details: parsed.error.flatten(),
+      });
+      return;
+    }
 
-    const result = await leadsService.createLead(req.body);
+    const result = await leadsService.createLead(parsed.data);
     res.status(result.success ? 201 : 500).json(result);
   } catch (error) {
     console.error('Create lead error:', error);
