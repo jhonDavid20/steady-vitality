@@ -29,6 +29,68 @@
     "greeting": "¡Hola, {name}!",
     "placeholder": "Aquí vivirá tu foco del día — entreno, comidas y progreso de hoy."
   },
+  "Onboarding": {
+    "title": "Configuremos tu perfil",
+    "subtitle": "Unos datos para que tu coach adapte tu plan.",
+    "coachTitle": "Configura tu perfil de coach",
+    "coachSubtitle": "Cuéntales a los clientes quién eres y cómo entrenas.",
+    "selectPlaceholder": "Selecciona…",
+    "goal": "Objetivo principal",
+    "activity": "Nivel de actividad",
+    "dateOfBirth": "Fecha de nacimiento",
+    "gender": "Género",
+    "height": "Altura (cm)",
+    "weight": "Peso (kg)",
+    "targetWeight": "Meta (kg)",
+    "injuries": "Lesiones o limitaciones",
+    "injuriesHint": "ej. rodilla, espalda baja (separadas por coma)",
+    "preferredWorkoutTime": "Horario preferido de entreno",
+    "headline": "Titular",
+    "headlineHint": "ej. Coach de fuerza y pérdida de grasa",
+    "bio": "Biografía",
+    "specialties": "Especialidades",
+    "specialtiesHint": "ej. hipertrofia, nutrición (separadas por coma)",
+    "coachingType": "Tipo de coaching",
+    "years": "Años de experiencia",
+    "rate": "Tarifa por sesión (USD)",
+    "acceptingClients": "Estoy aceptando nuevos clientes",
+    "cta": "Finalizar",
+    "saving": "Guardando…",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "goalOpt": {
+      "weight_loss": "Perder peso",
+      "muscle_gain": "Ganar músculo",
+      "maintenance": "Mantenimiento",
+      "strength": "Fuerza",
+      "endurance": "Resistencia",
+      "flexibility": "Flexibilidad",
+      "general_fitness": "Estado físico general"
+    },
+    "activityOpt": {
+      "sedentary": "Sedentario",
+      "lightly_active": "Ligeramente activo",
+      "moderately_active": "Moderadamente activo",
+      "very_active": "Muy activo",
+      "extremely_active": "Extremadamente activo"
+    },
+    "genderOpt": {
+      "male": "Masculino",
+      "female": "Femenino",
+      "other": "Otro",
+      "prefer_not_to_say": "Prefiero no decir"
+    },
+    "coachingTypeOpt": {
+      "online": "Online",
+      "in_person": "Presencial",
+      "hybrid": "Híbrido"
+    },
+    "workoutTimeOpt": {
+      "morning": "Mañana",
+      "afternoon": "Tarde",
+      "evening": "Noche",
+      "flexible": "Flexible"
+    }
+  },
   "NavBarSection": {
     "Home": "Inicio",
     "Assessment": "Evaluación",

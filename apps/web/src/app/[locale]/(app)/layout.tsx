@@ -13,6 +13,7 @@ export default async function AppLayout({
   const { locale } = await params;
   const user = await getServerUser();
   if (!user) redirect(`/${locale}/login`);
+  if (!user.hasCompletedOnboarding) redirect(`/${locale}/onboarding`);
 
   const t = await getTranslations("AppNav");
 
