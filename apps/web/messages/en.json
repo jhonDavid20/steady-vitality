@@ -29,6 +29,68 @@
     "greeting": "Hi, {name}!",
     "placeholder": "Your daily focus will live here — today's workout, meals and progress."
   },
+  "Onboarding": {
+    "title": "Let's set up your profile",
+    "subtitle": "A few details so your coach can tailor your plan.",
+    "coachTitle": "Set up your coach profile",
+    "coachSubtitle": "Tell clients who you are and how you coach.",
+    "selectPlaceholder": "Select…",
+    "goal": "Main goal",
+    "activity": "Activity level",
+    "dateOfBirth": "Date of birth",
+    "gender": "Gender",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "targetWeight": "Target (kg)",
+    "injuries": "Injuries or limitations",
+    "injuriesHint": "e.g. knee, lower back (comma separated)",
+    "preferredWorkoutTime": "Preferred workout time",
+    "headline": "Headline",
+    "headlineHint": "e.g. Strength & fat-loss coach",
+    "bio": "Bio",
+    "specialties": "Specialties",
+    "specialtiesHint": "e.g. hypertrophy, nutrition (comma separated)",
+    "coachingType": "Coaching type",
+    "years": "Years of experience",
+    "rate": "Session rate (USD)",
+    "acceptingClients": "I'm accepting new clients",
+    "cta": "Finish",
+    "saving": "Saving…",
+    "error": "Something went wrong. Please try again.",
+    "goalOpt": {
+      "weight_loss": "Weight loss",
+      "muscle_gain": "Muscle gain",
+      "maintenance": "Maintenance",
+      "strength": "Strength",
+      "endurance": "Endurance",
+      "flexibility": "Flexibility",
+      "general_fitness": "General fitness"
+    },
+    "activityOpt": {
+      "sedentary": "Sedentary",
+      "lightly_active": "Lightly active",
+      "moderately_active": "Moderately active",
+      "very_active": "Very active",
+      "extremely_active": "Extremely active"
+    },
+    "genderOpt": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "prefer_not_to_say": "Prefer not to say"
+    },
+    "coachingTypeOpt": {
+      "online": "Online",
+      "in_person": "In person",
+      "hybrid": "Hybrid"
+    },
+    "workoutTimeOpt": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "flexible": "Flexible"
+    }
+  },
   "NavBarSection": {
     "Home": "Home",
     "Assessment": "Assessment",
