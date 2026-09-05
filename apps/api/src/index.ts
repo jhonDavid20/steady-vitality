@@ -13,11 +13,15 @@ import { cleanupService } from './services/cleanup.service';
 // Configuration
 const PORT = config.port;
 const NODE_ENV = config.nodeEnv;
+let isShuttingDown = false;
 
 /**
  * Graceful shutdown handler
  */
 async function gracefulShutdown(signal: string): Promise<void> {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+
   console.log(`\n🔄 Received ${signal}. Starting graceful shutdown...`);
   
   try {
@@ -160,21 +164,6 @@ async function startServer(): Promise<void> {
     // Configure server timeout
     server.timeout = 30000; // 30 seconds
     
-    // Store server reference for graceful shutdown
-    process.on('SIGTERM', () => {
-      console.log('\n🔄 SIGTERM received, starting graceful shutdown...');
-      server.close(() => {
-        gracefulShutdown('SIGTERM');
-      });
-    });
-
-    process.on('SIGINT', () => {
-      console.log('\n🔄 SIGINT received, starting graceful shutdown...');
-      server.close(() => {
-        gracefulShutdown('SIGINT');
-      });
-    });
-
   } catch (error) {
     console.error('\n💥 Failed to start server:');
     console.error('Error:', error instanceof Error ? error.message : error);
