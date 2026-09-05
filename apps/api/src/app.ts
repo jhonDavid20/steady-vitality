@@ -208,7 +208,6 @@ app.get('/', (req: Request, res: Response) => {
  */
 // Route imports
 import authRoutes from './routes/auth.routes';
-import authjsRoutes from './routes/authjs.routes';
 import adminRoutes from './routes/admin.routes';
 import usersRoutes from './routes/users.routes';
 import coachesRoutes from './routes/coaches.routes';
@@ -223,9 +222,6 @@ import { specs } from './config/swagger';
 
 // Authentication routes with rate limiting
 app.use('/api/auth', authLimiter, authRoutes);
-
-// Auth.js compatible routes (no rate limiting for internal callbacks)
-app.use('/api/authjs', authjsRoutes);
 
 // Admin routes
 app.use('/api/admin', adminRoutes);

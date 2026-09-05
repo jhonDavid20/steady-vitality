@@ -112,8 +112,7 @@ export class Session {
   // Lifecycle hooks
   @BeforeInsert()
   generateTokens(): void {
-    // Only generate tokens if not provided (for custom auth)
-    // NextAuth will provide its own JWT tokens
+    // Only generate tokens if they were not provided by the JWT authentication flow.
     if (!this.token) {
       this.token = this.generateSecureToken();
     }

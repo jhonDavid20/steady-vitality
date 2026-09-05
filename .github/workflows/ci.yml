@@ -32,5 +32,8 @@ jobs:
       - name: Typecheck workspace
         run: pnpm typecheck
 
+      - name: Test API
+        run: pnpm --filter @steady/api test
+
       - name: Build workspace
         run: pnpm build

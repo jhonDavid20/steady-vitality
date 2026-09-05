@@ -108,7 +108,7 @@ src/
 - **Lenguaje:** TypeScript 5
 - **ORM:** TypeORM 0.3 (`synchronize: false`, migraciones versionadas)
 - **Base de datos:** PostgreSQL
-- **Auth:** JWT (access + refresh tokens) + `bcryptjs`; soporte para sesiones tipo Auth.js
+- **Auth:** JWT (access + refresh tokens) + `bcryptjs`.
 - **Validación:** `class-validator`, `express-validator`, `zod`
 - **Seguridad:** `helmet`, `cors`, `express-rate-limit`, `compression`
 - **Email:** Mailtrap (API HTTP) / Nodemailer
@@ -146,7 +146,7 @@ src/
 | **ClientCoachRelationship** | Relación coach‑cliente con estados (pending/active/ended…). |
 | **ConnectionRequest** | Solicitud de conexión entre cliente y coach. |
 | **Invite** | Invitaciones (tipo `coach` o `client`) con token, expiración y uso. |
-| **Session** | Sesiones de autenticación / tokens (compatibles con Auth.js). |
+| **Session** | Sesiones de autenticación y tokens JWT. |
 
 ### 3.4 API REST (endpoints principales)
 Todos bajo el prefijo `/api`. Endpoints protegidos requieren `Bearer` JWT.
@@ -154,9 +154,6 @@ Todos bajo el prefijo `/api`. Endpoints protegidos requieren `Bearer` JWT.
 **Auth (`/api/auth`)** — register, login, logout, logout-all, refresh, me (GET/PATCH),
 sessions, change/forgot/reset password, verify-email, registro de coach por invitación,
 registro de cliente, status.
-
-**Auth.js bridge (`/api/authjs`)** — CRUD de usuarios/sesiones para integración con
-Auth.js (NextAuth).
 
 **Users (`/api/users`)** — perfil propio, perfil fitness, onboarding, cambio de
 contraseña, avatar (subir/eliminar), borrado de cuenta.
@@ -189,7 +186,6 @@ estadísticas globales, limpieza de sesiones.
 - ✅ Paquetes de coaching: creación, asignación, seguimiento de sesiones.
 - ✅ Relaciones coach‑cliente y solicitudes de conexión.
 - ✅ Panel admin con estadísticas y gestión de usuarios.
-- ✅ Bridge Auth.js para integración con frontends NextAuth.
 - ✅ Subida de avatares (carpeta `uploads/`).
 - ✅ Servicio de limpieza de sesiones expiradas (cron).
 - ✅ Documentación Swagger interactiva.
@@ -197,8 +193,7 @@ estadísticas globales, limpieza de sesiones.
 - ✅ Despliegue en Render con migraciones y PostgreSQL gestionado.
 
 ### 3.6 Pendiente / por mejorar (backend)
-- ⚠️ No hay aún una **app de cliente/coach** (dashboard) que consuma esta API; el
-  bridge Auth.js sugiere que está prevista.
+- ⚠️ No hay aún una **app de cliente/coach** (dashboard) que consuma esta API.
 - ⚠️ La landing pública todavía **no está conectada** a la API.
 - ⚠️ Email en modo **sandbox (Mailtrap)** — falta proveedor de producción.
 - ⚠️ Cobertura de **tests** configurada (Jest) pero conviene ampliarla.
