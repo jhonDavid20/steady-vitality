@@ -3,6 +3,7 @@ import { body, param, query, validationResult } from 'express-validator';
 import { authenticate, requireCoach, requireClient, AuthenticatedRequest } from '../middleware/auth';
 import { CoachesService } from '../services/coaches.service';
 import { CoachingType } from '../database/entities/CoachProfile';
+import { matchingInputSchema } from '@steady/shared';
 
 const router = Router();
 const coachesService = new CoachesService();
@@ -65,6 +66,9 @@ router.get('/', [
   query('coachingType').optional().isIn(Object.values(CoachingType)).withMessage(`coachingType must be one of: ${Object.values(CoachingType).join(', ')}`),
   query('trialOnly').optional().isBoolean().withMessage('trialOnly must be true or false'),
   query('search').optional().isString().trim().isLength({ max: 100 }),
+  query('specialty').optional().isString().trim().isLength({ max: 100 }),
+  query('minPrice').optional().isFloat({ min: 0 }),
+  query('maxPrice').optional().isFloat({ min: 0 }),
 ], async (req: Request, res: Response) => {
   try {
     if (handleValidationErrors(req, res)) return;
@@ -75,6 +79,9 @@ router.get('/', [
       coachingType: req.query.coachingType as CoachingType | undefined,
       trialOnly:    req.query.trialOnly === 'true',
       search:       req.query.search as string | undefined,
+      specialty:    req.query.specialty as string | undefined,
+      minPrice:      req.query.minPrice ? Number(req.query.minPrice) : undefined,
+      maxPrice:      req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
     };
 
     const result = await coachesService.listCoaches(page, limit, filters);
@@ -83,6 +90,12 @@ router.get('/', [
     console.error('List coaches error:', error);
     res.status(500).json({ error: 'Failed to list coaches', message: 'Internal server error' });
   }
+});
+
+router.post('/match', authenticate, requireClient, async (req: AuthenticatedRequest, res: Response) => {
+  const parsed = matchingInputSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ success: false, details: parsed.error.flatten() });
+  res.json(await coachesService.saveMatchingAndSuggest(req.user!.id, parsed.data));
 });
 
 // ─── Authenticated: coach-specific – MUST come before /:id ───────────────────

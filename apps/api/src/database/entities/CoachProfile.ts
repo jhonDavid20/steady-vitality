@@ -165,6 +165,9 @@ export class CoachProfile {
   @Min(0)
   totalClientsTrained: number;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  stripeAccountId?: string | null;
+
   // ── Timestamps ────────────────────────────────────────────────────────────
 
   @CreateDateColumn({ type: 'timestamptz' })

@@ -4,6 +4,7 @@ export * from "./auth";
 export * from "./onboarding";
 export * from "./workouts";
 export * from "./daily";
+export * from "./commerce";
 
 /**
  * @steady/shared — single source of truth for cross-app contracts.

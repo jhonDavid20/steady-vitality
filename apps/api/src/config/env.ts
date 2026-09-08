@@ -76,6 +76,15 @@ export const config = {
     secretAccessKey: process.env.OBJECT_STORAGE_SECRET_ACCESS_KEY,
     publicBaseUrl: process.env.OBJECT_STORAGE_PUBLIC_BASE_URL,
   },
+  payments: {
+    provider: process.env.PAYMENT_PROVIDER || 'sandbox',
+    currency: (process.env.PAYMENT_CURRENCY || 'usd').toLowerCase(),
+    platformFeeBps: parseInt(process.env.PLATFORM_FEE_BPS || '1500'),
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    sandboxWebhookSecret: process.env.PAYMENT_SANDBOX_WEBHOOK_SECRET || 'local-sandbox-secret',
+    appUrl: process.env.WEB_APP_URL || 'http://localhost:3005',
+  },
 };
 
 // Export a helper to check if env is loaded

@@ -43,3 +43,19 @@ _Avoid_: Missed day, incomplete day
 **Humane streak**:
 A count of successful scheduled days that preserves momentum across rest days and one isolated missed day, but resets after two consecutive missed scheduled days.
 _Avoid_: Login streak, perfect streak
+
+**Offer**:
+A reusable package published by a coach. Editing it affects future purchases only.
+_Avoid_: Contract, active package
+
+**Purchase**:
+A client's immutable snapshot of an offer and its commercial terms. It begins pending and becomes active only after a confirmed payment event.
+_Avoid_: Offer, subscription
+
+**Payment attempt**:
+One auditable checkout attempt for a purchase, including provider references, amount, currency, platform fee, and settlement status.
+_Avoid_: Purchase, receipt
+
+**Coaching cycle**:
+The time-boxed delivery period created by an activated purchase. Renewal creates another cycle and preserves the previous one.
+_Avoid_: Subscription, relationship
