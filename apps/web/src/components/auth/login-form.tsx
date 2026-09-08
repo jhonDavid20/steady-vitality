@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@steady/shared";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,6 +64,7 @@ export function LoginForm() {
         <Input id="password" type="password" autoComplete="current-password" {...register("password")} />
         {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
       </div>
+      <div className="text-right"><Link href={`/${locale}/forgot-password`} className="text-sm underline underline-offset-4">{t("forgotPassword")}</Link></div>
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? t("submitting") : t("loginCta")}
       </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -34,7 +34,18 @@ export function ClientOnboardingForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit, setValue, watch } = useForm<FormValues>();
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("sv:onboarding:client");
+    if (saved) {
+      try {
+        for (const [field, value] of Object.entries(JSON.parse(saved))) setValue(field as keyof FormValues, value as never);
+      } catch { window.localStorage.removeItem("sv:onboarding:client"); }
+    }
+    const subscription = watch((values) => window.localStorage.setItem("sv:onboarding:client", JSON.stringify(values)));
+    return () => subscription.unsubscribe();
+  }, [setValue, watch]);
 
   const onSubmit = async (v: FormValues) => {
     setLoading(true);
@@ -63,6 +74,7 @@ export function ClientOnboardingForm() {
         setError(data.message ?? t("error"));
         return;
       }
+      window.localStorage.removeItem("sv:onboarding:client");
       router.replace(`/${locale}/today`);
       router.refresh();
     } catch {

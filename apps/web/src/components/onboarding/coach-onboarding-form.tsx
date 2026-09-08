@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -29,9 +29,20 @@ export function CoachOnboardingForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit } = useForm<FormValues>({
+  const { register, handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: { acceptingClients: true },
   });
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("sv:onboarding:coach");
+    if (saved) {
+      try {
+        for (const [field, value] of Object.entries(JSON.parse(saved))) setValue(field as keyof FormValues, value as never);
+      } catch { window.localStorage.removeItem("sv:onboarding:coach"); }
+    }
+    const subscription = watch((values) => window.localStorage.setItem("sv:onboarding:coach", JSON.stringify(values)));
+    return () => subscription.unsubscribe();
+  }, [setValue, watch]);
 
   const onSubmit = async (v: FormValues) => {
     setLoading(true);
@@ -58,6 +69,7 @@ export function CoachOnboardingForm() {
         setError(data.message ?? t("error"));
         return;
       }
+      window.localStorage.removeItem("sv:onboarding:coach");
       router.replace(`/${locale}/today`);
       router.refresh();
     } catch {

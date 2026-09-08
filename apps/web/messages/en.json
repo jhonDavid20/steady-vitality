@@ -15,7 +15,8 @@
     "firstName": "First name",
     "lastName": "Last name",
     "username": "Username",
-    "submitting": "Please wait…"
+    "submitting": "Please wait…",
+    "forgotPassword": "Forgot password?"
   },
   "AppNav": {
     "logout": "Log out",
@@ -188,9 +189,18 @@
     "title": "Why Do Diets Fail?",
     "subtitle": "Stop Starting Diets Every Monday",
     "stats": [
-      { "number": "95%", "label": "of diets fail within a year" },
-      { "number": "0", "label": "extreme restrictions" },
-      { "number": "100%", "label": "education first" }
+      {
+        "number": "95%",
+        "label": "of diets fail within a year"
+      },
+      {
+        "number": "0",
+        "label": "extreme restrictions"
+      },
+      {
+        "number": "100%",
+        "label": "education first"
+      }
     ],
     "keyPoints": [
       {
@@ -259,5 +269,36 @@
       "text": "Let's embark on this journey together and break the diet cycle for good.",
       "button": "Schedule Your Free Consultation"
     }
+  },
+  "Access": {
+    "forgotTitle": "Reset your password",
+    "forgotSubtitle": "Enter your email and we will send a reset link if an account exists.",
+    "email": "Email",
+    "sending": "Sending…",
+    "sendReset": "Send reset link",
+    "requestError": "We could not process your request.",
+    "resetTitle": "Choose a new password",
+    "resetSubtitle": "Use a strong password you do not reuse elsewhere.",
+    "newPassword": "New password",
+    "saving": "Saving…",
+    "savePassword": "Save new password",
+    "resetError": "We could not reset your password.",
+    "verifyTitle": "Confirm your email",
+    "verifySubtitle": "Confirm your email address to finish setting up your account.",
+    "verify": "Confirm email",
+    "verifying": "Confirming…",
+    "verifyError": "We could not confirm your email.",
+    "invalidLink": "This link is missing or invalid."
+  },
+  "Navigation": {
+    "today": "Today",
+    "plan": "Plan",
+    "coach": "Coach",
+    "profile": "Profile",
+    "overview": "Overview",
+    "clients": "Clients",
+    "packages": "Packages",
+    "messages": "Messages",
+    "operations": "Operations"
   }
 }

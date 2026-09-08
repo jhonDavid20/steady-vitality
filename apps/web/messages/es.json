@@ -1,4 +1,4 @@
-{   
+{
   "Auth": {
     "loginTitle": "Bienvenido de nuevo",
     "loginSubtitle": "Inicia sesión para continuar",
@@ -15,7 +15,8 @@
     "firstName": "Nombre",
     "lastName": "Apellido",
     "username": "Usuario",
-    "submitting": "Espera…"
+    "submitting": "Espera…",
+    "forgotPassword": "¿Olvidaste tu contraseña?"
   },
   "AppNav": {
     "logout": "Cerrar sesión",
@@ -188,18 +189,27 @@
     "title": "¿Por qué fallan las dietas?",
     "subtitle": "Deja de empezar dietas cada lunes",
     "stats": [
-      { "number": "95%", "label": "de las dietas fallan en un año" },
-      { "number": "0", "label": "restricciones extremas" },
-      { "number": "100%", "label": "educación primero" }
+      {
+        "number": "95%",
+        "label": "de las dietas fallan en un año"
+      },
+      {
+        "number": "0",
+        "label": "restricciones extremas"
+      },
+      {
+        "number": "100%",
+        "label": "educación primero"
+      }
     ],
     "keyPoints": [
       {
-      "title": "🔍 Educación antes que restricción",
-      "text": "En lugar de eliminar alimentos, te ayudo a entender lo que tu cuerpo realmente necesita. Identificamos qué no está funcionando en tus hábitos actuales."
+        "title": "🔍 Educación antes que restricción",
+        "text": "En lugar de eliminar alimentos, te ayudo a entender lo que tu cuerpo realmente necesita. Identificamos qué no está funcionando en tus hábitos actuales."
       },
       {
-      "title": "🎯 Hábitos sostenibles",
-      "text": "Construimos hábitos que se vuelven parte de quién eres, no solo lo que haces por 12 semanas. No más depender solo de la fuerza de voluntad."
+        "title": "🎯 Hábitos sostenibles",
+        "text": "Construimos hábitos que se vuelven parte de quién eres, no solo lo que haces por 12 semanas. No más depender solo de la fuerza de voluntad."
       }
     ],
     "analogy": {
@@ -259,5 +269,36 @@
       "text": "Emprendamos este viaje juntos y rompamos el ciclo de las dietas para siempre.",
       "button": "Agenda tu consulta gratuita"
     }
+  },
+  "Access": {
+    "forgotTitle": "Restablece tu contraseña",
+    "forgotSubtitle": "Escribe tu correo y enviaremos un enlace si existe una cuenta.",
+    "email": "Correo electrónico",
+    "sending": "Enviando…",
+    "sendReset": "Enviar enlace",
+    "requestError": "No se pudo procesar la solicitud.",
+    "resetTitle": "Elige una contraseña nueva",
+    "resetSubtitle": "Usa una contraseña segura que no reutilices en otro lugar.",
+    "newPassword": "Nueva contraseña",
+    "saving": "Guardando…",
+    "savePassword": "Guardar contraseña",
+    "resetError": "No se pudo restablecer la contraseña.",
+    "verifyTitle": "Confirma tu correo",
+    "verifySubtitle": "Confirma tu correo electrónico para terminar de configurar tu cuenta.",
+    "verify": "Confirmar correo",
+    "verifying": "Confirmando…",
+    "verifyError": "No se pudo confirmar el correo.",
+    "invalidLink": "Este enlace no existe o no es válido."
+  },
+  "Navigation": {
+    "today": "Hoy",
+    "plan": "Plan",
+    "coach": "Coach",
+    "profile": "Perfil",
+    "overview": "Resumen",
+    "clients": "Clientes",
+    "packages": "Paquetes",
+    "messages": "Mensajes",
+    "operations": "Operación"
   }
 }
