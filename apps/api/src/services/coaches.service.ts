@@ -121,20 +121,18 @@ export class CoachesService {
 
       const [coaches, total] = await qb.getManyAndCount();
 
-      // Batch-fetch real client counts for all coaches in one query (no N+1).
-      // users.coachId is the User.id of the coach (not CoachProfile.id).
+      // Batch-fetch active relationship counts for all coaches in one query (no N+1).
       const coachUserIds = coaches.map((c) => c.userId);
       const clientCountMap = new Map<string, number>();
 
       if (coachUserIds.length > 0) {
-        const countRows = await this.userRepository
-          .createQueryBuilder('u')
-          .select('u.coachId', 'coachId')
-          .addSelect('COUNT(u.id)::int', 'count')
-          .where('u.coachId IN (:...ids)', { ids: coachUserIds })
-          .andWhere('u.isActive = true')
-          .andWhere('u.role = :role', { role: UserRole.CLIENT })
-          .groupBy('u.coachId')
+        const countRows = await this.relationshipRepository
+          .createQueryBuilder('relationship')
+          .select('relationship.coachId', 'coachId')
+          .addSelect('COUNT(relationship.id)::int', 'count')
+          .where('relationship.coachId IN (:...ids)', { ids: coachUserIds })
+          .andWhere('relationship.status = :status', { status: RelationshipStatus.ACTIVE })
+          .groupBy('relationship.coachId')
           .getRawMany<{ coachId: string; count: string }>();
 
         // PostgreSQL COUNT returns a string — parse to int
@@ -314,8 +312,8 @@ export class CoachesService {
         this.relationshipRepository.count({
           where: { coachId: coachUserId, status: RelationshipStatus.ACTIVE },
         }),
-        this.relationshipRepository.count({
-          where: { coachId: coachUserId, status: RelationshipStatus.PENDING },
+        this.connectionRequestRepository.count({
+          where: { coachId: coachUserId, status: ConnectionRequestStatus.PENDING },
         }),
         this.clientPackageRepository.count({
           where: { coachId: coachUserId, status: ClientPackageStatus.ACTIVE },
@@ -334,12 +332,11 @@ export class CoachesService {
   /** Client sends a connection request to a coach. */
   async sendConnectionRequest(clientId: string, coachId: string) {
     try {
-      // Guard: one coach per client — reject if the client is already linked to any coach
-      const client = await this.userRepository.findOne({
-        where: { id: clientId },
-        select: { id: true, coachId: true },
+      // A current relationship, not the lookup pointer, decides whether a client has a coach.
+      const activeRelationship = await this.relationshipRepository.findOne({
+        where: { clientId, status: RelationshipStatus.ACTIVE },
       });
-      if (client?.coachId) {
+      if (activeRelationship) {
         return {
           success: false,
           errorCode: 'ALREADY_HAS_COACH',
@@ -433,6 +430,7 @@ export class CoachesService {
     try {
       const request = await queryRunner.manager.findOne(ConnectionRequest, {
         where: { id: requestId, coachId },
+        lock: { mode: 'pessimistic_write' },
       });
 
       if (!request) {
@@ -445,10 +443,47 @@ export class CoachesService {
       }
 
       if (action === 'accept') {
+        const client = await queryRunner.manager.findOne(User, {
+          where: { id: request.clientId, isActive: true, role: UserRole.CLIENT },
+          lock: { mode: 'pessimistic_write' },
+        });
+        if (!client) {
+          await queryRunner.rollbackTransaction();
+          return { success: false, message: 'Client not found' };
+        }
+
+        const activeRelationship = await queryRunner.manager.findOne(ClientCoachRelationship, {
+          where: { clientId: request.clientId, status: RelationshipStatus.ACTIVE },
+          lock: { mode: 'pessimistic_write' },
+        });
+        if (activeRelationship || client.coachId) {
+          await queryRunner.rollbackTransaction();
+          return { success: false, message: 'This client is already connected to a coach' };
+        }
+
         request.status = ConnectionRequestStatus.ACCEPTED;
         await queryRunner.manager.save(ConnectionRequest, request);
-        // Link the client directly to this coach
+
+        const relationship = queryRunner.manager.create(ClientCoachRelationship, {
+          clientId: request.clientId,
+          coachId,
+          status: RelationshipStatus.ACTIVE,
+          startedAt: new Date(),
+        });
+        await queryRunner.manager.save(ClientCoachRelationship, relationship);
+
+        // Maintain the current-coach lookup projection in the same transaction.
         await queryRunner.manager.update(User, { id: request.clientId }, { coachId });
+
+        await queryRunner.manager
+          .createQueryBuilder()
+          .update(ConnectionRequest)
+          .set({ status: ConnectionRequestStatus.DECLINED })
+          .where('"clientId" = :clientId', { clientId: request.clientId })
+          .andWhere('"coachId" != :coachId', { coachId })
+          .andWhere('status = :status', { status: ConnectionRequestStatus.PENDING })
+          .execute();
+
         await queryRunner.commitTransaction();
         return { success: true, message: 'Request accepted' };
       } else {
@@ -466,19 +501,23 @@ export class CoachesService {
     }
   }
 
-  /** Coach gets a flat list of all clients assigned to them (via coachId on User). */
+  /** Coach gets a flat list of clients with an active coaching relationship. */
   async getLinkedClients(coachUserId: string, page = 1, limit = 20) {
     try {
       const skip = (page - 1) * limit;
-      const [clients, total] = await this.userRepository.findAndCount({
-        where: { coachId: coachUserId, isActive: true, role: UserRole.CLIENT },
+      const [relationships, total] = await this.relationshipRepository.findAndCount({
+        where: { coachId: coachUserId, status: RelationshipStatus.ACTIVE },
+        relations: ['client'],
         skip,
         take: limit,
-        order: { createdAt: 'DESC' },
+        order: { startedAt: 'DESC' },
       });
 
       const data = await Promise.all(
-        clients.map(async (client) => {
+        relationships
+          .filter((relationship) => relationship.client.isActive && relationship.client.role === UserRole.CLIENT)
+          .map(async (relationship) => {
+          const client = relationship.client;
           const profile = await this.profileRepository.findOne({
             where: { userId: client.id },
           });
@@ -516,11 +555,13 @@ export class CoachesService {
   /** Coach fetches a single client's full profile. Client must be linked to this coach. */
   async getLinkedClient(coachUserId: string, clientId: string) {
     try {
-      const client = await this.userRepository.findOne({
-        where: { id: clientId, coachId: coachUserId, isActive: true, role: UserRole.CLIENT },
+      const relationship = await this.relationshipRepository.findOne({
+        where: { clientId, coachId: coachUserId, status: RelationshipStatus.ACTIVE },
+        relations: ['client'],
       });
+      const client = relationship?.client;
 
-      if (!client) {
+      if (!client || !client.isActive || client.role !== UserRole.CLIENT) {
         return { success: false, message: 'Client not found or not linked to your account' };
       }
 
@@ -569,8 +610,8 @@ export class CoachesService {
   async getCoachStats(coachUserId: string) {
     try {
       const [activeClients, pendingRequests] = await Promise.all([
-        this.userRepository.count({
-          where: { coachId: coachUserId, isActive: true, role: UserRole.CLIENT },
+        this.relationshipRepository.count({
+          where: { coachId: coachUserId, status: RelationshipStatus.ACTIVE },
         }),
         this.connectionRequestRepository.count({
           where: { coachId: coachUserId, status: ConnectionRequestStatus.PENDING },

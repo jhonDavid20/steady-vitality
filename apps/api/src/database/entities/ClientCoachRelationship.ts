@@ -18,6 +18,10 @@ export enum RelationshipStatus {
 }
 
 @Entity('client_coach_relationships')
+@Index('UQ_client_coach_relationships_active_client', ['clientId'], {
+  unique: true,
+  where: `"status" = 'active'`,
+})
 @Index(['clientId'])
 @Index(['coachId'])
 @Index(['status'])

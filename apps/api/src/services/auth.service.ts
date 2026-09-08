@@ -3,6 +3,7 @@ import { AppDataSource } from '../database/data-source';
 import { User, UserRole } from '../database/entities/User';
 import { Session } from '../database/entities/Session';
 import { Invite, InviteType } from '../database/entities/Invite';
+import { ClientCoachRelationship, RelationshipStatus } from '../database/entities/ClientCoachRelationship';
 import { PasswordService } from '../utils/password';
 import { JWTService } from '../utils/jwt';
 import {
@@ -258,7 +259,7 @@ export class AuthService {
           username = `${base}${Math.floor(100 + Math.random() * 900)}`; // e.g. jane.smith421
         }
 
-        // 4. Create client user — link to the coach who sent the invite
+        // 4. Create client user and its authoritative relationship to the inviting coach.
         const user = manager.create(User, {
           email: invite.email,
           username,
@@ -272,6 +273,16 @@ export class AuthService {
         });
 
         const saved = await manager.save(User, user);
+
+        if (invite.coachId) {
+          const relationship = manager.create(ClientCoachRelationship, {
+            clientId: saved.id,
+            coachId: invite.coachId,
+            status: RelationshipStatus.ACTIVE,
+            startedAt: new Date(),
+          });
+          await manager.save(ClientCoachRelationship, relationship);
+        }
 
         // 5. Mark invite as used
         invite.used = true;

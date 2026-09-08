@@ -1089,7 +1089,7 @@ On success, read \`user.hasCompletedOnboarding\` from the response and update yo
     '/api/coaches/me/clients': {
       get: {
         tags: ['Coaches'],
-        summary: 'List clients linked to this coach (via users.coachId)',
+        summary: 'List clients linked through active coaching relationships',
         parameters: [
           { name: 'page',  in: 'query', schema: { type: 'integer', default: 1 } },
           { name: 'limit', in: 'query', schema: { type: 'integer', default: 20, maximum: 100 } },
@@ -1121,7 +1121,7 @@ On success, read \`user.hasCompletedOnboarding\` from the response and update yo
       get: {
         tags: ['Coaches'],
         summary: 'Get a single linked client\'s full profile',
-        description: 'The client must have `users.coachId = authenticated coach user ID`.',
+        description: 'The client must have an active coaching relationship with the authenticated coach.',
         parameters: [
           { name: 'clientId', in: 'path', required: true, description: 'Client user UUID', schema: { type: 'string', format: 'uuid', example: UUID2 } },
         ],
@@ -1187,7 +1187,7 @@ On success, read \`user.hasCompletedOnboarding\` from the response and update yo
       post: {
         tags: ['Coaches'],
         summary: 'Client sends a connection request to a coach',
-        description: 'Creates a `pending` `ConnectionRequest`. A client can only have one coach — if `users.coachId` is already set, the request is rejected with 409.',
+        description: 'Creates a `pending` `ConnectionRequest`. A client with an active coaching relationship cannot request another coach.',
         requestBody: {
           required: true,
           content: {
@@ -1243,7 +1243,7 @@ On success, read \`user.hasCompletedOnboarding\` from the response and update yo
       patch: {
         tags: ['Coaches'],
         summary: 'Coach accepts or declines a connection request',
-        description: 'Accepting sets `users.coachId` on the client and removes the `ConnectionRequest` row. Declining removes the row.',
+        description: 'Accepting creates the client’s active coaching relationship and synchronizes its current-coach pointer. Other pending requests from that client are declined.',
         parameters: [
           { name: 'requestId', in: 'path', required: true, schema: { type: 'string', format: 'uuid', example: UUID2 } },
         ],
@@ -1404,7 +1404,7 @@ On success, read \`user.hasCompletedOnboarding\` from the response and update yo
       post: {
         tags: ['Invites'],
         summary: 'Accept a client invite and create an account (public)',
-        description: 'Client submits the registration form from the invite link. The `token` from the invite URL must be included. On success the account is linked to the inviting coach (`users.coachId`).',
+        description: 'Client submits the registration form from the invite link. The `token` from the invite URL must be included. On success the account receives an active coaching relationship with the inviting coach.',
         security: [],
         requestBody: {
           required: true,
@@ -1638,7 +1638,7 @@ On success, read \`user.hasCompletedOnboarding\` from the response and update yo
       post: {
         tags: ['Packages'],
         summary: 'Client requests a package from their coach',
-        description: 'Creates a `ClientPackage` with `status = pending`. The client must already be linked to the package\'s coach via `users.coachId`. The coach then activates it via `PATCH /api/packages/client/:id/status`.',
+        description: 'Creates a `ClientPackage` with `status = pending`. The client must have an active coaching relationship with the package’s coach. The coach then activates it via `PATCH /api/packages/client/:id/status`.',
         parameters: [
           { name: 'packageId', in: 'path', required: true, schema: { type: 'string', format: 'uuid', example: UUID2 } },
         ],
