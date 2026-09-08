@@ -3,7 +3,7 @@ import type { AuthUser } from "@steady/shared";
 
 const links: Record<AuthUser["role"], Array<{ href: string; label: string }>> = {
   client: [
-    { href: "/today", label: "Today" }, { href: "/plan", label: "Plan" }, { href: "/coach", label: "Coach" }, { href: "/profile", label: "Profile" },
+    { href: "/today", label: "Today" }, { href: "/plan", label: "Plan" }, { href: "/coach", label: "Coach" }, { href: "/messages", label: "Messages" }, { href: "/profile", label: "Profile" },
   ],
   coach: [
     { href: "/today", label: "Overview" }, { href: "/clients", label: "Clients" }, { href: "/plans", label: "Plan" }, { href: "/packages", label: "Packages" }, { href: "/messages", label: "Messages" }, { href: "/profile", label: "Profile" },

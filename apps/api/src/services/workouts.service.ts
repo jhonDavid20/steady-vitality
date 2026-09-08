@@ -16,6 +16,12 @@ function weekday(localDate: string): number {
   return new Date(`${localDate}T12:00:00Z`).getUTCDay();
 }
 
+function previousDate(localDate: string): string {
+  const date = new Date(`${localDate}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() - 1);
+  return date.toISOString().slice(0, 10);
+}
+
 export class WorkoutsService {
   private exercises = AppDataSource.getRepository(Exercise);
   private plans = AppDataSource.getRepository(WorkoutPlan);
@@ -89,7 +95,7 @@ export class WorkoutsService {
     });
 
     return AppDataSource.transaction(async (manager) => {
-      await manager.update(WorkoutAssignment, { clientId: input.clientId, isActive: true }, { isActive: false });
+      await manager.update(WorkoutAssignment, { clientId: input.clientId, isActive: true }, { isActive: false, endsOn: previousDate(input.startsOn) });
       return manager.save(WorkoutAssignment, manager.create(WorkoutAssignment, {
         ...input, coachId, planName: plan.name, actions, endsOn: input.endsOn ?? null, isActive: true,
       }));

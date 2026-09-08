@@ -19,6 +19,11 @@ import { Exercise } from './entities/Exercise';
 import { WorkoutPlan } from './entities/WorkoutPlan';
 import { WorkoutAssignment } from './entities/WorkoutAssignment';
 import { WorkoutCompletion } from './entities/WorkoutCompletion';
+import { NutritionPlan } from './entities/NutritionPlan';
+import { NutritionAssignment } from './entities/NutritionAssignment';
+import { MealCompletion } from './entities/MealCompletion';
+import { WaterLog } from './entities/WaterLog';
+import { CoachingMessage } from './entities/CoachingMessage';
 
 const isProduction = config.nodeEnv === 'production';
 
@@ -71,6 +76,11 @@ export const AppDataSource = new DataSource({
     WorkoutPlan,
     WorkoutAssignment,
     WorkoutCompletion,
+    NutritionPlan,
+    NutritionAssignment,
+    MealCompletion,
+    WaterLog,
+    CoachingMessage,
   ],
 
   // In production run compiled JS migrations; in dev run TS source directly

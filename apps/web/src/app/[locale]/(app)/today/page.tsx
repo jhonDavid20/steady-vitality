@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { getServerUser } from "@/lib/auth";
-import { WorkoutToday } from "@/components/workouts/workout-today";
+import { DailyToday } from "@/components/daily/daily-today";
 
 export default async function TodayPage() {
   const user = await getServerUser();
@@ -12,7 +12,7 @@ export default async function TodayPage() {
         {t("greeting", { name: user?.firstName ?? "" })}
       </h1>
       <p className="text-muted-foreground">{t("placeholder")}</p>
-      {user?.role === "client" && <WorkoutToday />}
+      {user?.role === "client" && <DailyToday />}
     </section>
   );
 }

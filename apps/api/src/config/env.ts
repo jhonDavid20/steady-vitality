@@ -67,7 +67,15 @@ export const config = {
   },
   bcrypt: {
     rounds: parseInt(process.env.BCRYPT_ROUNDS || '12'),
-  }
+  },
+  objectStorage: {
+    endpoint: process.env.OBJECT_STORAGE_ENDPOINT,
+    region: process.env.OBJECT_STORAGE_REGION || 'auto',
+    bucket: process.env.OBJECT_STORAGE_BUCKET,
+    accessKeyId: process.env.OBJECT_STORAGE_ACCESS_KEY_ID,
+    secretAccessKey: process.env.OBJECT_STORAGE_SECRET_ACCESS_KEY,
+    publicBaseUrl: process.env.OBJECT_STORAGE_PUBLIC_BASE_URL,
+  },
 };
 
 // Export a helper to check if env is loaded
