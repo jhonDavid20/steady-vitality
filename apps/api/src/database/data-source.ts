@@ -15,6 +15,10 @@ import { ClientPackage } from './entities/ClientPackage';
 import { Invite } from './entities/Invite';
 import { ConnectionRequest } from './entities/ConnectionRequest';
 import { Lead } from './entities/Lead';
+import { Exercise } from './entities/Exercise';
+import { WorkoutPlan } from './entities/WorkoutPlan';
+import { WorkoutAssignment } from './entities/WorkoutAssignment';
+import { WorkoutCompletion } from './entities/WorkoutCompletion';
 
 const isProduction = config.nodeEnv === 'production';
 
@@ -63,6 +67,10 @@ export const AppDataSource = new DataSource({
     Invite,
     ConnectionRequest,
     Lead,
+    Exercise,
+    WorkoutPlan,
+    WorkoutAssignment,
+    WorkoutCompletion,
   ],
 
   // In production run compiled JS migrations; in dev run TS source directly

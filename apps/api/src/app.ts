@@ -215,6 +215,7 @@ import relationshipsRoutes from './routes/relationships.routes';
 import packagesRoutes from './routes/packages.routes';
 import invitesRoutes from './routes/invites.routes';
 import leadsRoutes from './routes/leads.routes';
+import workoutsRoutes from './routes/workouts.routes';
 
 // Swagger imports
 import swaggerUi from 'swagger-ui-express';
@@ -235,6 +236,7 @@ app.use('/api/relationships', relationshipsRoutes);
 app.use('/api/packages', packagesRoutes);
 app.use('/api/invites', invitesRoutes);
 app.use('/api/leads', leadsRoutes);
+app.use('/api/workouts', workoutsRoutes);
 
 // Swagger Documentation
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, {
@@ -255,6 +257,7 @@ app.get('/api', (req: Request, res: Response) => {
       relationships: '/api/relationships',
       packages: '/api/packages',
       leads: '/api/leads',
+      workouts: '/api/workouts',
       admin: '/api/admin',
       health: '/health'
     },
