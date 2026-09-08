@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export * from "./auth";
 export * from "./onboarding";
+export * from "./workouts";
 
 /**
  * @steady/shared — single source of truth for cross-app contracts.

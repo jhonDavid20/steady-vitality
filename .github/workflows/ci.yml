@@ -14,6 +14,25 @@ jobs:
     name: Typecheck and build
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: steady
+          POSTGRES_PASSWORD: steady
+          POSTGRES_DB: steady_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U steady -d steady_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://steady:steady@localhost:5432/steady_test
+      RUN_DB_TESTS: "true"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +49,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Typecheck workspace
-        run: pnpm typecheck
+        run: pnpm build:shared && pnpm typecheck
 
       - name: Test API
         run: pnpm --filter @steady/api test

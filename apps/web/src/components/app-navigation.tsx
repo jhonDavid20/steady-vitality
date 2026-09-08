@@ -6,7 +6,7 @@ const links: Record<AuthUser["role"], Array<{ href: string; label: string }>> = 
     { href: "/today", label: "Today" }, { href: "/plan", label: "Plan" }, { href: "/coach", label: "Coach" }, { href: "/profile", label: "Profile" },
   ],
   coach: [
-    { href: "/today", label: "Overview" }, { href: "/clients", label: "Clients" }, { href: "/packages", label: "Packages" }, { href: "/messages", label: "Messages" }, { href: "/profile", label: "Profile" },
+    { href: "/today", label: "Overview" }, { href: "/clients", label: "Clients" }, { href: "/plans", label: "Plan" }, { href: "/packages", label: "Packages" }, { href: "/messages", label: "Messages" }, { href: "/profile", label: "Profile" },
   ],
   admin: [{ href: "/today", label: "Operations" }, { href: "/profile", label: "Profile" }],
 };
