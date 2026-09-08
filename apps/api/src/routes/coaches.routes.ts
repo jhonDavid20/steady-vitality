@@ -135,7 +135,7 @@ router.patch('/me', authenticate, requireCoach, validateCoachProfile, async (req
 
 /**
  * GET /api/coaches/me/clients
- * List clients linked to this coach via users.coachId.
+ * List clients linked to this coach through active coaching relationships.
  */
 router.get('/me/clients', authenticate, requireCoach, [
   query('page').optional().isInt({ min: 1 }),
@@ -202,7 +202,7 @@ router.get('/me/stats', authenticate, requireCoach, async (req: AuthenticatedReq
 });
 
 /**
- * GET /api/coaches/me/clients (new — via User.coachId)
+ * GET /api/coaches/me/clients (compatibility alias)
  * Coach gets the list of clients linked to them.
  */
 router.get('/me/linked-clients', authenticate, requireCoach, [

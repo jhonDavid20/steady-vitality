@@ -99,7 +99,7 @@ export class User {
   @IsOptional()
   lastLoginAt?: Date;
 
-  /** Direct FK to the coach assigned via invite or accepted connection request. */
+  /** Derived pointer to the client's active coaching relationship. */
   @Column({ type: 'uuid', nullable: true })
   @IsOptional()
   coachId?: string | null;
@@ -125,7 +125,7 @@ export class User {
   @OneToOne(() => CoachProfile, (cp) => cp.user)
   coachProfile: CoachProfile;
 
-  /** The coach this client is linked to (set on client invite acceptance or request acceptance). */
+  /** The current coach lookup projection; relationship history is stored separately. */
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: false })
   @JoinColumn({ name: 'coachId' })
   coach?: User | null;

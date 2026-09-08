@@ -3,6 +3,7 @@ import { User } from '../database/entities/User';
 import { CoachProfile } from '../database/entities/CoachProfile';
 import { Package } from '../database/entities/Package';
 import { ClientPackage, ClientPackageStatus } from '../database/entities/ClientPackage';
+import { ClientCoachRelationship, RelationshipStatus } from '../database/entities/ClientCoachRelationship';
 
 // ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -88,6 +89,7 @@ export class PackagesService {
   private coachProfileRepository = AppDataSource.getRepository(CoachProfile);
   private packageRepository      = AppDataSource.getRepository(Package);
   private clientPackageRepository = AppDataSource.getRepository(ClientPackage);
+  private relationshipRepository  = AppDataSource.getRepository(ClientCoachRelationship);
 
   // ── Package templates ─────────────────────────────────────────────────────
 
@@ -194,6 +196,13 @@ export class PackagesService {
 
       const client = await this.userRepository.findOne({ where: { id: data.clientId, isActive: true } });
       if (!client) return { success: false, message: 'Client not found' };
+
+      const relationship = await this.relationshipRepository.findOne({
+        where: { clientId: data.clientId, coachId: coachUserId, status: RelationshipStatus.ACTIVE },
+      });
+      if (!relationship) {
+        return { success: false, message: 'Client does not have an active relationship with you' };
+      }
 
       const existingActive = await this.clientPackageRepository.findOne({
         where: { clientId: data.clientId, packageId, status: ClientPackageStatus.ACTIVE },
@@ -337,7 +346,7 @@ export class PackagesService {
    * Creates a ClientPackage row with status = 'pending' for the coach to confirm.
    *
    * Ownership check path:
-   *   package.coachId → CoachProfile.id → CoachProfile.userId === client.coachId (User.id)
+   *   package.coachId → CoachProfile.id → CoachProfile.userId === active relationship.coachId
    */
   async requestPackage(clientId: string, packageId: string) {
     try {
@@ -355,7 +364,10 @@ export class PackagesService {
       if (!client) {
         return { success: false, status: 404, message: 'Client not found' };
       }
-      if (!client.coachId) {
+      const relationship = await this.relationshipRepository.findOne({
+        where: { clientId, status: RelationshipStatus.ACTIVE },
+      });
+      if (!relationship) {
         return { success: false, status: 403, message: 'You are not connected to any coach' };
       }
 
@@ -363,12 +375,12 @@ export class PackagesService {
         where: { id: pkg.coachId },
         select: { id: true, userId: true },
       });
-      if (!coachProfile || coachProfile.userId !== client.coachId) {
+      if (!coachProfile || coachProfile.userId !== relationship.coachId) {
         return { success: false, status: 403, message: 'This package does not belong to your coach' };
       }
 
       const alreadyActive = await this.clientPackageRepository.findOne({
-        where: { clientId, coachId: client.coachId, status: ClientPackageStatus.ACTIVE },
+        where: { clientId, coachId: relationship.coachId, status: ClientPackageStatus.ACTIVE },
       });
       if (alreadyActive) {
         return { success: false, status: 400, message: 'You already have an active package from this coach' };
@@ -384,7 +396,7 @@ export class PackagesService {
       const clientPackage = this.clientPackageRepository.create({
         clientId,
         packageId,
-        coachId:          client.coachId,
+        coachId:          relationship.coachId,
         status:           ClientPackageStatus.PENDING,
         sessionsCompleted: 0,
       });
@@ -414,13 +426,10 @@ export class PackagesService {
   /** Coach fetches the most recent ClientPackage for a given client. */
   async getClientPackage(coachUserId: string, clientId: string) {
     try {
-      const client = await this.userRepository.findOne({
-        where: { id: clientId, isActive: true },
-        select: { id: true, coachId: true },
+      const relationship = await this.relationshipRepository.findOne({
+        where: { clientId, coachId: coachUserId, status: RelationshipStatus.ACTIVE },
       });
-
-      if (!client) return { success: false, message: 'Client not found' };
-      if (client.coachId !== coachUserId) {
+      if (!relationship) {
         return { success: false, message: 'This client is not linked to your account' };
       }
 
