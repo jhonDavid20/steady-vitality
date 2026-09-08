@@ -5,6 +5,7 @@ import { Session } from '../database/entities/Session';
 import { Invite, InviteType } from '../database/entities/Invite';
 import { ClientCoachRelationship, RelationshipStatus } from '../database/entities/ClientCoachRelationship';
 import { PasswordService } from '../utils/password';
+import { sendEmailVerificationEmail, sendPasswordResetEmail } from '../utils/mailer';
 import { JWTService } from '../utils/jwt';
 import {
   AuthResponse,
@@ -62,7 +63,8 @@ export class AuthService {
       const emailVerificationToken = await user.generateEmailVerificationToken();
       const savedUser = await this.userRepository.save(user);
 
-      // TODO: Send email verification email with emailVerificationToken
+      const verificationUrl = `${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/en/verify-email?token=${encodeURIComponent(emailVerificationToken)}`;
+      void sendEmailVerificationEmail(savedUser.email, verificationUrl);
 
       const session = await this.createSession(savedUser, ipAddress, userAgent);
       const tokens = this.generateTokens(savedUser, session);
@@ -548,7 +550,8 @@ export class AuthService {
       const resetToken = await user.generatePasswordResetToken();
       await this.userRepository.save(user);
 
-      // TODO: Send password reset email with resetToken
+      const resetUrl = `${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/en/reset-password?token=${encodeURIComponent(resetToken)}`;
+      void sendPasswordResetEmail(user.email, resetUrl);
 
       return {
         success: true,

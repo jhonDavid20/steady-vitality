@@ -171,3 +171,46 @@ export async function sendClientInviteEmail(
     console.error(`[mailer] Failed to send client invite to ${to}:`, err);
   }
 }
+/** Send an account email-verification link. */
+export async function sendEmailVerificationEmail(to: string, verificationUrl: string): Promise<void> {
+  try {
+    const html = buildEmail({
+      preheader: 'Confirm your Steady Vitality email address.',
+      heading: 'Confirm your email address',
+      body: '<p>Confirm your email address to finish setting up your Steady Vitality account.</p>',
+      buttonLabel: 'Confirm email',
+      buttonUrl: verificationUrl,
+    });
+    await client.send({
+      from: { email: FROM_EMAIL, name: FROM_NAME },
+      to: [{ email: to }],
+      subject: 'Confirm your Steady Vitality email',
+      html,
+      category: 'Email verification',
+    });
+  } catch (err) {
+    console.error('[mailer] Failed to send email verification message:', err);
+  }
+}
+
+/** Send a password-reset link without exposing whether an account exists. */
+export async function sendPasswordResetEmail(to: string, resetUrl: string): Promise<void> {
+  try {
+    const html = buildEmail({
+      preheader: 'Reset your Steady Vitality password.',
+      heading: 'Reset your password',
+      body: '<p>Use this link to choose a new password. If you did not request it, you can safely ignore this email.</p>',
+      buttonLabel: 'Reset password',
+      buttonUrl: resetUrl,
+    });
+    await client.send({
+      from: { email: FROM_EMAIL, name: FROM_NAME },
+      to: [{ email: to }],
+      subject: 'Reset your Steady Vitality password',
+      html,
+      category: 'Password reset',
+    });
+  } catch (err) {
+    console.error('[mailer] Failed to send password reset message:', err);
+  }
+}
