@@ -18,7 +18,7 @@ describeDatabase('workout flow', () => {
 
   beforeAll(async () => {
     await AppDataSource.initialize();
-    await AppDataSource.runMigrations();
+    await AppDataSource.runMigrations({ transaction: 'each' });
 
     await AppDataSource.getRepository(User).insert([
       user(coachId, UserRole.COACH),
