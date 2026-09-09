@@ -6,7 +6,12 @@ import { authenticate, requireAdmin, AuthenticatedRequest } from '../middleware/
 import { cleanupService } from '../services/cleanup.service';
 import { AppDataSource } from '../database/data-source';
 import { User, UserRole } from '../database/entities/User';
+import { ClientPackage } from '../database/entities/ClientPackage';
+import { PaymentAttempt } from '../database/entities/PaymentAttempt';
+import { AuditLog } from '../database/entities/AuditLog';
+import { Review } from '../database/entities/Review';
 import { StatsService } from '../services/stats.service';
+import { audit } from '../services/retention.service';
 
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
@@ -288,6 +293,47 @@ router.get('/stats', authenticate, requireAdmin, async (req: AuthenticatedReques
   } catch (error) {
     console.error('Admin stats error:', error);
     res.status(500).json({ success: false, message: 'Failed to retrieve stats' });
+  }
+});
+
+/**
+ * GET /api/admin/operations
+ * A deliberately small operations queue. It exposes payment and purchase state
+ * without allowing an operator to bypass the payment webhook activation flow.
+ */
+router.get('/operations', authenticate, requireAdmin, async (_req: AuthenticatedRequest, res: Response) => {
+  try {
+    const [purchases, payments, audits] = await Promise.all([
+      AppDataSource.getRepository(ClientPackage).find({ order: { createdAt: 'DESC' }, take: 50 }),
+      AppDataSource.getRepository(PaymentAttempt).find({ order: { createdAt: 'DESC' }, take: 50 }),
+      AppDataSource.getRepository(AuditLog).find({ order: { createdAt: 'DESC' }, take: 50 }),
+    ]);
+    res.status(200).json({ success: true, data: { purchases, payments, audits } });
+  } catch (error) {
+    console.error('Admin operations error:', error);
+    res.status(500).json({ success: false, message: 'Failed to retrieve operations' });
+  }
+});
+
+/** Moderation is recorded so an operator can explain a hidden review later. */
+router.patch('/reviews/:id', authenticate, requireAdmin, [
+  param('id').isUUID().withMessage('id must be a valid UUID'),
+  body('visible').isBoolean().withMessage('visible must be a boolean'),
+], async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+    const reviews = AppDataSource.getRepository(Review);
+    const review = await reviews.findOne({ where: { id: req.params.id } });
+    if (!review) return res.status(404).json({ success: false, message: 'Review not found' });
+    review.visible = req.body.visible;
+    await AppDataSource.transaction(async (manager) => {
+      await manager.save(review);
+      await audit(manager, req.user!.id, review.visible ? 'review.published' : 'review.hidden', 'review', review.id);
+    });
+    res.status(200).json({ success: true, data: { id: review.id, visible: review.visible } });
+  } catch (error) {
+    console.error('Admin moderate review error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update review' });
   }
 });
 
