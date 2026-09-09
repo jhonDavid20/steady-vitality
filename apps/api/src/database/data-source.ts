@@ -26,6 +26,9 @@ import { WaterLog } from './entities/WaterLog';
 import { CoachingMessage } from './entities/CoachingMessage';
 import { PaymentAttempt } from './entities/PaymentAttempt';
 import { PaymentEvent } from './entities/PaymentEvent';
+import { Review } from './entities/Review';
+import { AuditLog } from './entities/AuditLog';
+import { RetentionNotice } from './entities/RetentionNotice';
 
 const isProduction = config.nodeEnv === 'production';
 
@@ -85,6 +88,9 @@ export const AppDataSource = new DataSource({
     CoachingMessage,
     PaymentAttempt,
     PaymentEvent,
+    Review,
+    AuditLog,
+    RetentionNotice,
   ],
 
   // In production run compiled JS migrations; in dev run TS source directly
