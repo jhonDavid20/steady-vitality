@@ -2,6 +2,10 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddPendingToClientPackageStatus1743500000000 implements MigrationInterface {
   name = 'AddPendingToClientPackageStatus1743500000000';
+  // PostgreSQL only makes a new enum label usable after its transaction commits.
+  // The migration runner uses `each`, so this one is committed before H5 sets
+  // the pending default on client_packages.
+  transaction = false;
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // PostgreSQL enums cannot have values removed, but can have them added.

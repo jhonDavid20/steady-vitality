@@ -37,10 +37,13 @@ export class ClientPackage {
   @Column({ type: 'uuid' })
   coachId: string;
 
+  @Column({ type: 'jsonb', nullable: true })
+  offerSnapshot: { name: string; description: string | null; durationWeeks: number; sessionsIncluded: number; features: string[]; amountCents: number; currency: string } | null;
+
   @Column({
     type: 'enum',
     enum: ClientPackageStatus,
-    default: ClientPackageStatus.ACTIVE,
+    default: ClientPackageStatus.PENDING,
   })
   @IsEnum(ClientPackageStatus)
   status: ClientPackageStatus;
@@ -52,6 +55,9 @@ export class ClientPackage {
   @Column({ type: 'timestamptz', nullable: true })
   @IsOptional()
   endDate?: Date;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  cancelledAt?: Date | null;
 
   /** How many sessions the client has completed under this package. */
   @Column({ type: 'int', default: 0 })

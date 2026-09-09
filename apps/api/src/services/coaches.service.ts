@@ -5,6 +5,8 @@ import { ClientCoachRelationship, RelationshipStatus } from '../database/entitie
 import { ClientPackage, ClientPackageStatus } from '../database/entities/ClientPackage';
 import { UserProfile } from '../database/entities/UserProfile';
 import { ConnectionRequest, ConnectionRequestStatus } from '../database/entities/ConnectionRequest';
+import { Package } from '../database/entities/Package';
+import type { MatchingInput } from '@steady/shared';
 
 export interface CoachProfileData {
   // ── Original fields ───────────────────────────────────────────────────────
@@ -70,6 +72,7 @@ function serializePublicProfile(cp: CoachProfile, activeClientsCount?: number) {
     videoIntroUrl: cp.videoIntroUrl,
     websiteUrl: cp.websiteUrl,
     instagramHandle: cp.instagramHandle,
+    rating: null,
     // real linked-client count (only included when explicitly fetched)
     ...(activeClientsCount !== undefined && { activeClientsCount }),
   };
@@ -82,13 +85,14 @@ export class CoachesService {
   private clientPackageRepository     = AppDataSource.getRepository(ClientPackage);
   private profileRepository           = AppDataSource.getRepository(UserProfile);
   private connectionRequestRepository = AppDataSource.getRepository(ConnectionRequest);
+  private packageRepository           = AppDataSource.getRepository(Package);
 
   // ── Public browsing ───────────────────────────────────────────────────────
 
   async listCoaches(
     page = 1,
     limit = 20,
-    filters: { coachingType?: CoachingType; trialOnly?: boolean; search?: string } = {},
+    filters: { coachingType?: CoachingType; trialOnly?: boolean; search?: string; specialty?: string; minPrice?: number; maxPrice?: number } = {},
   ) {
     try {
       const skip = (page - 1) * limit;
@@ -117,6 +121,13 @@ export class CoachesService {
             OR u.lastName ILIKE :s)`,
           { s },
         );
+      }
+      if (filters.specialty) qb.andWhere(':specialty = ANY(cp.specialties)', { specialty: filters.specialty });
+      if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+        qb.andWhere(`EXISTS (SELECT 1 FROM packages p WHERE p."coachId" = cp.id AND p."isActive" = true AND p."priceUSD" >= :minPrice AND p."priceUSD" <= :maxPrice)`, {
+          minPrice: filters.minPrice ?? 0,
+          maxPrice: filters.maxPrice ?? 1000000,
+        });
       }
 
       const [coaches, total] = await qb.getManyAndCount();
@@ -159,11 +170,25 @@ export class CoachesService {
       });
 
       if (!cp) return { success: false, message: 'Coach not found' };
-      return { success: true, data: serializePublicProfile(cp) };
+      const packages = await this.packageRepository.find({ where: { coachId: cp.id, isActive: true }, order: { priceUSD: 'ASC' } });
+      return { success: true, data: { ...serializePublicProfile(cp), packages } };
     } catch (error) {
       console.error('Get coach by userId error:', error);
       return { success: false, message: 'Failed to get coach profile' };
     }
+  }
+
+  async saveMatchingAndSuggest(clientId: string, input: MatchingInput) {
+    let profile = await this.profileRepository.findOne({ where: { userId: clientId } });
+    if (!profile) profile = this.profileRepository.create({ userId: clientId });
+    profile.fitnessGoal = input.fitnessGoal as UserProfile['fitnessGoal'];
+    profile.activityLevel = input.activityLevel as UserProfile['activityLevel'];
+    profile.communicationPreference = input.communicationPreference;
+    profile.trainingExperience = input.trainingExperience;
+    await this.profileRepository.save(profile);
+    const result = await this.listCoaches(1, 20, { search: input.fitnessGoal.replace(/_/g, ' ') });
+    if (!result.success || !result.data?.length) return this.listCoaches(1, 20);
+    return result;
   }
 
   // ── Coach-private ─────────────────────────────────────────────────────────

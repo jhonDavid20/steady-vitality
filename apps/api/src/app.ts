@@ -217,6 +217,7 @@ import invitesRoutes from './routes/invites.routes';
 import leadsRoutes from './routes/leads.routes';
 import workoutsRoutes from './routes/workouts.routes';
 import dailyRoutes from './routes/daily.routes';
+import commerceRoutes from './routes/commerce.routes';
 
 // Swagger imports
 import swaggerUi from 'swagger-ui-express';
@@ -239,6 +240,7 @@ app.use('/api/invites', invitesRoutes);
 app.use('/api/leads', leadsRoutes);
 app.use('/api/workouts', workoutsRoutes);
 app.use('/api/daily', dailyRoutes);
+app.use('/api/commerce', commerceRoutes);
 
 // Swagger Documentation
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, {
@@ -261,6 +263,7 @@ app.get('/api', (req: Request, res: Response) => {
       leads: '/api/leads',
       workouts: '/api/workouts',
       daily: '/api/daily',
+      commerce: '/api/commerce',
       admin: '/api/admin',
       health: '/health'
     },

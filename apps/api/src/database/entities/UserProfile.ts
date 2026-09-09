@@ -181,6 +181,14 @@ export class UserProfile {
   @IsString()
   timezone?: string;
 
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  @IsOptional()
+  communicationPreference?: string;
+
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  @IsOptional()
+  trainingExperience?: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 

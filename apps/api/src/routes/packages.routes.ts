@@ -19,7 +19,7 @@ const handleValidationErrors = (req: Request, res: Response): boolean => {
 const validatePackage = [
   body('name').isString().trim().isLength({ min: 1, max: 255 }).withMessage('Name is required (max 255 chars)'),
   body('description').optional().isString().trim().withMessage('Description must be a string'),
-  body('durationWeeks').isInt({ min: 1 }).withMessage('durationWeeks must be a positive integer'),
+  body('durationWeeks').isIn([4, 8, 12]).withMessage('durationWeeks must be 4, 8, or 12'),
   body('sessionsIncluded').isInt({ min: 1 }).withMessage('sessionsIncluded must be a positive integer'),
   body('priceUSD').isFloat({ min: 0 }).withMessage('priceUSD must be a non-negative number'),
   body('features').optional({ nullable: true }).isArray().withMessage('features must be an array'),
@@ -29,7 +29,7 @@ const validatePackage = [
 const validatePackageUpdate = [
   body('name').optional().isString().trim().isLength({ min: 1, max: 255 }).withMessage('Name must be 1-255 chars'),
   body('description').optional().isString().trim(),
-  body('durationWeeks').optional().isInt({ min: 1 }).withMessage('durationWeeks must be a positive integer'),
+  body('durationWeeks').optional().isIn([4, 8, 12]).withMessage('durationWeeks must be 4, 8, or 12'),
   body('sessionsIncluded').optional().isInt({ min: 1 }).withMessage('sessionsIncluded must be a positive integer'),
   body('priceUSD').optional().isFloat({ min: 0 }).withMessage('priceUSD must be a non-negative number'),
   body('isActive').optional().isBoolean().withMessage('isActive must be a boolean'),
@@ -146,20 +146,7 @@ router.patch('/client/:id', authenticate, requireCoach, [
 router.post('/:packageId/request', authenticate, requireClient, [
   param('packageId').isUUID().withMessage('packageId must be a valid UUID'),
 ], async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    if (handleValidationErrors(req, res)) return;
-
-    const result = await packagesService.requestPackage(req.user!.id, req.params.packageId);
-    const httpStatus = (result as any).status ?? (result.success ? 201 : 400);
-    res.status(httpStatus).json(
-      result.success
-        ? { message: result.message, clientPackage: (result as any).clientPackage }
-        : { message: result.message },
-    );
-  } catch (error) {
-    console.error('Request package error:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+  res.status(410).json({ success: false, message: 'Use /api/commerce/checkout to purchase a package' });
 });
 
 /**
@@ -240,20 +227,7 @@ router.post('/:id/assign', authenticate, requireCoach, [
   body('goals').optional({ nullable: true }).isArray().withMessage('goals must be an array'),
   body('goals.*').optional().isString().trim().withMessage('Each goal must be a string'),
 ], async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    if (handleValidationErrors(req, res)) return;
-
-    const result = await packagesService.assignPackage(req.user!.id, req.params.id, {
-      clientId:  req.body.clientId,
-      startDate: req.body.startDate ? new Date(req.body.startDate) : undefined,
-      notes:     req.body.notes,
-      goals:     req.body.goals,
-    });
-    res.status(result.success ? 201 : 400).json(result);
-  } catch (error) {
-    console.error('Assign package error:', error);
-    res.status(500).json({ error: 'Failed to assign package', message: 'Internal server error' });
-  }
+  res.status(410).json({ success: false, message: 'Client packages are created through checkout' });
 });
 
 export default router;

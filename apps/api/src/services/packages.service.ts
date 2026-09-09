@@ -315,6 +315,12 @@ export class PackagesService {
 
       if (!clientPackage) return { success: false, message: 'Client package not found' };
 
+      if (status === ClientPackageStatus.ACTIVE) {
+        return { success: false, message: 'Packages are activated only by a confirmed payment webhook' };
+      }
+      if (clientPackage.status !== ClientPackageStatus.ACTIVE || ![ClientPackageStatus.COMPLETED, ClientPackageStatus.CANCELLED].includes(status)) {
+        return { success: false, message: 'Invalid package status transition' };
+      }
       clientPackage.status = status;
 
       if (status === ClientPackageStatus.COMPLETED || status === ClientPackageStatus.CANCELLED) {

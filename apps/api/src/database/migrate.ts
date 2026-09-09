@@ -22,7 +22,7 @@ async function main(): Promise<void> {
       const hasPending = await AppDataSource.showMigrations();
       console.log(hasPending ? '⏳ There are pending migrations.' : '✅ No pending migrations.');
     } else if (command === 'run') {
-      const ran = await AppDataSource.runMigrations({ transaction: 'all' });
+      const ran = await AppDataSource.runMigrations({ transaction: 'each' });
       console.log(
         ran.length
           ? `✅ Ran ${ran.length} migration(s): ${ran.map((m) => m.name).join(', ')}`
