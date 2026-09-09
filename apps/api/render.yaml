@@ -4,20 +4,19 @@ services:
     runtime: node
     region: oregon
     plan: free
+    # The workspace is the service root so shared contracts are available.
+    rootDir: .
 
-    # Build: install deps then compile TypeScript
-    buildCommand: npm install && npm run build
+    # Install from the lockfile and compile the workspace dependency first.
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build:shared && pnpm --filter @steady/api build
 
-    # Start the compiled server
-    startCommand: npm start
+    startCommand: pnpm --filter @steady/api start
 
-    # Run migrations automatically on every deploy (before traffic switches over)
-    # Render runs this as a pre-deploy step when set via the dashboard, or you
-    # can use the preDeployCommand field (available on paid plans).
-    # On the free plan: trigger migrations manually via the Shell tab or a
-    # one-off job (see below).
+    # Free plans require the controlled manual migration procedure in
+    # docs/deployment.md. Paid plans may add preDeployCommand:
+    # pnpm --filter @steady/api migration:run:prod
 
-    healthCheckPath: /health
+    healthCheckPath: /ready
 
     envVars:
       - key: NODE_ENV

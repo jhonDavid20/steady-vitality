@@ -118,34 +118,25 @@ if (config.nodeEnv === 'development') {
 /**
  * Health Check Endpoints
  */
-app.get('/health', async (req: Request, res: Response) => {
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
+
+/** Readiness includes the database but deliberately exposes no infrastructure details. */
+app.get('/ready', async (_req: Request, res: Response) => {
   try {
     const dbHealth = await DatabaseManager.healthCheck();
-    const uptime = process.uptime();
-    
-    const healthStatus = {
+    res.status(dbHealth.isConnected ? 200 : 503).json({
       status: dbHealth.isConnected ? 'healthy' : 'unhealthy',
       timestamp: new Date().toISOString(),
-      uptime: `${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s`,
       version: '1.0.0',
-      environment: config.nodeEnv,
-      database: {
-        connected: dbHealth.isConnected,
-        host: dbHealth.details.host,
-        database: dbHealth.details.database,
-      },
-      memory: {
-        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
-        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + 'MB',
-      }
-    };
-
-    res.status(dbHealth.isConnected ? 200 : 503).json(healthStatus);
-  } catch (error) {
+      database: { connected: dbHealth.isConnected },
+    });
+  } catch {
     res.status(503).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
-      error: 'Health check failed'
+      error: 'Readiness check failed'
     });
   }
 });

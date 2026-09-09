@@ -43,15 +43,8 @@ export class DatabaseManager {
    */
   private static async runInitialSetup(): Promise<void> {
     try {
-      // Run pending migrations automatically on every startup.
-      // Safe to call repeatedly — TypeORM skips already-applied migrations.
-      const migrations = await AppDataSource.runMigrations();
-      if (migrations.length > 0) {
-        console.log(`✅ Applied ${migrations.length} migration(s)`);
-      } else {
-        console.log('ℹ️  No pending migrations');
-      }
-
+      // Production migrations are an explicit release step. Running them during
+      // every startup risks concurrent instances applying schema changes.
       await this.createDefaultAdmin();
       console.log('✅ Initial database setup completed');
     } catch (error) {
@@ -162,7 +155,7 @@ export class DatabaseManager {
    */
   static async runMigrations(): Promise<void> {
     try {
-      await AppDataSource.runMigrations();
+      await AppDataSource.runMigrations({ transaction: 'each' });
       console.log('✅ Database migrations completed');
     } catch (error) {
       console.error('❌ Error running migrations:', error);
