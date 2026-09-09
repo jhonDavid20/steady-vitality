@@ -10,6 +10,8 @@ import { ClientPackage } from '../database/entities/ClientPackage';
 import { PaymentAttempt } from '../database/entities/PaymentAttempt';
 import { AuditLog } from '../database/entities/AuditLog';
 import { Review } from '../database/entities/Review';
+import { Invite } from '../database/entities/Invite';
+import { Lead, LeadStatus } from '../database/entities/Lead';
 import { StatsService } from '../services/stats.service';
 import { audit } from '../services/retention.service';
 
@@ -303,12 +305,15 @@ router.get('/stats', authenticate, requireAdmin, async (req: AuthenticatedReques
  */
 router.get('/operations', authenticate, requireAdmin, async (_req: AuthenticatedRequest, res: Response) => {
   try {
-    const [purchases, payments, audits] = await Promise.all([
+    const [purchases, payments, audits, leadCount, pendingInviteCount, userCount] = await Promise.all([
       AppDataSource.getRepository(ClientPackage).find({ order: { createdAt: 'DESC' }, take: 50 }),
       AppDataSource.getRepository(PaymentAttempt).find({ order: { createdAt: 'DESC' }, take: 50 }),
       AppDataSource.getRepository(AuditLog).find({ order: { createdAt: 'DESC' }, take: 50 }),
+      AppDataSource.getRepository(Lead).count({ where: { status: LeadStatus.NEW } }),
+      AppDataSource.getRepository(Invite).createQueryBuilder('invite').where('invite.used = false').andWhere('invite.expiresAt > NOW()').getCount(),
+      AppDataSource.getRepository(User).count(),
     ]);
-    res.status(200).json({ success: true, data: { purchases, payments, audits } });
+    res.status(200).json({ success: true, data: { purchases, payments, audits, summary: { newLeads: leadCount, pendingInvites: pendingInviteCount, users: userCount } } });
   } catch (error) {
     console.error('Admin operations error:', error);
     res.status(500).json({ success: false, message: 'Failed to retrieve operations' });
