@@ -15,10 +15,12 @@ describeDatabase('marketplace payment flow', () => {
   const coachId = randomUUID();
   const clientId = randomUUID();
   let offerId = '';
+  let databaseReady = false;
 
   beforeAll(async () => {
     await AppDataSource.initialize();
-    await AppDataSource.runMigrations();
+    await AppDataSource.runMigrations({ transaction: 'each' });
+    databaseReady = true;
     await AppDataSource.getRepository(User).insert([user(coachId, UserRole.COACH), user(clientId, UserRole.CLIENT)]);
     const coachRepository = AppDataSource.getRepository(CoachProfile);
     const coach = await coachRepository.save(coachRepository.create({ userId: coachId, acceptingClients: true }));
@@ -29,7 +31,7 @@ describeDatabase('marketplace payment flow', () => {
 
   afterAll(async () => {
     if (!AppDataSource.isInitialized) return;
-    await AppDataSource.getRepository(User).delete([coachId, clientId]);
+    if (databaseReady) await AppDataSource.getRepository(User).delete([coachId, clientId]);
     await AppDataSource.destroy();
   });
 

@@ -15,7 +15,7 @@ describeDatabase('daily pilot flow', () => {
 
   beforeAll(async () => {
     await AppDataSource.initialize();
-    await AppDataSource.runMigrations();
+    await AppDataSource.runMigrations({ transaction: 'each' });
     await AppDataSource.getRepository(User).insert([user(coachId, UserRole.COACH), user(clientId, UserRole.CLIENT)]);
     const result = await AppDataSource.getRepository(ClientCoachRelationship).insert({ coachId, clientId, status: RelationshipStatus.ACTIVE, startedAt: new Date() });
     relationshipId = result.identifiers[0].id;
