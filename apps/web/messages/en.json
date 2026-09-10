@@ -438,6 +438,10 @@
     "verifying": "Confirming…",
     "verifyError": "We could not confirm your email.",
     "verifyPending": "Check the inbox for the confirmation link we sent. Open it in this browser to activate your account.",
+    "resend": "Resend confirmation email",
+    "resending": "Sending…",
+    "resendSuccess": "A new confirmation email has been sent.",
+    "resendError": "We could not send another confirmation email.",
     "invalidLink": "This link is missing or invalid."
   },
   "Navigation": {

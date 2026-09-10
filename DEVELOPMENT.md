@@ -150,8 +150,9 @@ lo que hace `leads` (buen ejemplo de referencia, es el más reciente):
 | `JWT_SECRET`, `JWT_EXPIRE`, `JWT_REFRESH_EXPIRE` | Tokens |
 | `BCRYPT_ROUNDS` | Coste de hashing |
 | `DEFAULT_ADMIN_*` | Semilla del admin |
-| `SMTP_*`, `EMAIL_FROM` | Email (Mailtrap sandbox por ahora) |
-| `FRONTEND_URL` | Base para links de invitación |
+| `MAILTRAP_TOKEN`, `MAILTRAP_INBOX_ID` | API token e inbox de Mailtrap Email Sandbox |
+| `EMAIL_FROM_ADDRESS`, `EMAIL_FROM_NAME` | Remitente mostrado en los emails de prueba |
+| `FRONTEND_URL` | Base para links de verificación, recuperación e invitación |
 
 > ⚠️ Redis fue **removido** de la config (no se usaba). Si en el futuro se necesita,
 > reintroducir `config.redis` en `src/config/env.ts`.

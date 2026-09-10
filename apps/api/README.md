@@ -61,14 +61,15 @@ JWT_REFRESH_EXPIRE=7d
 # Security
 BCRYPT_ROUNDS=12
 
-# Email (Mailtrap SMTP)
-SMTP_HOST=sandbox.smtp.mailtrap.io
-SMTP_PORT=587
-SMTP_USER=your_mailtrap_user
-SMTP_PASS=your_mailtrap_pass
-EMAIL_FROM="Coaching Platform <noreply@coachingplatform.dev>"
+# Email (Mailtrap Email Sandbox API)
+# Get the token from Mailtrap Settings > API Tokens. Copy the numeric inbox ID
+# from the Sandbox inbox URL: https://mailtrap.io/inboxes/<ID>/messages.
+MAILTRAP_TOKEN=your_mailtrap_token
+MAILTRAP_INBOX_ID=your_mailtrap_inbox_id
+EMAIL_FROM_ADDRESS=noreply@steadyvitality.local
+EMAIL_FROM_NAME="Steady Vitality"
 
-# Frontend base URL (used in invite links)
+# Frontend base URL (used in verification, reset, and invite links)
 FRONTEND_URL=http://localhost:3000
 ```
 

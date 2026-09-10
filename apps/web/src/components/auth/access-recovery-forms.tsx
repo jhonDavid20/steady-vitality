@@ -63,3 +63,19 @@ export function VerifyEmailButton({ token }: { token: string }) {
   }
   return <div className="space-y-3"><Button className="w-full" onClick={verify} disabled={loading}>{loading ? t("verifying") : t("verify")}</Button>{message && <p className="text-sm text-muted-foreground" role="status">{message}</p>}</div>;
 }
+
+export function ResendVerificationButton() {
+  const t = useTranslations("Access");
+  const [message, setMessage] = useState<string>();
+  const [loading, setLoading] = useState(false);
+
+  async function resend() {
+    setLoading(true);
+    const response = await fetch("/api/auth/resend-verification", { method: "POST" });
+    const data = await response.json().catch(() => ({}));
+    setMessage(data.message ?? (response.ok ? t("resendSuccess") : t("resendError")));
+    setLoading(false);
+  }
+
+  return <div className="space-y-3"><Button className="w-full" onClick={resend} disabled={loading}>{loading ? t("resending") : t("resend")}</Button>{message && <p className="text-sm text-muted-foreground" role="status">{message}</p>}</div>;
+}

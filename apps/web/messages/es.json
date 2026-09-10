@@ -438,6 +438,10 @@
     "verifying": "Confirmando…",
     "verifyError": "No se pudo confirmar el correo.",
     "verifyPending": "Revisa tu bandeja de entrada para encontrar el enlace de confirmación. Ábrelo en este navegador para activar tu cuenta.",
+    "resend": "Reenviar correo de confirmación",
+    "resending": "Enviando…",
+    "resendSuccess": "Enviamos un nuevo correo de confirmación.",
+    "resendError": "No pudimos enviar otro correo de confirmación.",
     "invalidLink": "Este enlace no existe o no es válido."
   },
   "Navigation": {

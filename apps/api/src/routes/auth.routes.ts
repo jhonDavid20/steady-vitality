@@ -710,6 +710,27 @@ router.post('/verify-email', validateVerifyEmail, async (req: Request, res: Resp
 });
 
 /**
+ * @route POST /api/auth/resend-verification
+ * @desc Send a new verification email to the authenticated user
+ * @access Authenticated
+ */
+router.post('/resend-verification', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    const result = await authService.resendEmailVerification(userId);
+    res.status(result.success ? 200 : 503).json(result);
+  } catch (error) {
+    console.error('Resend email verification route error:', error);
+    res.status(500).json({ success: false, message: 'Email verification could not be resent' });
+  }
+});
+
+/**
  * @route GET /api/auth/coach/setup/:token
  * @desc Validate a coach invite token and return the pre-filled email
  * @access Public
