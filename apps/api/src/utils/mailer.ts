@@ -193,8 +193,8 @@ export async function sendClientInviteEmail(
   }
 }
 /** Send an account email-verification link. */
-export async function sendEmailVerificationEmail(to: string, verificationUrl: string): Promise<void> {
-  if (!ensureMailtrapConfiguration()) return;
+export async function sendEmailVerificationEmail(to: string, verificationUrl: string): Promise<boolean> {
+  if (!ensureMailtrapConfiguration()) return false;
 
   try {
     const html = buildEmail({
@@ -211,8 +211,10 @@ export async function sendEmailVerificationEmail(to: string, verificationUrl: st
       html,
       category: 'Email verification',
     });
+    return true;
   } catch (err) {
     console.error('[mailer] Failed to send email verification message:', err);
+    return false;
   }
 }
 

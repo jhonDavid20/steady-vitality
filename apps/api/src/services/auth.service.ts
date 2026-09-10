@@ -627,30 +627,33 @@ export class AuthService {
 
   async verifyEmail(data: VerifyEmailRequest): Promise<{ success: boolean; message: string }> {
     try {
-      const user = await this.userRepository
+      const users = await this.userRepository
         .createQueryBuilder('user')
         .where('user.emailVerificationExpires > :now', { now: new Date() })
-        .getOne();
+        .getMany();
 
-      if (!user || !user.emailVerificationToken) {
+      let verifiedUser: User | undefined;
+      for (const user of users) {
+        if (!user.emailVerificationToken) continue;
+
+        const isTokenValid = await PasswordService.comparePassword(data.token, user.emailVerificationToken);
+        if (isTokenValid) {
+          verifiedUser = user;
+          break;
+        }
+      }
+
+      if (!verifiedUser) {
         return {
           success: false,
           message: 'Invalid or expired verification token'
         };
       }
 
-      const isTokenValid = await PasswordService.comparePassword(data.token, user.emailVerificationToken);
-      if (!isTokenValid) {
-        return {
-          success: false,
-          message: 'Invalid or expired verification token'
-        };
-      }
-
-      user.isEmailVerified = true;
-      user.emailVerificationToken = undefined;
-      user.emailVerificationExpires = undefined;
-      await this.userRepository.save(user);
+      verifiedUser.isEmailVerified = true;
+      verifiedUser.emailVerificationToken = undefined;
+      verifiedUser.emailVerificationExpires = undefined;
+      await this.userRepository.save(verifiedUser);
 
       return {
         success: true,
@@ -662,6 +665,33 @@ export class AuthService {
         success: false,
         message: 'Email verification failed'
       };
+    }
+  }
+
+  async resendEmailVerification(userId: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const user = await this.userRepository.findOne({ where: { id: userId, isActive: true } });
+
+      if (!user) {
+        return { success: false, message: 'User account not found' };
+      }
+
+      if (user.isEmailVerified) {
+        return { success: true, message: 'Email address is already verified' };
+      }
+
+      const token = await user.generateEmailVerificationToken();
+      await this.userRepository.save(user);
+
+      const verificationUrl = `${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/en/verify-email?token=${encodeURIComponent(token)}`;
+      const sent = await sendEmailVerificationEmail(user.email, verificationUrl);
+
+      return sent
+        ? { success: true, message: 'Verification email sent' }
+        : { success: false, message: 'We could not send the verification email. Please try again later.' };
+    } catch (error) {
+      console.error('Resend email verification error:', error);
+      return { success: false, message: 'We could not send the verification email. Please try again later.' };
     }
   }
 
