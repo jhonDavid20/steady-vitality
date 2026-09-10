@@ -57,6 +57,8 @@
     "day": { "0": "Sunday", "1": "Monday", "2": "Tuesday", "3": "Wednesday", "4": "Thursday", "5": "Friday", "6": "Saturday" }
   },
   "Daily": {
+    "planTitle": "Your plan",
+    "planDescription": "Your training, nutrition, and daily actions are kept together here.",
     "loading": "Loading your day…",
     "loadError": "We could not update your day. Try again.",
     "dailyProgress": "Today's progress",
@@ -95,7 +97,29 @@
     "noConversation": "No active coaching conversation yet.",
     "writeMessage": "Write a message…",
     "checkIn": "Coach check-in",
-    "send": "Send"
+    "send": "Send",
+    "findCoach": "Find a coach",
+    "viewClients": "View clients"
+  },
+  "Profile": {
+    "title": "Your profile",
+    "description": "Keep your account details current.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "timezone": "Time zone",
+    "save": "Save changes",
+    "saved": "Profile saved.",
+    "saveError": "We could not save your profile."
+  },
+  "Clients": {
+    "title": "Clients",
+    "description": "People who currently have an active coaching relationship with you.",
+    "empty": "You do not have active clients yet. Publish a package, then invite or connect with your first client.",
+    "managePackages": "Manage packages",
+    "loadError": "We could not load your clients.",
+    "noGoal": "No goal recorded",
+    "noActivity": "No activity level recorded",
+    "since": "Active since {date}"
   },
   "Marketplace": {
     "findCoach": "Find your coach",
@@ -413,6 +437,7 @@
     "verify": "Confirm email",
     "verifying": "Confirming…",
     "verifyError": "We could not confirm your email.",
+    "verifyPending": "Check the inbox for the confirmation link we sent. Open it in this browser to activate your account.",
     "invalidLink": "This link is missing or invalid."
   },
   "Navigation": {
