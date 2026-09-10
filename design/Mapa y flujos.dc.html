@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: oklch(0.975 0.006 128); color: oklch(0.24 0.015 130); font-family: "Sora", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.44 0.09 128); text-decoration: none; }
+  a:hover { color: oklch(0.34 0.09 128); text-decoration: underline; }
+</style>
+</helmet>
+<div style="max-width: 1180px; margin: 0 auto; padding: 0 20px 120px">
+
+  <header style="padding: 56px 0 32px; border-bottom: 1px solid oklch(0.90 0.012 128)">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px">
+      <div style="width: 20px; height: 20px; border-radius: 6px; background: oklch(0.48 0.09 128)"></div>
+      <span style="font-size: 14px; font-weight: 600">Steady Vitality</span>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130); margin-left: 4px">dirección 1c · diagnóstico</span>
+    </div>
+    <h1 style="margin: 0 0 10px; font-size: 40px; line-height: 1.08; font-weight: 600; letter-spacing: -0.03em">Mapa de navegación y flujos prioritarios</h1>
+    <p style="margin: 0; max-width: 68ch; font-size: 15px; line-height: 1.6; color: oklch(0.42 0.015 130); text-wrap: pretty">Qué ve cada rol, en qué ruta vive cada pantalla y cómo se recorren los seis caminos que deben funcionar primero. Las pantallas marcadas como propuesta necesitan trabajo de backend antes de existir.</p>
+  </header>
+
+  <section style="padding: 44px 0 0">
+    <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: oklch(0.44 0.09 128)">01</span>
+      <h2 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">Navegación por rol</h2>
+    </div>
+    <p style="margin: 0 0 20px; font-size: 14px; color: oklch(0.45 0.012 130)">Elige un rol para ver su árbol de navegación.</p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px">
+      <sc-for list="{{ roles }}" as="rol" hint-placeholder-count="4">
+        <button onClick="{{ rol.select }}" style="min-height: 44px; padding: 0 18px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid oklch(0.88 0.012 128); background: #fff; color: oklch(0.34 0.015 130); display: inline-flex; align-items: center; gap: 8px" style-hover="background: oklch(0.96 0.02 128)">
+          <sc-if value="{{ rol.activo }}" hint-placeholder-val="{{ true }}"><span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.48 0.09 128)"></span></sc-if>
+          {{ rol.label }}
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; overflow: hidden">
+      <div style="padding: 20px 24px; border-bottom: 1px solid oklch(0.94 0.008 128); display: flex; flex-wrap: wrap; gap: 16px; align-items: baseline">
+        <h3 style="margin: 0; font-size: 18px; font-weight: 600">{{ rolActual.titulo }}</h3>
+        <span style="font-size: 14px; color: oklch(0.45 0.012 130)">{{ rolActual.nav }}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0">
+        <sc-for list="{{ rolActual.secciones }}" as="sec" hint-placeholder-count="5">
+          <div style="padding: 20px 24px; border-right: 1px solid oklch(0.95 0.008 128); border-bottom: 1px solid oklch(0.95 0.008 128)">
+            <div style="font-size: 15px; font-weight: 600; margin-bottom: 4px">{{ sec.nombre }}</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130); margin-bottom: 10px">{{ sec.ruta }}</div>
+            <div style="font-size: 13px; line-height: 1.55; color: oklch(0.42 0.015 130); margin-bottom: 12px">{{ sec.objetivo }}</div>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.005 130); color: oklch(0.40 0.012 130)">{{ sec.estado }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding: 16px 24px; background: oklch(0.975 0.006 128); font-size: 13px; line-height: 1.55; color: oklch(0.42 0.015 130)">{{ rolActual.nota }}</div>
+    </div>
+  </section>
+
+  <section style="padding: 56px 0 0">
+    <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: oklch(0.44 0.09 128)">02</span>
+      <h2 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">Seis flujos prioritarios</h2>
+    </div>
+    <p style="margin: 0 0 20px; font-size: 14px; color: oklch(0.45 0.012 130)">Cada flujo lista sus pasos, la ruta de cada paso y los desvíos que hay que diseñar.</p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <div style="display: flex; flex-direction: column; gap: 8px; flex: 1 1 260px; max-width: 320px">
+        <sc-for list="{{ flujos }}" as="f" hint-placeholder-count="6">
+          <button onClick="{{ f.select }}" style="text-align: left; padding: 14px 16px; border-radius: 12px; border: 1px solid oklch(0.90 0.012 128); background: #fff; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 4px; min-height: 44px" style-hover="border-color: oklch(0.48 0.09 128); background: oklch(0.98 0.01 128)">
+            <span style="display: flex; align-items: center; gap: 7px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">
+              <sc-if value="{{ f.activo }}" hint-placeholder-val="{{ true }}"><span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.48 0.09 128)"></span></sc-if>
+              {{ f.num }}
+            </span>
+            <span style="font-size: 14px; font-weight: 500; color: oklch(0.26 0.015 130); line-height: 1.4">{{ f.titulo }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; overflow: hidden; flex: 999 1 340px; min-width: 0">
+        <div style="padding: 22px 24px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.09 128); margin-bottom: 8px">{{ flujoActual.num }}&#160;·&#160;{{ flujoActual.rol }}</div>
+          <h3 style="margin: 0 0 8px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em">{{ flujoActual.titulo }}</h3>
+          <p style="margin: 0; font-size: 14px; line-height: 1.6; max-width: 70ch; color: oklch(0.42 0.015 130)">{{ flujoActual.resumen }}</p>
+        </div>
+
+        <div style="padding: 24px; display: flex; flex-direction: column; gap: 0">
+          <sc-for list="{{ flujoActual.pasos }}" as="p" hint-placeholder-count="5">
+            <div style="display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 16px">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+                <div style="width: 28px; height: 28px; border-radius: 999px; background: oklch(0.94 0.03 128); color: oklch(0.34 0.07 128); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none">{{ p.n }}</div>
+                <div style="width: 1px; flex: 1; background: oklch(0.92 0.012 128); min-height: 12px"></div>
+              </div>
+              <div style="padding-bottom: 22px">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline">
+                  <span style="font-size: 16px; font-weight: 600; letter-spacing: -0.01em">{{ p.pantalla }}</span>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">{{ p.ruta }}</span>
+                </div>
+                <div style="font-size: 14px; line-height: 1.6; color: oklch(0.42 0.015 130); margin-top: 6px; max-width: 74ch">{{ p.detalle }}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px">
+                  <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.005 130); color: oklch(0.40 0.012 130)">Acción:&#160;{{ p.accion }}</span>
+                  <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.975 0.006 128); color: oklch(0.44 0.012 130); border: 1px solid oklch(0.93 0.01 128)">{{ p.api }}</span>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding: 22px 24px; background: oklch(0.985 0.005 128); border-top: 1px solid oklch(0.94 0.008 128); display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px">
+          <div>
+            <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.45 0.012 130); margin-bottom: 10px">Desvíos que hay que diseñar</div>
+            <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.55; color: oklch(0.34 0.015 130)">
+              <sc-for list="{{ flujoActual.desvios }}" as="d" hint-placeholder-count="3">
+                <li>{{ d }}</li>
+              </sc-for>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.44 0.13 25); margin-bottom: 10px">Depende de backend nuevo</div>
+            <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.55; color: oklch(0.34 0.015 130)">
+              <sc-for list="{{ flujoActual.pendientes }}" as="q" hint-placeholder-count="2">
+                <li>{{ q }}</li>
+              </sc-for>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 56px 0 0">
+    <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: oklch(0.44 0.09 128)">03</span>
+      <h2 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">Reglas de tránsito entre roles</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px">
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 22px">
+        <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px">Un rol, una raíz</div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.6; color: oklch(0.44 0.015 130)">Al entrar, cada persona cae en la raíz de su rol: cliente en Hoy, coach en Resumen, administración en Resumen de operaciones. Nunca en una pantalla compartida y ambigua.</p>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 22px">
+        <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px">Acceso sin permiso</div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.6; color: oklch(0.44 0.015 130)">Una ruta de otro rol devuelve la pantalla 403 con la vuelta a su panel y contacto de soporte, no una redirección silenciosa.</p>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 22px">
+        <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px">Onboarding bloqueante</div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.6; color: oklch(0.44 0.015 130)">Sin correo verificado ni onboarding completo, la app deja entrar solo al onboarding y a la cuenta. El resto se muestra desactivado con explicación.</p>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 22px">
+        <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px">Vacío con salida</div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.6; color: oklch(0.44 0.015 130)">Con la base vacía, toda pantalla sin datos muestra el siguiente paso concreto: explorar coaches, invitar cliente, crear oferta o crear invitación de coach.</p>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const ROLES = [
+  {
+    id: 'visitante', label: 'Visitante', titulo: 'Visitante',
+    nav: 'Inicio · Cómo funciona · Servicios · Evaluación · Acerca de · ES/EN · Iniciar sesión · Crear cuenta',
+    nota: 'La evaluación es la entrada principal de la dirección 1c: da valor antes de pedir la cuenta y deja dos salidas claras, reservar llamada o registrarse.',
+    secciones: [
+      { nombre: 'Landing', ruta: '/[locale]', objetivo: 'Evaluación como hero, con filosofía, servicios, prueba social y reserva debajo.', estado: 'Existe · rediseño' },
+      { nombre: 'Evaluación', ruta: '/[locale]#assessment', objetivo: 'Seis pasos, progreso, privacidad y recomendación al final.', estado: 'Existe · captura lead' },
+      { nombre: 'Reserva de llamada', ruta: '/[locale]#booking', objetivo: 'Cal.com embebido con estados de carga y error si falta configuración.', estado: 'Existe · externo' },
+      { nombre: 'Iniciar sesión', ruta: '/[locale]/login', objetivo: 'Acceso y enlace a recuperación de contraseña.', estado: 'Existe · sin enlace desde landing' },
+      { nombre: 'Crear cuenta', ruta: '/[locale]/register', objetivo: 'Registro de cliente y aviso de verificación de correo.', estado: 'Existe · sin enlace desde landing' },
+      { nombre: 'Verificación y recuperación', ruta: '/verify-email · /forgot-password · /reset-password', objetivo: 'Confirmación, reenvío y cambio de contraseña con estados reales.', estado: 'Existe' }
+    ]
+  },
+  {
+    id: 'cliente', label: 'Cliente', titulo: 'Cliente',
+    nav: 'Hoy · Mi plan · Mi coach · Mensajes · Perfil',
+    nota: 'Mi plan necesita confirmar endpoints de semana e historial; hoy la API se centra en el día. Mientras no exista, la vista semanal se marca como propuesta.',
+    secciones: [
+      { nombre: 'Hoy', ruta: '/[locale]/today', objetivo: 'Progreso del día, próxima acción, bloques, agua, racha y estado de descanso.', estado: 'Existe · vacío sin plan' },
+      { nombre: 'Mi plan', ruta: '/[locale]/plan', objetivo: 'Semana, detalle de entrenamiento y nutrición, historial básico.', estado: 'Propuesta · confirmar API' },
+      { nombre: 'Explorar coaches', ruta: '/[locale]/coaches', objetivo: 'Búsqueda por especialidad, idioma y modalidad; perfil y ofertas.', estado: 'Existe · vacío sin coaches' },
+      { nombre: 'Mi relación de coaching', ruta: '/[locale]/coach', objetivo: 'Coach activo, solicitud enviada, paquete y ciclo, terminar relación.', estado: 'Existe parcial' },
+      { nombre: 'Compra', ruta: '/[locale]/checkout · /purchases', objetivo: 'Resumen de oferta, pago, resultado y cancelación mientras esté pendiente.', estado: 'Existe · sandbox' },
+      { nombre: 'Mensajes', ruta: '/[locale]/messages', objetivo: 'Inbox, conversación con fecha y hora, vacío con salida a explorar coaches.', estado: 'Existe · sin tiempo real' },
+      { nombre: 'Perfil', ruta: '/[locale]/account', objetivo: 'Datos, objetivos y medidas, avatar, seguridad, sesiones y borrado de cuenta.', estado: 'Existe parcial' }
+    ]
+  },
+  {
+    id: 'coach', label: 'Coach', titulo: 'Coach',
+    nav: 'Resumen · Clientes · Planes · Paquetes · Mensajes · Perfil',
+    nota: 'La API ya expone dashboard, ficha de cliente, solicitudes e invitaciones; hoy ninguna tiene pantalla. Es el rol con más capacidad desaprovechada.',
+    secciones: [
+      { nombre: 'Resumen', ruta: '/[locale]/coach/overview', objetivo: 'KPIs, clientes activos, solicitudes pendientes y adherencia que necesita atención.', estado: 'Propuesta · API lista' },
+      { nombre: 'Clientes', ruta: '/[locale]/coach/clients', objetivo: 'Lista con búsqueda y filtros; ficha con objetivo, adherencia, plan y ciclo.', estado: 'Existe básico' },
+      { nombre: 'Solicitudes', ruta: '/[locale]/coach/requests', objetivo: 'Bandeja con aceptar, rechazar y explicación del estado.', estado: 'Propuesta · API lista' },
+      { nombre: 'Invitar cliente', ruta: '/[locale]/coach/clients/invite', objetivo: 'Invitación por correo, feedback de entrega y lista de invitaciones.', estado: 'Propuesta · API lista' },
+      { nombre: 'Planes', ruta: '/[locale]/coach/plans', objetivo: 'Biblioteca de ejercicios, creador de plan, asignación y vista del cliente.', estado: 'Existe · sin edición ni borrador' },
+      { nombre: 'Paquetes', ruta: '/[locale]/coach/packages', objetivo: 'Catálogo de ofertas, publicado o borrador, detalle y asignaciones.', estado: 'Existe · usa window.prompt' },
+      { nombre: 'Mensajes', ruta: '/[locale]/coach/messages', objetivo: 'Inbox con contexto del cliente y check-in destacado.', estado: 'Existe básico' },
+      { nombre: 'Perfil profesional', ruta: '/[locale]/coach/profile', objetivo: 'Identidad, especialidades, modalidades, precio, idiomas y disponibilidad.', estado: 'Propuesta · API lista' }
+    ]
+  },
+  {
+    id: 'admin', label: 'Administrador', titulo: 'Administrador',
+    nav: 'Resumen · Usuarios · Invitaciones · Leads · Operaciones · Reseñas · Configuración',
+    nota: 'Toda acción que cambie el estado de una persona pasa por confirmación con motivo y queda visible en auditoría.',
+    secciones: [
+      { nombre: 'Resumen', ruta: '/[locale]/admin', objetivo: 'Métricas, filtros por fecha, tablas y enlaces al detalle.', estado: 'Existe · solo lectura' },
+      { nombre: 'Usuarios', ruta: '/[locale]/admin/users', objetivo: 'Tabla con filtros, panel lateral, cambio de rol y estado con confirmación.', estado: 'Propuesta · API lista' },
+      { nombre: 'Invitaciones de coach', ruta: '/[locale]/admin/invitations', objetivo: 'Crear, listar, revocar y borrar; estados de expiración y uso.', estado: 'Propuesta · API lista' },
+      { nombre: 'Leads', ruta: '/[locale]/admin/leads', objetivo: 'Pipeline por estado con detalle del assessment.', estado: 'Propuesta · API lista' },
+      { nombre: 'Operaciones', ruta: '/[locale]/admin/operations', objetivo: 'Compras, pagos y auditoría con filtros y trazabilidad.', estado: 'Existe parcial' },
+      { nombre: 'Reseñas', ruta: '/[locale]/admin/reviews', objetivo: 'Cola de moderación con contexto, publicar u ocultar y motivo.', estado: 'Propuesta · API lista' },
+      { nombre: 'Configuración', ruta: '/[locale]/admin/settings', objetivo: 'Limpieza de sesiones expiradas y acciones administrativas secundarias.', estado: 'Propuesta · API lista' }
+    ]
+  }
+];
+
+const FLUJOS = [
+  {
+    num: 'Flujo 1', rol: 'Visitante → Cliente', titulo: 'Crear cuenta hasta el primer Hoy',
+    resumen: 'El camino que hoy no se puede completar desde la web porque la landing no ofrece registro.',
+    pasos: [
+      { n: 1, pantalla: 'Landing', ruta: '/[locale]', detalle: 'Header con Iniciar sesión y Crear cuenta visibles en escritorio y en móvil antes del menú.', accion: 'Crear cuenta', api: 'Sin API' },
+      { n: 2, pantalla: 'Registro', ruta: '/register', detalle: 'Correo, contraseña con reglas explícitas y consentimiento de datos de salud.', accion: 'Registrarme', api: 'API disponible' },
+      { n: 3, pantalla: 'Verifica tu correo', ruta: '/verify-email', detalle: 'Pantalla de espera con reenvío, cambio de correo y aviso de caducidad del enlace.', accion: 'Reenviar', api: 'API disponible' },
+      { n: 4, pantalla: 'Onboarding de cliente', ruta: '/onboarding', detalle: 'Objetivo, medidas, disponibilidad semanal e idioma. Progreso guardado por paso.', accion: 'Continuar', api: 'API disponible' },
+      { n: 5, pantalla: 'Hoy vacío', ruta: '/today', detalle: 'Sin plan asignado: explica que falta un coach y ofrece explorar coaches como única acción primaria.', accion: 'Explorar coaches', api: 'API disponible' }
+    ],
+    desvios: ['Correo ya registrado, con salida a iniciar sesión', 'Enlace de verificación caducado o ya usado', 'Onboarding abandonado a medias', 'Hoy sin coach y sin plan'],
+    pendientes: ['Entrega de correo en producción: hoy solo hay sandbox de pruebas']
+  },
+  {
+    num: 'Flujo 2', rol: 'Visitante', titulo: 'Iniciar sesión y recuperar contraseña',
+    resumen: 'Acceso para quien ya tiene cuenta, incluida la recuperación completa.',
+    pasos: [
+      { n: 1, pantalla: 'Landing', ruta: '/[locale]', detalle: 'Iniciar sesión como acción secundaria del header, nunca escondida en el menú móvil.', accion: 'Iniciar sesión', api: 'Sin API' },
+      { n: 2, pantalla: 'Iniciar sesión', ruta: '/login', detalle: 'Error genérico de credenciales, aviso si la cuenta está bloqueada y enlace a recuperación.', accion: 'Entrar', api: 'API disponible' },
+      { n: 3, pantalla: 'Olvidé mi contraseña', ruta: '/forgot-password', detalle: 'Confirmación neutra que no revela si el correo existe.', accion: 'Enviar enlace', api: 'API disponible' },
+      { n: 4, pantalla: 'Nueva contraseña', ruta: '/reset-password', detalle: 'Validación en vivo y cierre de las demás sesiones al terminar.', accion: 'Guardar', api: 'API disponible' },
+      { n: 5, pantalla: 'Raíz de su rol', ruta: '/today · /coach/overview · /admin', detalle: 'Cada rol entra a su propia raíz; sin permiso se muestra la pantalla 403.', accion: 'Entrar', api: 'API disponible' }
+    ],
+    desvios: ['Credenciales incorrectas y cuenta bloqueada', 'Correo sin verificar al iniciar sesión', 'Enlace de recuperación caducado', 'Sesión expirada durante el uso'],
+    pendientes: ['Notificación por correo del cambio de contraseña con proveedor real']
+  },
+  {
+    num: 'Flujo 3', rol: 'Visitante', titulo: 'Evaluación hasta lead confirmado',
+    resumen: 'El hero de la dirección 1c. Da una recomendación útil y luego bifurca en llamada o cuenta.',
+    pasos: [
+      { n: 1, pantalla: 'Evaluación · paso 1 a 6', ruta: '/[locale]#assessment', detalle: 'Un dato por paso, progreso visible, validación inmediata y nota de privacidad.', accion: 'Continuar', api: 'API disponible' },
+      { n: 2, pantalla: 'Enviando', ruta: '#assessment', detalle: 'Botón en carga con el formulario bloqueado para evitar envíos duplicados.', accion: 'Esperar', api: 'API disponible' },
+      { n: 3, pantalla: 'Recomendación', ruta: '#assessment-result', detalle: 'Resultado con rango orientativo, qué trabajar primero y aviso de que no es consejo médico.', accion: 'Leer', api: 'API disponible' },
+      { n: 4, pantalla: 'Dos salidas', ruta: '#booking · /register', detalle: 'Reservar llamada de 15 minutos o crear cuenta. Dos intenciones distintas, jerarquía distinta.', accion: 'Elegir', api: 'API disponible' },
+      { n: 5, pantalla: 'Lead en administración', ruta: '/admin/leads', detalle: 'El lead aparece con su assessment y estado editable por administración.', accion: 'Cambiar estado', api: 'API disponible' }
+    ],
+    desvios: ['Envío fallido con datos conservados', 'API_URL sin configurar: no presentar como captación lista', 'Cal.com sin configurar: mostrar error y alternativa', 'Segundo envío del mismo correo'],
+    pendientes: ['Verificar variables y endpoint de assessment antes de declarar la landing lista para producción']
+  },
+  {
+    num: 'Flujo 4', rol: 'Cliente', titulo: 'Explorar coach, comprar y empezar el ciclo',
+    resumen: 'De cliente sin coach a relación activa con plan. Hoy no es demostrable porque no hay ofertas publicadas.',
+    pasos: [
+      { n: 1, pantalla: 'Explorar coaches', ruta: '/coaches', detalle: 'Filtros por especialidad, idioma y modalidad, con vacío explicado si no hay coaches publicados.', accion: 'Filtrar', api: 'API disponible' },
+      { n: 2, pantalla: 'Perfil del coach', ruta: '/coaches/[id]', detalle: 'Especialidades, modalidades, idiomas, reseñas visibles y ofertas publicadas.', accion: 'Ver oferta', api: 'API disponible' },
+      { n: 3, pantalla: 'Resumen de compra', ruta: '/checkout', detalle: 'Qué incluye, duración del ciclo, precio, impuestos y política de cancelación.', accion: 'Pagar', api: 'API disponible · sandbox' },
+      { n: 4, pantalla: 'Resultado del pago', ruta: '/checkout/return', detalle: 'Confirmado, pendiente o fallido, cada uno con su siguiente paso y referencia de compra.', accion: 'Continuar', api: 'API disponible' },
+      { n: 5, pantalla: 'Relación activa', ruta: '/coach', detalle: 'Coach, paquete, ciclo con fechas y acceso a mensajes; el plan aparece en Hoy cuando el coach lo asigna.', accion: 'Enviar mensaje', api: 'API disponible' }
+    ],
+    desvios: ['Sin ofertas publicadas', 'Pago pendiente con cancelación disponible', 'Pago fallido con reintento', 'Solicitud de relación enviada y aún sin respuesta', 'Reembolso'],
+    pendientes: ['Pago de producción: hoy proveedor sandbox con soporte de webhook', 'Correo de confirmación de compra con proveedor real']
+  },
+  {
+    num: 'Flujo 5', rol: 'Coach', titulo: 'De onboarding a primer check-in',
+    resumen: 'El recorrido operativo del coach: publicar oferta, traer cliente, asignar plan y hacer seguimiento.',
+    pasos: [
+      { n: 1, pantalla: 'Onboarding de coach', ruta: '/onboarding', detalle: 'Identidad profesional, especialidades, modalidades, idiomas y disponibilidad.', accion: 'Publicar perfil', api: 'API disponible' },
+      { n: 2, pantalla: 'Crear paquete', ruta: '/coach/packages/new', detalle: 'Nombre, qué incluye, duración y precio, con borrador antes de publicar.', accion: 'Publicar', api: 'API disponible' },
+      { n: 3, pantalla: 'Invitar cliente', ruta: '/coach/clients/invite', detalle: 'Invitación por correo con feedback de entrega y lista de invitaciones enviadas.', accion: 'Invitar', api: 'API disponible' },
+      { n: 4, pantalla: 'Crear y asignar plan', ruta: '/coach/plans', detalle: 'Biblioteca de ejercicios, creador de plan, revisión y asignación al cliente con confirmación.', accion: 'Asignar', api: 'API disponible' },
+      { n: 5, pantalla: 'Ficha del cliente', ruta: '/coach/clients/[id]', detalle: 'Adherencia de 7 días, plan vigente, compra y ciclo, y acciones del coach.', accion: 'Revisar', api: 'API disponible' },
+      { n: 6, pantalla: 'Check-in', ruta: '/coach/messages', detalle: 'Mensaje de seguimiento marcado como check-in, con contexto del cliente al lado.', accion: 'Enviar', api: 'API disponible' }
+    ],
+    desvios: ['Coach sin clientes ni ofertas', 'Solicitud de conexión rechazada con motivo', 'Invitación caducada o ya usada', 'Plan asignado a un cliente sin ciclo activo'],
+    pendientes: ['Borradores, versiones y duplicación de plantillas de plan', 'Archivado consistente de planes de entrenamiento y nutrición', 'Agenda de sesiones dentro de la app']
+  },
+  {
+    num: 'Flujo 6', rol: 'Administrador', titulo: 'Operar usuarios e invitaciones con trazabilidad',
+    resumen: 'Cambiar el estado de una persona y crear invitaciones de coach, siempre con confirmación y registro.',
+    pasos: [
+      { n: 1, pantalla: 'Resumen de operaciones', ruta: '/admin', detalle: 'Métricas, filtros por fecha y enlaces al detalle de compras, pagos y auditoría.', accion: 'Filtrar', api: 'API disponible' },
+      { n: 2, pantalla: 'Usuarios', ruta: '/admin/users', detalle: 'Búsqueda y filtros por rol y estado; la fila abre un panel lateral con el detalle.', accion: 'Buscar', api: 'API disponible' },
+      { n: 3, pantalla: 'Confirmar cambio', ruta: '/admin/users/[id]', detalle: 'Modal con consecuencias, campo de motivo y aviso de que quedará en auditoría.', accion: 'Bloquear o cambiar rol', api: 'API disponible' },
+      { n: 4, pantalla: 'Resultado y auditoría', ruta: '/admin/operations', detalle: 'Toast con deshacer cuando aplica y entrada de auditoría con autor, motivo y fecha.', accion: 'Verificar', api: 'API disponible' },
+      { n: 5, pantalla: 'Invitación de coach', ruta: '/admin/invitations', detalle: 'Crear invitación, ver pendiente, usada, caducada o revocada, y revocar con confirmación.', accion: 'Crear invitación', api: 'API disponible' }
+    ],
+    desvios: ['Intento de bloquear al último administrador', 'Usuario con relaciones activas al bloquear', 'Invitación revocada que alguien intenta usar', 'Acceso de otro rol a estas rutas: pantalla 403'],
+    pendientes: ['Permisos administrativos más granulares', 'Exportación y reportes analíticos', 'Correo de invitación con dominio remitente real']
+  }
+];
+
+class Component extends DCLogic {
+  state = { rol: 0, flujo: 0 };
+  renderVals() {
+    return {
+      roles: ROLES.map((r, i) => ({ label: r.label, activo: this.state.rol === i, select: () => this.setState({ rol: i }) })),
+      rolActual: ROLES[this.state.rol],
+      flujos: FLUJOS.map((f, i) => ({ num: f.num, titulo: f.titulo, activo: this.state.flujo === i, select: () => this.setState({ flujo: i }) })),
+      flujoActual: FLUJOS[this.state.flujo]
+    };
+  }
+}
+</script>
+</body>
+</html>
