@@ -45,6 +45,8 @@ La interfaz es bilingüe en español e inglés. El español es la referencia ini
 
 La app autenticada tiene navegación por roles y varias operaciones reales, pero se ve como una colección de formularios y tarjetas genéricas. La landing usa una marca distinta (“FitCoach”) y no ofrece enlaces para iniciar sesión ni crear cuenta. El panel admin solo muestra una vista de operaciones de lectura.
 
+La base local revisada contiene 2 usuarios y **0** perfiles de coach, relaciones de coaching, planes, asignaciones, paquetes y mensajes. Por ello, las pantallas actuales son conexiones parciales a la API, no un recorrido de producto listo para demostración: hoy muestran correctamente estados vacíos, pero el visitante no puede completar todo el camino de cliente desde la web.
+
 Problemas que el diseño debe corregir:
 
 - Navegación reducida que oculta capacidades ya disponibles.
@@ -76,11 +78,11 @@ Navegación propuesta: **Hoy · Mi plan · Mi coach · Mensajes · Perfil**.
 
 | Pantalla | Estado actual en web | API ya disponible | Diseño requerido |
 |---|---|---|---|
-| Hoy | Funcional: progreso, acciones de entrenamiento/comida, agua, check-in y nudges | Resumen diario, completados, agua, racha | Dashboard compacto con progreso, próxima acción, bloques de rutina y estados de descanso/sin plan. |
-| Mi plan | Actualmente repite la vista “Hoy” | Planes y asignaciones diarios | Vista de calendario o semana, detalle de entrenamiento y nutrición, historial básico. Requiere confirmar API para semana/historial si se quiere implementar. |
-| Mi coach | Directorio, filtros, matching y perfil público con paquetes | Búsqueda, matching, perfil, relación, ofertas, reseñas | Separar “Explorar coaches” de “Mi relación de coaching”; mostrar solicitud, coach activo, paquete/ciclo y CTA contextual. |
-| Compra | Checkout y estado de retorno | Checkout, pagos, compras, cancelación pendiente | Flujo con resumen de oferta, precio, estado de pago y pantalla de resultado confiable. |
-| Mensajes | Conversación básica y check-ins | Lista de pares, conversación, envío | Inbox, conversación, fecha/hora, estados vacíos y CTA para encontrar coach. No prometer chat en tiempo real. |
+| Hoy | Conectado al resumen diario, pero vacío sin asignaciones | Resumen diario, completados, agua, racha | Dashboard compacto con progreso, próxima acción, bloques de rutina y estados de descanso/sin plan. |
+| Mi plan | Solo un título alrededor de la misma vista de “Hoy”; no hay vista de plan propia | Planes y asignaciones diarios | Vista de calendario o semana, detalle de entrenamiento y nutrición, historial básico. Requiere confirmar API para semana/historial si se quiere implementar. |
+| Mi coach | Formularios de filtros y matching, sin resultados cuando no hay coaches publicados; no crea la relación desde la interfaz | Búsqueda, matching, perfil, relación, ofertas, reseñas | Separar “Explorar coaches” de “Mi relación de coaching”; mostrar solicitud, coach activo, paquete/ciclo y CTA contextual. |
+| Compra | Ruta de checkout y retorno, sin un recorrido demostrable mientras no existan ofertas publicadas | Checkout, pagos, compras, cancelación pendiente | Flujo con resumen de oferta, precio, estado de pago y pantalla de resultado confiable. |
+| Mensajes | Componente de conversación, vacío sin una relación activa | Lista de pares, conversación, envío | Inbox, conversación, fecha/hora, estados vacíos y CTA para encontrar coach. No prometer chat en tiempo real. |
 | Perfil | Edita nombre, apellido y zona horaria | Perfil, onboarding, contraseña, avatar, borrado de cuenta, sesiones | Centro de cuenta: datos, objetivos y medidas, seguridad, sesiones, avatar y eliminación. |
 | Reseñas/renovación | Formulario y nudges existentes | Reseñas y nudges | Integrarlos después de un ciclo; no dejarlos como rutas aisladas. |
 
@@ -91,7 +93,7 @@ Navegación propuesta: **Resumen · Clientes · Planes · Paquetes · Mensajes �
 | Pantalla | Estado actual en web | API ya disponible | Diseño requerido |
 |---|---|---|---|
 | Resumen | No existe como pantalla propia; `/today` no muestra datos de coach | Dashboard y estadísticas de coach | KPIs, clientes activos, solicitudes pendientes, adherencia que necesita atención y próximos pasos. |
-| Clientes | Lista básica de relaciones activas | Clientes, cliente individual, vinculados, progreso, paquetes asignados | Lista con búsqueda/filtros y ficha individual con objetivo, adherencia, plan, compra/ciclo y acciones del coach. |
+| Clientes | Lista básica de relaciones activas; queda vacía si el coach no tiene vínculos | Clientes, cliente individual, vinculados, progreso, paquetes asignados | Lista con búsqueda/filtros y ficha individual con objetivo, adherencia, plan, compra/ciclo y acciones del coach. |
 | Solicitudes | No existe | Solicitudes de conexión: listar y aceptar/rechazar | Bandeja de solicitudes con decisión y explicación de estado. |
 | Planes | Creación de ejercicios, planes, asignaciones y nutrición; progreso de 7 días | CRUD de ejercicios/planes, asignaciones, nutrición y progreso | Flujo guiado: biblioteca → creador de plan → asignar a cliente. Añadir edición, borrador, confirmación y vista de cliente. |
 | Paquetes | Crear, editar precio y activar/desactivar | CRUD de ofertas, asignación a clientes | Catálogo de ofertas, estado publicado/borrador, detalle y asignaciones. No usar `window.prompt` en el diseño final. |
