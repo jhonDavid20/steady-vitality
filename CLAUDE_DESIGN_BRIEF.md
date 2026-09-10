@@ -62,6 +62,38 @@ Problemas que el diseño debe corregir:
 
 Cabecera: logo **Steady Vitality**, navegación de secciones, selector ES/EN, tema, **Iniciar sesión** y CTA primaria **Crear cuenta**. En móvil, ambos accesos deben aparecer antes o dentro del menú con la CTA destacada.
 
+#### Inventario actual de la landing
+
+| Sección actual | Qué hace hoy | Estado real |
+|---|---|---|
+| Navegación | Enlaces de ancla a Inicio, Servicios, Evaluación, Reserva y Acerca de; selector ES/EN y tema | Funciona, pero muestra “FitCoach” y no ofrece acceso a cuenta. |
+| Hero | Explica la propuesta y desplaza a Evaluación o Reserva | Funciona como scroll; no conecta con registro, coach o precios. |
+| Filosofía | Presenta el enfoque y enlaza a una página de filosofía | Contenido informativo; falta prueba social e historias reales. |
+| Servicios | Describe servicios ofrecidos | Informativo; no tiene CTA específico por servicio. |
+| Evaluación | Formulario con datos físicos, objetivo y recomendación/BMI | Envía un lead al backend si `API_URL` está configurada. Sin esa variable devuelve éxito aunque solo registra el dato en el servidor web, por lo que no debe presentarse como captación lista para producción. |
+| Reserva | Embed de Cal.com | Funciona si están configurados `NEXT_PUBLIC_CAL_LINK` y `NEXT_PUBLIC_CAL_NAMESPACE`; es una reserva externa, no una agenda dentro de la app. |
+| Acerca de | Información de la marca/coach | Informativo. |
+
+#### Rediseño requerido de la landing
+
+La landing debe ser un embudo de adquisición, no una copia de la app autenticada. Diseñar estos caminos visibles desde la primera pantalla:
+
+1. **Quiero explorar el servicio** → servicios, filosofía, prueba social y reserva de llamada.
+2. **Quiero saber qué me conviene** → evaluación → lead confirmado → siguiente paso claro: reservar llamada o crear cuenta.
+3. **Ya tengo una cuenta** → Iniciar sesión.
+4. **Quiero empezar por mi cuenta** → Crear cuenta → verificación → onboarding de cliente.
+
+Entregar los siguientes bloques y estados:
+
+- Header desktop y móvil con marca Steady Vitality, Iniciar sesión y Crear cuenta.
+- Hero con una CTA primaria única y una secundaria; no dos botones visualmente idénticos.
+- Sección de cómo funciona el proceso: evaluación → coach → plan → progreso.
+- Servicios/ofertas con CTA por intención, sin inventar precios o resultados médicos.
+- Evaluación accesible, con progreso, validación, privacidad y éxito/error reales.
+- Prueba social como componente preparado para contenido aprobado; usar placeholders declarados, no testimonios falsos.
+- Reserva con estados de carga/error si Cal.com no está configurado.
+- Footer con navegación, contacto, privacidad y términos antes del lanzamiento.
+
 Rutas ya existentes:
 
 - `/[locale]` — landing: propuesta, filosofía, servicios, assessment, llamada y acerca de.
@@ -70,7 +102,7 @@ Rutas ya existentes:
 - `/[locale]/forgot-password`, `/reset-password`, `/verify-email` — recuperación y verificación.
 - `/[locale]/onboarding` — onboarding según rol.
 
-El CTA de assessment debe continuar captando leads. El CTA de crear cuenta debe abrir registro y no competir con la reserva de llamada: ambos resuelven intenciones distintas.
+El CTA de assessment debe continuar captando leads. El CTA de crear cuenta debe abrir registro y no competir con la reserva de llamada: ambos resuelven intenciones distintas. Las variables y el endpoint de assessment deben estar configurados y verificados antes de declarar la landing lista para producción.
 
 ### Cliente
 
@@ -178,10 +210,11 @@ Todos deben documentar variantes, estados hover/focus/disabled/loading/error, co
 
 1. Landing → **Crear cuenta** → verificación de correo → onboarding de cliente → Hoy vacío.
 2. Landing → **Iniciar sesión** → recuperación de contraseña → cuenta existente.
-3. Cliente: explorar coach → ver perfil/oferta → checkout → pago confirmado → relación/plan.
-4. Coach: onboarding → crear oferta → invitar cliente → crear/asignar plan → revisar progreso → enviar check-in.
-5. Admin: ver resumen → filtrar usuario → cambiar estado/rol con confirmación → registrar resultado en auditoría.
-6. Admin: crear invitación de coach y revisar su estado.
+3. Landing: evaluación → lead confirmado → reserva de llamada o registro.
+4. Cliente: explorar coach → ver perfil/oferta → checkout → pago confirmado → relación/plan.
+5. Coach: onboarding → crear oferta → invitar cliente → crear/asignar plan → revisar progreso → enviar check-in.
+6. Admin: ver resumen → filtrar usuario → cambiar estado/rol con confirmación → registrar resultado en auditoría.
+7. Admin: crear invitación de coach y revisar su estado.
 
 ## 10. Entregables esperados de Claude Design
 
