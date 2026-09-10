@@ -2,16 +2,33 @@ import { MailtrapClient } from 'mailtrap';
 
 // ── Client (singleton) ────────────────────────────────────────────────────────
 
-const TOKEN       = process.env.MAILTRAP_TOKEN    ?? '';
-const INBOX_ID    = Number(process.env.MAILTRAP_INBOX_ID ?? '4513531');
+const TOKEN       = process.env.MAILTRAP_TOKEN ?? '';
+const INBOX_ID    = Number(process.env.MAILTRAP_INBOX_ID);
 const FROM_EMAIL  = process.env.EMAIL_FROM_ADDRESS ?? 'noreply@steadyvitality.com';
 const FROM_NAME   = process.env.EMAIL_FROM_NAME    ?? 'Steady Vitality';
+let configurationWarningShown = false;
 
 const client = new MailtrapClient({
   token: TOKEN,
   sandbox: true,
   testInboxId: INBOX_ID,
 });
+
+function hasMailtrapConfiguration(): boolean {
+  return TOKEN.trim().length > 0 && Number.isInteger(INBOX_ID) && INBOX_ID > 0;
+}
+
+function ensureMailtrapConfiguration(): boolean {
+  if (hasMailtrapConfiguration()) return true;
+
+  if (!configurationWarningShown) {
+    configurationWarningShown = true;
+    console.error(
+      '[mailer] Mailtrap is not configured. Set MAILTRAP_TOKEN and MAILTRAP_INBOX_ID in apps/api/.env; email was not sent.'
+    );
+  }
+  return false;
+}
 
 // ── Shared HTML shell ─────────────────────────────────────────────────────────
 
@@ -109,6 +126,8 @@ function buildEmail(opts: {
  * Fire-and-forget — errors are caught and logged; they never bubble up.
  */
 export async function sendCoachInviteEmail(to: string, inviteUrl: string): Promise<void> {
+  if (!ensureMailtrapConfiguration()) return;
+
   try {
     const html = buildEmail({
       preheader:   'You have been invited to join Steady Vitality as a coach.',
@@ -144,6 +163,8 @@ export async function sendClientInviteEmail(
     inviteUrl: string,
     coachName: string,
 ): Promise<void> {
+  if (!ensureMailtrapConfiguration()) return;
+
   try {
     const html = buildEmail({
       preheader:   `${coachName} has invited you to their coaching platform.`,
@@ -173,6 +194,8 @@ export async function sendClientInviteEmail(
 }
 /** Send an account email-verification link. */
 export async function sendEmailVerificationEmail(to: string, verificationUrl: string): Promise<void> {
+  if (!ensureMailtrapConfiguration()) return;
+
   try {
     const html = buildEmail({
       preheader: 'Confirm your Steady Vitality email address.',
@@ -195,6 +218,8 @@ export async function sendEmailVerificationEmail(to: string, verificationUrl: st
 
 /** Send a password-reset link without exposing whether an account exists. */
 export async function sendPasswordResetEmail(to: string, resetUrl: string): Promise<void> {
+  if (!ensureMailtrapConfiguration()) return;
+
   try {
     const html = buildEmail({
       preheader: 'Reset your Steady Vitality password.',
