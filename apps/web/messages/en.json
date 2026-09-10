@@ -28,7 +28,7 @@
   },
   "Today": {
     "greeting": "Hi, {name}!",
-    "placeholder": "Your daily focus will live here — today's workout, meals and progress."
+    "description": "Review your training, nutrition, hydration, and progress for today."
   },
   "Workouts": {
     "loading": "Loading today's plan…",
