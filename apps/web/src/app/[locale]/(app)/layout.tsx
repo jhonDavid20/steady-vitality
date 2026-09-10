@@ -14,6 +14,7 @@ export default async function AppLayout({
   const { locale } = await params;
   const user = await getServerUser();
   if (!user) redirect(`/${locale}/login`);
+  if (!user.isEmailVerified) redirect(`/${locale}/verify-email`);
   if (!user.hasCompletedOnboarding) redirect(`/${locale}/onboarding`);
 
   const [t, navigation] = await Promise.all([getTranslations("AppNav"), getTranslations("Navigation")]);

@@ -12,7 +12,7 @@ export default async function TodayPage() {
       <h1 className="text-3xl font-bold text-foreground">
         {t("greeting", { name: user?.firstName ?? "" })}
       </h1>
-      <p className="text-muted-foreground">{t("placeholder")}</p>
+      <p className="text-muted-foreground">{t("description")}</p>
       {user?.role === "client" && <RetentionNudges />}
       {user?.role === "client" && <DailyToday />}
     </section>

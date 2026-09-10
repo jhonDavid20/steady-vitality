@@ -1,6 +1,3 @@
-import { redirect } from "next/navigation";
-import { getServerUser } from "@/lib/auth";
-
 export default async function AuthLayout({
   children,
   params,
@@ -8,9 +5,7 @@ export default async function AuthLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
-  const user = await getServerUser();
-  if (user) redirect(`/${locale}/today`);
+  await params;
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-4 py-12">

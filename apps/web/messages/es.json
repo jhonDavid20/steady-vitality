@@ -28,7 +28,7 @@
   },
   "Today": {
     "greeting": "¡Hola, {name}!",
-    "placeholder": "Aquí vivirá tu foco del día — entreno, comidas y progreso de hoy."
+    "description": "Revisa tu entrenamiento, nutrición, hidratación y progreso de hoy."
   },
   "Workouts": {
     "loading": "Cargando el plan de hoy…",
@@ -57,6 +57,8 @@
     "day": { "0": "Domingo", "1": "Lunes", "2": "Martes", "3": "Miércoles", "4": "Jueves", "5": "Viernes", "6": "Sábado" }
   },
   "Daily": {
+    "planTitle": "Tu plan",
+    "planDescription": "Tu entrenamiento, nutrición y acciones diarias se mantienen juntos aquí.",
     "loading": "Cargando tu día…",
     "loadError": "No pudimos actualizar tu día. Inténtalo de nuevo.",
     "dailyProgress": "Progreso de hoy",
@@ -95,7 +97,29 @@
     "noConversation": "Todavía no hay una conversación activa con el coach.",
     "writeMessage": "Escribe un mensaje…",
     "checkIn": "Check-in del coach",
-    "send": "Enviar"
+    "send": "Enviar",
+    "findCoach": "Encuentra un coach",
+    "viewClients": "Ver clientes"
+  },
+  "Profile": {
+    "title": "Tu perfil",
+    "description": "Mantén actualizados los datos de tu cuenta.",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "timezone": "Zona horaria",
+    "save": "Guardar cambios",
+    "saved": "Perfil guardado.",
+    "saveError": "No pudimos guardar tu perfil."
+  },
+  "Clients": {
+    "title": "Clientes",
+    "description": "Personas que actualmente tienen una relación de coaching activa contigo.",
+    "empty": "Aún no tienes clientes activos. Publica un paquete y luego invita o conecta con tu primer cliente.",
+    "managePackages": "Administrar paquetes",
+    "loadError": "No pudimos cargar tus clientes.",
+    "noGoal": "No hay objetivo registrado",
+    "noActivity": "No hay nivel de actividad registrado",
+    "since": "Activo desde {date}"
   },
   "Marketplace": {
     "findCoach": "Encuentra tu coach",
@@ -413,6 +437,7 @@
     "verify": "Confirmar correo",
     "verifying": "Confirmando…",
     "verifyError": "No se pudo confirmar el correo.",
+    "verifyPending": "Revisa tu bandeja de entrada para encontrar el enlace de confirmación. Ábrelo en este navegador para activar tu cuenta.",
     "invalidLink": "Este enlace no existe o no es válido."
   },
   "Navigation": {

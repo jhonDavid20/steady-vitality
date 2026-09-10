@@ -1,8 +1,9 @@
 import { getServerUser } from "@/lib/auth";
-import { RoleEmptyState } from "@/components/role-empty-state";
+import { redirect } from "next/navigation";
+import { CoachClients } from "@/components/coach/coach-clients";
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const [{ locale }, user] = await Promise.all([params, getServerUser()]);
-  if (!user) return null;
-  return <RoleEmptyState user={user} locale={locale} allowed={["coach"]} title="Clients" body="Invite a client or review the people currently working with you." />;
+  if (user?.role !== "coach") redirect(`/${locale}/today`);
+  return <CoachClients locale={locale} />;
 }
