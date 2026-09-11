@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: oklch(0.955 0.006 128); color: oklch(0.24 0.015 130); font-family: "Sora", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.44 0.09 128); text-decoration: none; }
+  a:hover { color: oklch(0.34 0.09 128); text-decoration: underline; }
+  @keyframes sv-shimmer { 0% { background-position: -240px 0; } 100% { background-position: 240px 0; } }
+</style>
+</helmet>
+<div style="padding: 28px 24px 80px; max-width: 1560px; margin: 0 auto">
+
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: space-between; margin-bottom: 20px">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px">
+        <div style="width: 18px; height: 18px; border-radius: 6px; background: oklch(0.48 0.09 128)"></div>
+        <span style="font-size: 14px; font-weight: 600">Steady Vitality</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">área de administración</span>
+      </div>
+      <h1 style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.025em">Panel de administración</h1>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+      <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.44 0.012 130); margin-right: 4px">Estado</span>
+      <sc-for list="{{ estados }}" as="e" hint-placeholder-count="6">
+        <button onClick="{{ e.select }}" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid oklch(0.88 0.012 128); background: #fff; font-family: inherit; font-size: 13px; font-weight: 500; color: oklch(0.32 0.015 130); cursor: pointer; display: inline-flex; align-items: center; gap: 7px" style-hover="background: oklch(0.96 0.02 128)">
+          <sc-if value="{{ e.activo }}" hint-placeholder-val="{{ true }}"><span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.48 0.09 128)"></span></sc-if>
+          {{ e.label }}
+        </button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+    <div style="flex: 999 1 720px; min-width: 0; display: flex; flex-wrap: wrap; border: 1px solid oklch(0.90 0.012 128); border-radius: 18px; background: #fff; overflow: hidden; box-shadow: 0 10px 40px oklch(0.24 0.015 130 / 0.05)">
+
+      <nav style="flex: 0 0 236px; border-right: 1px solid oklch(0.94 0.008 128); background: oklch(0.985 0.005 128); padding: 20px 14px; display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.44 0.012 130); padding: 0 10px 10px">Operación</div>
+        <sc-for list="{{ secciones }}" as="s" hint-placeholder-count="7">
+          <button onClick="{{ s.select }}" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; font-family: inherit; font-size: 14px; color: oklch(0.30 0.015 130); text-align: left; cursor: pointer; width: 100%" style-hover="background: oklch(0.95 0.015 128)">
+            <sc-if value="{{ s.activo }}" hint-placeholder-val="{{ true }}"><span style="width: 3px; height: 20px; border-radius: 3px; background: oklch(0.48 0.09 128); flex: none"></span></sc-if>
+            <sc-if value="{{ s.inactivo }}" hint-placeholder-val="{{ true }}"><span style="width: 3px; height: 20px; flex: none"></span></sc-if>
+            <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ s.label }}</span>
+            <sc-if value="{{ s.contador }}" hint-placeholder-val="{{ true }}"><span style="margin-left: auto; font-size: 11px; font-variant-numeric: tabular-nums; padding: 3px 7px; border-radius: 999px; background: oklch(0.94 0.03 128); color: oklch(0.34 0.07 128); font-weight: 600">{{ s.contador }}</span></sc-if>
+          </button>
+        </sc-for>
+        <div style="margin-top: auto; padding: 14px 10px 0; border-top: 1px solid oklch(0.94 0.008 128); display: flex; align-items: center; gap: 10px">
+          <div style="width: 32px; height: 32px; border-radius: 999px; background: oklch(0.90 0.02 240); color: oklch(0.34 0.09 240); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">JD</div>
+          <div style="min-width: 0"><div style="font-size: 13px; font-weight: 500">Jhon D.</div><div style="font-size: 11px; color: oklch(0.44 0.012 130)">Administrador</div></div>
+        </div>
+      </nav>
+
+      <div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column">
+
+        <sc-if value="{{ esPermiso }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 72px 32px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px">
+            <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: oklch(0.95 0.02 240); color: oklch(0.38 0.09 240)">403</span>
+            <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em">No tienes permiso para ver esta pantalla</div>
+            <p style="margin: 0; max-width: 46ch; font-size: 14px; line-height: 1.6; color: oklch(0.42 0.015 130)">Esta sección es solo para administración. Tu sesión entró con un rol distinto. Si crees que es un error, escribe a soporte.</p>
+            <p style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">EN: You don’t have access to this screen.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; justify-content: center">
+              <button style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Volver a mi panel</button>
+              <button style="min-height: 44px; padding: 0 18px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 14px; cursor: pointer">Contactar soporte</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ conAcceso }}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 24px 28px; border-bottom: 1px solid oklch(0.94 0.008 128); display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: space-between">
+            <div style="min-width: 0">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px">
+                <h2 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em">{{ pantalla.titulo }}</h2>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">{{ pantalla.ruta }}</span>
+                <sc-if value="{{ pantalla.requiereBackend }}" hint-placeholder-val="{{ false }}">
+                  <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; background: oklch(0.97 0.02 25); color: oklch(0.42 0.12 25); border: 1px solid oklch(0.90 0.05 25)">Requiere backend</span>
+                </sc-if>
+              </div>
+              <p style="margin: 0; max-width: 72ch; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">{{ pantalla.subtitulo }}</p>
+            </div>
+            <button onClick="{{ abrirModal }}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; flex: none" style-hover="background: oklch(0.42 0.09 128)">{{ pantalla.primaria }}</button>
+          </div>
+
+          <sc-if value="{{ esExito }}" hint-placeholder-val="{{ false }}">
+            <div style="margin: 20px 28px 0; display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px; background: oklch(0.96 0.03 150); border: 1px solid oklch(0.88 0.05 150)">
+              <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.45 0.10 150); margin-top: 6px; flex: none"></span>
+              <div style="min-width: 0">
+                <div style="font-size: 14px; font-weight: 600; color: oklch(0.32 0.08 150)">{{ exito.titulo }}</div>
+                <div style="font-size: 13px; line-height: 1.5; color: oklch(0.36 0.05 150)">{{ exito.texto }}</div>
+              </div>
+              <button style="margin-left: auto; flex: none; min-height: 36px; padding: 0 12px; border: 1px solid oklch(0.80 0.06 150); border-radius: 9px; background: transparent; color: oklch(0.32 0.08 150); font-family: inherit; font-size: 13px; cursor: pointer">Deshacer</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ esResumen }}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 24px 28px">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 22px">
+                <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+                  <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 18px">
+                    <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.44 0.012 130)">{{ k.label }}</div>
+                    <div style="font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin: 8px 0 4px">{{ k.valor }}</div>
+                    <div style="font-size: 13px; color: oklch(0.42 0.015 130)">{{ k.nota }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
+                <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; overflow: hidden">
+                  <div style="padding: 14px 18px; border-bottom: 1px solid oklch(0.95 0.008 128); display: flex; justify-content: space-between; align-items: center">
+                    <span style="font-size: 15px; font-weight: 600">Últimas compras</span>
+                    <a href="#operaciones" style="font-size: 13px">Ver todas</a>
+                  </div>
+                  <div style="padding: 8px 0">
+                    <sc-for list="{{ resumenCompras }}" as="c" hint-placeholder-count="3">
+                      <div style="padding: 10px 18px; display: flex; gap: 12px; align-items: center">
+                        <div style="min-width: 0"><div style="font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ c.titulo }}</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">{{ c.meta }}</div></div>
+                        <span style="margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.005 130); color: oklch(0.36 0.012 130)">
+                          <sc-if value="{{ c.chip.pendiente }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.62 0.10 75)"></span></sc-if>
+                          <sc-if value="{{ c.chip.completado }}" hint-placeholder-val="{{ true }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.10 150)"></span></sc-if>
+                          <sc-if value="{{ c.chip.fallido }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.13 25)"></span></sc-if>
+                          {{ c.chip.label }}
+                        </span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; overflow: hidden">
+                  <div style="padding: 14px 18px; border-bottom: 1px solid oklch(0.95 0.008 128); display: flex; justify-content: space-between; align-items: center">
+                    <span style="font-size: 15px; font-weight: 600">Auditoría reciente</span>
+                    <a href="#operaciones" style="font-size: 13px">Ver registro</a>
+                  </div>
+                  <div style="padding: 14px 18px; display: flex; flex-direction: column; gap: 14px">
+                    <sc-for list="{{ auditoria }}" as="a" hint-placeholder-count="3">
+                      <div style="display: flex; gap: 10px">
+                        <span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.48 0.09 128); margin-top: 6px; flex: none"></span>
+                        <div style="min-width: 0"><div style="font-size: 13px; line-height: 1.45">{{ a.texto }}</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">{{ a.meta }}</div></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ esConfig }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 24px 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px">
+              <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 20px">
+                <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px">Sesiones expiradas</div>
+                <p style="margin: 0 0 14px; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">Elimina las sesiones caducadas de la base. Acción secundaria: pide confirmación y deja registro en auditoría.</p>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130); margin-bottom: 14px">Última limpieza: 9 sep 03:00 · sistema</div>
+                <button onClick="{{ abrirModal }}" style="min-height: 44px; padding: 0 16px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 14px; cursor: pointer">Limpiar ahora</button>
+              </div>
+              <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 20px">
+                <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px">Idioma por defecto del panel</div>
+                <p style="margin: 0 0 14px; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">Afecta solo a la interfaz de administración. Los correos usan el idioma de cada persona.</p>
+                <div style="display: flex; gap: 8px">
+                  <span style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 10px; border: 1.5px solid oklch(0.48 0.09 128); background: oklch(0.97 0.02 128); font-size: 14px; font-weight: 500">Español</span>
+                  <span style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 10px; border: 1px solid oklch(0.88 0.012 128); font-size: 14px">English</span>
+                </div>
+              </div>
+              <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 20px">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px">
+                  <div style="font-size: 15px; font-weight: 600">Exportación de datos</div>
+                  <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; background: oklch(0.97 0.02 25); color: oklch(0.42 0.12 25); border: 1px solid oklch(0.90 0.05 25)">Requiere backend</span>
+                </div>
+                <p style="margin: 0 0 14px; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">Descarga de usuarios, compras y leads en CSV. No existe endpoint de exportación; la acción se muestra desactivada hasta que exista.</p>
+                <button disabled="disabled" style="min-height: 44px; padding: 0 16px; border: 1px solid oklch(0.92 0.012 128); border-radius: 10px; background: oklch(0.97 0.005 130); color: oklch(0.60 0.012 130); font-family: inherit; font-size: 14px; cursor: not-allowed">Exportar CSV</button>
+              </div>
+              <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 20px">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px">
+                  <div style="font-size: 15px; font-weight: 600">Permisos granulares</div>
+                  <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; background: oklch(0.97 0.02 25); color: oklch(0.42 0.12 25); border: 1px solid oklch(0.90 0.05 25)">Requiere backend</span>
+                </div>
+                <p style="margin: 0; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">Hoy solo existe el rol administrador completo. Separar moderación, soporte y finanzas necesita modelo de permisos nuevo.</p>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ esTabla }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 20px 28px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+              <div style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.88 0.012 128); border-radius: 10px; flex: 1 1 240px; min-width: 0">
+                <span style="font-size: 13px; color: oklch(0.44 0.012 130); flex: none">Buscar</span>
+                <input type="text" placeholder="{{ pantalla.placeholder }}" style="border: 0; font-family: inherit; font-size: 14px; width: 100%; min-width: 0; color: oklch(0.24 0.015 130); background: transparent" />
+              </div>
+              <sc-for list="{{ pantalla.filtros }}" as="f" hint-placeholder-count="3">
+                <button style="min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.88 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 13px; color: oklch(0.32 0.015 130); cursor: pointer; flex: none" style-hover="background: oklch(0.96 0.02 128)">{{ f }}</button>
+              </sc-for>
+              <button style="min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.48 0.09 128); border-radius: 10px; background: oklch(0.96 0.02 128); color: oklch(0.34 0.08 128); font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; flex: none">{{ pantalla.filtroActivo }}&#160;&#215;</button>
+            </div>
+
+            <sc-if value="{{ esDatos }}" hint-placeholder-val="{{ true }}">
+              <div style="padding: 16px 28px 28px">
+                <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; overflow: auto">
+                  <div style="display: grid; min-width: 748px; grid-template-columns: 30px minmax(180px, 2.2fr) minmax(96px, 1.2fr) minmax(124px, 1fr) minmax(112px, 1.2fr) 96px; gap: 12px; padding: 12px 16px; background: oklch(0.975 0.006 128); border-bottom: 1px solid oklch(0.92 0.012 128); font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: oklch(0.42 0.012 130)">
+                    <input type="checkbox" style="width: 16px; height: 16px; accent-color: oklch(0.48 0.09 128)" />
+                    <span>{{ pantalla.columnas.c1 }}</span>
+                    <span>{{ pantalla.columnas.c2 }}</span>
+                    <span>{{ pantalla.columnas.c3 }}</span>
+                    <span>{{ pantalla.columnas.c4 }}</span>
+                    <span></span>
+                  </div>
+                  <sc-for list="{{ filas }}" as="r" hint-placeholder-count="5">
+                    <div style="display: grid; min-width: 748px; grid-template-columns: 30px minmax(180px, 2.2fr) minmax(96px, 1.2fr) minmax(124px, 1fr) minmax(112px, 1.2fr) 96px; gap: 12px; padding: 14px 16px; border-bottom: 1px solid oklch(0.95 0.008 128); align-items: center; font-size: 13px">
+                      <input type="checkbox" style="width: 16px; height: 16px; accent-color: oklch(0.48 0.09 128)" />
+                      <div style="min-width: 0">
+                        <div style="font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.titulo }}</div>
+                        <div style="color: oklch(0.44 0.012 130); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.sub }}</div>
+                      </div>
+                      <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.col2 }}</span>
+                      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.005 130); color: oklch(0.34 0.012 130); justify-self: start; white-space: nowrap">
+                        <sc-if value="{{ r.chip.pendiente }}" hint-placeholder-val="{{ true }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.62 0.10 75)"></span></sc-if>
+                        <sc-if value="{{ r.chip.activo }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.48 0.09 128)"></span></sc-if>
+                        <sc-if value="{{ r.chip.completado }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.10 150)"></span></sc-if>
+                        <sc-if value="{{ r.chip.fallido }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.13 25)"></span></sc-if>
+                        <sc-if value="{{ r.chip.cancelado }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.60 0.012 130)"></span></sc-if>
+                        <sc-if value="{{ r.chip.borrador }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.80 0.012 130)"></span></sc-if>
+                        <sc-if value="{{ r.chip.archivado }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.50 0.09 240)"></span></sc-if>
+                        {{ r.chip.label }}
+                      </span>
+                      <span style="font-variant-numeric: tabular-nums; color: oklch(0.42 0.015 130); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.meta }}</span>
+                      <button onClick="{{ r.abrir }}" style="min-height: 36px; padding: 0 12px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; background: #fff; font-family: inherit; font-size: 12px; cursor: pointer" style-hover="background: oklch(0.96 0.02 128)">Detalle</button>
+                    </div>
+                  </sc-for>
+                  <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 13px; color: oklch(0.42 0.015 130)">
+                    <span>{{ pantalla.total }}</span>
+                    <div style="display: flex; gap: 8px">
+                      <button style="min-height: 36px; padding: 0 12px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; background: #fff; font-family: inherit; font-size: 12px; cursor: pointer">Anterior</button>
+                      <button style="min-height: 36px; padding: 0 12px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; background: #fff; font-family: inherit; font-size: 12px; cursor: pointer">Siguiente</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ esSkeleton }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 16px 28px 28px">
+                <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+                  <sc-for list="{{ lineas }}" as="l" hint-placeholder-count="6">
+                    <div style="display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; align-items: center">
+                      <div style="height: 14px; border-radius: 7px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+                      <div style="height: 14px; border-radius: 7px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+                      <div style="height: 14px; border-radius: 7px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+                      <div style="height: 14px; border-radius: 7px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+                    </div>
+                  </sc-for>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130)">Cargando registros…</span>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ esVacio }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 16px 28px 28px">
+                <div style="border: 1px dashed oklch(0.84 0.012 130); border-radius: 14px; padding: 48px 28px; background: oklch(0.985 0.005 128); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px">
+                  <div style="width: 40px; height: 40px; border-radius: 12px; border: 1px dashed oklch(0.78 0.012 130)"></div>
+                  <div style="font-size: 18px; font-weight: 600">{{ vacio.titulo }}</div>
+                  <p style="margin: 0; max-width: 48ch; font-size: 14px; line-height: 1.6; color: oklch(0.42 0.015 130)">{{ vacio.texto }}</p>
+                  <p style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130)">{{ vacio.en }}</p>
+                  <button onClick="{{ abrirModal }}" style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 6px">{{ vacio.cta }}</button>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ esError }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 16px 28px 28px">
+                <div style="border: 1px solid oklch(0.90 0.05 25); border-radius: 14px; padding: 40px 28px; background: oklch(0.99 0.008 25); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px">
+                  <span style="display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.03 25); color: oklch(0.42 0.13 25)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.13 25)"></span>Error 500</span>
+                  <div style="font-size: 18px; font-weight: 600">No pudimos cargar {{ pantalla.tituloMinuscula }}</div>
+                  <p style="margin: 0; max-width: 48ch; font-size: 14px; line-height: 1.6; color: oklch(0.40 0.05 25)">El servidor no respondió. Los filtros que aplicaste se conservan; vuelve a intentarlo en unos segundos.</p>
+                  <p style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">EN: We couldn’t load this list. · ref 7c21f</p>
+                  <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 6px">
+                    <button style="min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Reintentar</button>
+                    <button style="min-height: 44px; padding: 0 18px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 14px; cursor: pointer">Copiar referencia</button>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </sc-if>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ panelAbierto }}" hint-placeholder-val="{{ false }}">
+        <aside style="flex: 1 1 300px; min-width: 0; border-left: 1px solid oklch(0.92 0.012 128); background: oklch(0.985 0.005 128); display: flex; flex-direction: column">
+          <div style="padding: 20px; border-bottom: 1px solid oklch(0.94 0.008 128); display: flex; gap: 12px; align-items: flex-start">
+            <div style="min-width: 0">
+              <div style="font-size: 17px; font-weight: 600; letter-spacing: -0.015em">{{ detalle.titulo }}</div>
+              <div style="font-size: 13px; color: oklch(0.42 0.015 130); margin-top: 2px">{{ detalle.sub }}</div>
+            </div>
+            <button onClick="{{ cerrarPanel }}" style="margin-left: auto; flex: none; width: 36px; height: 36px; border: 1px solid oklch(0.90 0.012 128); border-radius: 9px; background: #fff; font-size: 15px; cursor: pointer; color: oklch(0.36 0.015 130)">&#215;</button>
+          </div>
+          <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow: auto">
+            <sc-for list="{{ detalle.campos }}" as="c" hint-placeholder-count="4">
+              <div>
+                <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.44 0.012 130); margin-bottom: 4px">{{ c.label }}</div>
+                <div style="font-size: 14px; line-height: 1.5">{{ c.valor }}</div>
+              </div>
+            </sc-for>
+            <div>
+              <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.44 0.012 130); margin-bottom: 8px">Auditoría</div>
+              <div style="display: flex; flex-direction: column; gap: 12px">
+                <sc-for list="{{ detalle.auditoria }}" as="a" hint-placeholder-count="2">
+                  <div style="display: flex; gap: 10px">
+                    <span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.48 0.09 128); margin-top: 6px; flex: none"></span>
+                    <div style="min-width: 0"><div style="font-size: 13px; line-height: 1.45">{{ a.texto }}</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">{{ a.meta }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: auto; padding: 16px 20px; border-top: 1px solid oklch(0.94 0.008 128); display: flex; flex-direction: column; gap: 10px">
+            <button onClick="{{ abrirModal }}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">{{ detalle.accion }}</button>
+            <button onClick="{{ abrirModal }}" style="min-height: 44px; padding: 0 16px; border: 1px solid oklch(0.52 0.13 25); border-radius: 10px; background: #fff; color: oklch(0.44 0.13 25); font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">{{ detalle.destructiva }}</button>
+          </div>
+        </aside>
+      </sc-if>
+    </div>
+
+    <div style="flex: 1 1 390px; max-width: 420px; min-width: 0">
+      <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.44 0.012 130); margin-bottom: 10px">Móvil · 390</div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 24px; background: #fff; overflow: hidden; box-shadow: 0 10px 40px oklch(0.24 0.015 130 / 0.05)">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <button onClick="{{ alternarMenu }}" style="width: 44px; height: 44px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; display: flex; flex-direction: column; gap: 4px; align-items: center; justify-content: center; cursor: pointer">
+            <span style="width: 16px; height: 1.5px; background: oklch(0.34 0.015 130); display: block"></span>
+            <span style="width: 16px; height: 1.5px; background: oklch(0.34 0.015 130); display: block"></span>
+          </button>
+          <div style="min-width: 0"><div style="font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ pantalla.titulo }}</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.44 0.012 130)">{{ pantalla.ruta }}</div></div>
+          <div style="margin-left: auto; width: 34px; height: 34px; border-radius: 999px; background: oklch(0.90 0.02 240); color: oklch(0.34 0.09 240); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none">JD</div>
+        </div>
+
+        <sc-if value="{{ menuAbierto }}" hint-placeholder-val="{{ false }}">
+          <div style="border-bottom: 1px solid oklch(0.94 0.008 128); background: oklch(0.985 0.005 128); padding: 8px">
+            <sc-for list="{{ secciones }}" as="s" hint-placeholder-count="7">
+              <button onClick="{{ s.select }}" style="display: flex; align-items: center; gap: 10px; min-height: 48px; width: 100%; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; font-family: inherit; font-size: 15px; color: oklch(0.28 0.015 130); text-align: left; cursor: pointer" style-hover="background: oklch(0.95 0.015 128)">
+                <sc-if value="{{ s.activo }}" hint-placeholder-val="{{ true }}"><span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.48 0.09 128); flex: none"></span></sc-if>
+                {{ s.label }}
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ esPermiso }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 44px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px">
+            <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: oklch(0.95 0.02 240); color: oklch(0.38 0.09 240)">403</span>
+            <div style="font-size: 19px; font-weight: 600">Sin permiso</div>
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: oklch(0.42 0.015 130)">Esta sección es solo para administración.</p>
+            <button style="min-height: 48px; width: 100%; border: 0; border-radius: 12px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 6px">Volver a mi panel</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ conAcceso }}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 16px">
+            <sc-if value="{{ esExito }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: oklch(0.96 0.03 150); border: 1px solid oklch(0.88 0.05 150); margin-bottom: 14px">
+                <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.45 0.10 150); margin-top: 5px; flex: none"></span>
+                <div style="font-size: 13px; line-height: 1.45; color: oklch(0.32 0.08 150)"><strong style="font-weight: 600">{{ exito.titulo }}</strong><br />{{ exito.texto }}</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ esResumen }}" hint-placeholder-val="{{ true }}">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px">
+                <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+                  <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; padding: 14px">
+                    <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: oklch(0.44 0.012 130)">{{ k.label }}</div>
+                    <div style="font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 6px">{{ k.valor }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px">
+                <div style="font-size: 14px; font-weight: 600">Auditoría reciente</div>
+                <sc-for list="{{ auditoria }}" as="a" hint-placeholder-count="3">
+                  <div style="display: flex; gap: 10px">
+                    <span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.48 0.09 128); margin-top: 6px; flex: none"></span>
+                    <div style="min-width: 0"><div style="font-size: 13px; line-height: 1.45">{{ a.texto }}</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.44 0.012 130)">{{ a.meta }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ esConfig }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 12px">
+                <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; padding: 16px">
+                  <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px">Sesiones expiradas</div>
+                  <p style="margin: 0 0 12px; font-size: 13px; line-height: 1.5; color: oklch(0.42 0.015 130)">Pide confirmación y queda en auditoría.</p>
+                  <button onClick="{{ abrirModal }}" style="min-height: 48px; width: 100%; border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; background: #fff; font-family: inherit; font-size: 15px; cursor: pointer">Limpiar ahora</button>
+                </div>
+                <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; padding: 16px">
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px">
+                    <div style="font-size: 15px; font-weight: 600">Exportación</div>
+                    <span style="display: inline-flex; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; background: oklch(0.97 0.02 25); color: oklch(0.42 0.12 25); border: 1px solid oklch(0.90 0.05 25)">Requiere backend</span>
+                  </div>
+                  <p style="margin: 0; font-size: 13px; line-height: 1.5; color: oklch(0.42 0.015 130)">No existe endpoint de exportación.</p>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ esTabla }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; gap: 8px; margin-bottom: 12px">
+                <div style="display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px; border: 1px solid oklch(0.88 0.012 128); border-radius: 12px; flex: 1; min-width: 0">
+                  <span style="font-size: 13px; color: oklch(0.44 0.012 130); flex: none">Buscar</span>
+                  <input type="text" placeholder="{{ pantalla.placeholder }}" style="border: 0; font-family: inherit; font-size: 14px; width: 100%; min-width: 0; background: transparent" />
+                </div>
+                <button style="min-height: 48px; padding: 0 14px; border: 1px solid oklch(0.88 0.012 128); border-radius: 12px; background: #fff; font-family: inherit; font-size: 13px; cursor: pointer; flex: none">Filtros</button>
+              </div>
+
+              <sc-if value="{{ esDatos }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <sc-for list="{{ filas }}" as="r" hint-placeholder-count="4">
+                    <button onClick="{{ r.abrir }}" style="text-align: left; border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; padding: 14px; background: #fff; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 8px; width: 100%" style-hover="border-color: oklch(0.48 0.09 128)">
+                      <div style="display: flex; gap: 10px; align-items: flex-start; width: 100%">
+                        <div style="min-width: 0; flex: 1">
+                          <div style="font-size: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.titulo }}</div>
+                          <div style="font-size: 13px; color: oklch(0.44 0.012 130); overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.sub }}</div>
+                        </div>
+                        <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.005 130); color: oklch(0.34 0.012 130)">
+                          <sc-if value="{{ r.chip.pendiente }}" hint-placeholder-val="{{ true }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.62 0.10 75)"></span></sc-if>
+                          <sc-if value="{{ r.chip.activo }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.48 0.09 128)"></span></sc-if>
+                          <sc-if value="{{ r.chip.completado }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.10 150)"></span></sc-if>
+                          <sc-if value="{{ r.chip.fallido }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.13 25)"></span></sc-if>
+                          <sc-if value="{{ r.chip.cancelado }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.60 0.012 130)"></span></sc-if>
+                          <sc-if value="{{ r.chip.borrador }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.80 0.012 130)"></span></sc-if>
+                          <sc-if value="{{ r.chip.archivado }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.50 0.09 240)"></span></sc-if>
+                          {{ r.chip.label }}
+                        </span>
+                      </div>
+                      <div style="display: flex; gap: 12px; width: 100%; font-size: 12px; color: oklch(0.42 0.015 130)">
+                        <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.col2 }}</span>
+                        <span style="margin-left: auto; flex: none; font-variant-numeric: tabular-nums">{{ r.meta }}</span>
+                      </div>
+                    </button>
+                  </sc-for>
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 4px; font-size: 13px; color: oklch(0.42 0.015 130)">
+                    <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ pantalla.total }}</span>
+                    <button style="min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 13px; cursor: pointer; flex: none">Cargar más</button>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ esSkeleton }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <sc-for list="{{ lineas }}" as="l" hint-placeholder-count="4">
+                    <div style="border: 1px solid oklch(0.94 0.008 128); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+                      <div style="height: 14px; width: 60%; border-radius: 7px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+                      <div style="height: 12px; width: 85%; border-radius: 6px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ esVacio }}" hint-placeholder-val="{{ false }}">
+                <div style="border: 1px dashed oklch(0.84 0.012 130); border-radius: 14px; padding: 32px 18px; background: oklch(0.985 0.005 128); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px">
+                  <div style="width: 36px; height: 36px; border-radius: 11px; border: 1px dashed oklch(0.78 0.012 130)"></div>
+                  <div style="font-size: 17px; font-weight: 600">{{ vacio.titulo }}</div>
+                  <p style="margin: 0; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">{{ vacio.texto }}</p>
+                  <button onClick="{{ abrirModal }}" style="min-height: 48px; width: 100%; border: 0; border-radius: 12px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 4px">{{ vacio.cta }}</button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ esError }}" hint-placeholder-val="{{ false }}">
+                <div style="border: 1px solid oklch(0.90 0.05 25); border-radius: 14px; padding: 28px 18px; background: oklch(0.99 0.008 25); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px">
+                  <span style="display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.03 25); color: oklch(0.42 0.13 25)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.13 25)"></span>Error 500</span>
+                  <div style="font-size: 17px; font-weight: 600">No pudimos cargar la lista</div>
+                  <p style="margin: 0; font-size: 14px; line-height: 1.55; color: oklch(0.40 0.05 25)">Vuelve a intentarlo en unos segundos.</p>
+                  <button style="min-height: 48px; width: 100%; border: 0; border-radius: 12px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer">Reintentar</button>
+                </div>
+              </sc-if>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ panelAbierto }}" hint-placeholder-val="{{ false }}">
+          <div style="border-top: 1px solid oklch(0.92 0.012 128); background: oklch(0.985 0.005 128); padding: 16px; border-radius: 18px 18px 0 0">
+            <div style="width: 40px; height: 4px; border-radius: 999px; background: oklch(0.86 0.012 128); margin: 0 auto 14px"></div>
+            <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px">
+              <div style="min-width: 0">
+                <div style="font-size: 17px; font-weight: 600">{{ detalle.titulo }}</div>
+                <div style="font-size: 13px; color: oklch(0.42 0.015 130)">{{ detalle.sub }}</div>
+              </div>
+              <button onClick="{{ cerrarPanel }}" style="margin-left: auto; flex: none; width: 44px; height: 44px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-size: 16px; cursor: pointer">&#215;</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px">
+              <sc-for list="{{ detalle.campos }}" as="c" hint-placeholder-count="4">
+                <div style="display: flex; gap: 12px; justify-content: space-between; align-items: baseline">
+                  <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: oklch(0.44 0.012 130); flex: none">{{ c.label }}</span>
+                  <span style="font-size: 14px; text-align: right; min-width: 0">{{ c.valor }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <button onClick="{{ abrirModal }}" style="min-height: 48px; border: 0; border-radius: 12px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer">{{ detalle.accion }}</button>
+              <button onClick="{{ abrirModal }}" style="min-height: 48px; border: 1px solid oklch(0.52 0.13 25); border-radius: 12px; background: #fff; color: oklch(0.44 0.13 25); font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer">{{ detalle.destructiva }}</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ modalAbierto }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; background: oklch(0.24 0.015 130 / 0.42); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 40">
+      <div style="width: 100%; max-width: 460px; background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 20px 60px oklch(0.24 0.015 130 / 0.28)">
+        <div style="font-size: 19px; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 8px">{{ modal.titulo }}</div>
+        <p style="margin: 0 0 8px; font-size: 14px; line-height: 1.6; color: oklch(0.42 0.015 130)">{{ modal.texto }}</p>
+        <p style="margin: 0 0 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">{{ modal.nota }}</p>
+        <label style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px">
+          <span style="font-size: 13px; font-weight: 500">Motivo (visible en auditoría)</span>
+          <input type="text" placeholder="{{ modal.placeholder }}" style="min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.86 0.012 128); border-radius: 10px; font-family: inherit; font-size: 14px" style-focus="outline: 2px solid oklch(0.48 0.09 128); outline-offset: 1px; border-color: oklch(0.48 0.09 128)" />
+        </label>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end">
+          <button onClick="{{ cerrarModal }}" style="min-height: 44px; padding: 0 16px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 14px; cursor: pointer">Cancelar</button>
+          <button onClick="{{ confirmarModal }}" style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">{{ modal.confirmar }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1480, &quot;height&quot;: 1080}}">
+const chip = (label, tipo) => ({
+  label,
+  pendiente: tipo === 'pendiente', activo: tipo === 'activo', completado: tipo === 'completado',
+  fallido: tipo === 'fallido', cancelado: tipo === 'cancelado', borrador: tipo === 'borrador', archivado: tipo === 'archivado'
+});
+
+const SECCIONES = [
+  {
+    id: 'resumen', label: 'Resumen', tipo: 'resumen', ruta: '/admin',
+    titulo: 'Resumen de operaciones', tituloMinuscula: 'el resumen',
+    subtitulo: 'Estado de la plataforma hoy. Los contadores enlazan al detalle filtrado; nada aquí cambia datos.',
+    primaria: 'Crear invitación de coach'
+  },
+  {
+    id: 'usuarios', label: 'Usuarios', tipo: 'tabla', ruta: '/admin/users', contador: '2',
+    titulo: 'Usuarios', tituloMinuscula: 'los usuarios',
+    subtitulo: 'Personas registradas con su rol y estado. El cambio de rol o de estado siempre pasa por confirmación con motivo.',
+    primaria: 'Invitar coach', placeholder: 'Nombre o correo · EN: name or email',
+    filtros: ['Rol: todos', 'Estado: todos', 'Registro: 30 días'], filtroActivo: 'Estado: bloqueado',
+    columnas: { c1: 'Usuario', c2: 'Rol', c3: 'Estado', c4: 'Último acceso' },
+    total: '1 seleccionado · 2 de 2 usuarios',
+    filas: [
+      { titulo: 'Ana Cortés', sub: 'ana@correo.com', col2: 'Cliente', chip: chip('Activo', 'activo'), meta: '10 sep 09:12',
+        detalle: { titulo: 'Ana Cortés', sub: 'Cliente · ana@correo.com', accion: 'Cambiar rol', destructiva: 'Bloquear usuario',
+          campos: [ { label: 'Estado', valor: 'Activo desde el 2 de septiembre' }, { label: 'Correo verificado', valor: 'Sí · 2 sep' }, { label: 'Relación de coaching', valor: 'Sin coach asignado' }, { label: 'Compras', valor: 'Ninguna' }, { label: 'Sesiones activas', valor: '1 · Chrome, Madrid' } ],
+          auditoria: [ { texto: 'Cuenta creada', meta: 'sistema · 2 sep 11:04' }, { texto: 'Correo verificado', meta: 'ana@correo.com · 2 sep 11:09' } ] } },
+      { titulo: 'Diego Peña', sub: 'diego@correo.com', col2: 'Coach', chip: chip('Bloqueado', 'fallido'), meta: '2 sep 14:05',
+        detalle: { titulo: 'Diego Peña', sub: 'Coach · diego@correo.com', accion: 'Desbloquear', destructiva: 'Eliminar avatar',
+          campos: [ { label: 'Estado', valor: 'Bloqueado el 9 de septiembre' }, { label: 'Motivo', valor: 'Reporte de conducta pendiente de revisión' }, { label: 'Clientes vinculados', valor: '0' }, { label: 'Ofertas publicadas', valor: '0' } ],
+          auditoria: [ { texto: 'Usuario bloqueado · motivo: reporte de conducta', meta: 'admin@sv · 9 sep 17:12' }, { texto: 'Rol cambiado a coach', meta: 'admin@sv · 5 sep 08:12' } ] } }
+    ],
+    vacio: { titulo: 'Ningún usuario coincide con los filtros', texto: 'Prueba a quitar el filtro de estado o amplía el rango de fechas. La base tiene 2 usuarios registrados.', en: 'EN: No users match these filters.', cta: 'Quitar filtros' },
+    modal: { titulo: '¿Bloquear a Diego Peña?', texto: 'No podrá iniciar sesión ni atender clientes. Sus relaciones activas quedan en pausa y sus ofertas dejan de mostrarse.', nota: 'Se registrará en auditoría con tu usuario y la fecha.', placeholder: 'Reporte de conducta', confirmar: 'Bloquear usuario' },
+    exito: { titulo: 'Usuario bloqueado', texto: 'Diego Peña ya no puede iniciar sesión. Puedes deshacerlo durante los próximos 30 segundos.' }
+  },
+  {
+    id: 'invitaciones', label: 'Invitaciones', tipo: 'tabla', ruta: '/admin/invitations', contador: '3',
+    titulo: 'Invitaciones de coach', tituloMinuscula: 'las invitaciones',
+    subtitulo: 'Solo se entra como coach por invitación. Cada envío caduca a los 7 días y puede revocarse mientras esté pendiente.',
+    primaria: 'Nueva invitación', placeholder: 'Correo invitado · EN: invited email',
+    filtros: ['Estado: todos', 'Creada por: cualquiera', 'Últimos 30 días'], filtroActivo: 'Estado: pendiente',
+    columnas: { c1: 'Invitado', c2: 'Creada por', c3: 'Estado', c4: 'Caduca' },
+    total: '3 de 3 invitaciones',
+    filas: [
+      { titulo: 'lucia@correo.com', sub: 'Rol: coach', col2: 'admin@sv', chip: chip('Pendiente', 'pendiente'), meta: '17 sep',
+        detalle: { titulo: 'lucia@correo.com', sub: 'Invitación de coach · pendiente', accion: 'Reenviar invitación', destructiva: 'Revocar invitación',
+          campos: [ { label: 'Creada', valor: '10 sep 09:20 · admin@sv' }, { label: 'Caduca', valor: '17 sep 09:20' }, { label: 'Envíos', valor: '1' }, { label: 'Entrega', valor: 'Sandbox de pruebas · sin proveedor real' } ],
+          auditoria: [ { texto: 'Invitación creada', meta: 'admin@sv · 10 sep 09:20' } ] } },
+      { titulo: 'marta@correo.com', sub: 'Rol: coach', col2: 'admin@sv', chip: chip('Usada', 'completado'), meta: 'Usada 5 sep',
+        detalle: { titulo: 'marta@correo.com', sub: 'Invitación de coach · usada', accion: 'Ver usuario', destructiva: 'Borrar registro',
+          campos: [ { label: 'Creada', valor: '1 sep 10:02 · admin@sv' }, { label: 'Aceptada', valor: '5 sep 18:40' }, { label: 'Usuario resultante', valor: 'Marta Ruiz · coach' } ],
+          auditoria: [ { texto: 'Invitación aceptada', meta: 'marta@correo.com · 5 sep 18:40' } ] } },
+      { titulo: 'jorge@correo.com', sub: 'Rol: coach', col2: 'admin@sv', chip: chip('Caducada', 'cancelado'), meta: 'Caducó 8 sep',
+        detalle: { titulo: 'jorge@correo.com', sub: 'Invitación de coach · caducada', accion: 'Volver a invitar', destructiva: 'Borrar registro',
+          campos: [ { label: 'Creada', valor: '1 sep 10:05 · admin@sv' }, { label: 'Caducó', valor: '8 sep 10:05' }, { label: 'Envíos', valor: '2' } ],
+          auditoria: [ { texto: 'Invitación caducada', meta: 'sistema · 8 sep 10:05' } ] } }
+    ],
+    vacio: { titulo: 'Todavía no hay invitaciones', texto: 'Los coaches solo pueden registrarse con una invitación. Crea la primera para incorporar al equipo.', en: 'EN: No invitations yet.', cta: 'Crear invitación' },
+    modal: { titulo: 'Nueva invitación de coach', texto: 'Se enviará un enlace de registro válido durante 7 días al correo indicado. El invitado entrará ya con rol coach.', nota: 'Entrega en sandbox: verifica el proveedor real antes de invitar a personas externas.', placeholder: 'correo@ejemplo.com', confirmar: 'Enviar invitación' },
+    exito: { titulo: 'Invitación enviada', texto: 'lucia@correo.com recibirá el enlace. Caduca el 17 de septiembre.' }
+  },
+  {
+    id: 'leads', label: 'Leads', tipo: 'tabla', ruta: '/admin/leads', contador: '4',
+    titulo: 'Leads de evaluación', tituloMinuscula: 'los leads',
+    subtitulo: 'Personas que completaron la evaluación en la landing. El estado es el único campo editable desde aquí.',
+    primaria: 'Marcar como contactado', placeholder: 'Nombre, correo u objetivo',
+    filtros: ['Estado: todos', 'Objetivo: cualquiera', 'Últimos 7 días'], filtroActivo: 'Estado: nuevo',
+    columnas: { c1: 'Lead', c2: 'Objetivo', c3: 'Estado', c4: 'Recibido' },
+    total: '2 seleccionados · 4 de 4 leads',
+    filas: [
+      { titulo: 'Sara Molina', sub: 'sara@correo.com', col2: 'Bajar grasa', chip: chip('Nuevo', 'pendiente'), meta: '10 sep 08:31',
+        detalle: { titulo: 'Sara Molina', sub: 'Lead · nuevo', accion: 'Marcar como contactada', destructiva: 'Descartar lead',
+          campos: [ { label: 'Objetivo', valor: 'Bajar grasa con sostenibilidad' }, { label: 'Datos de evaluación', valor: '34 años · 1,68 m · 72 kg · 3 días/semana' }, { label: 'Recomendación mostrada', valor: 'Acompañamiento de 12 semanas' }, { label: 'Idioma', valor: 'Español' } ],
+          auditoria: [ { texto: 'Evaluación completada desde la landing', meta: 'sistema · 10 sep 08:31' } ] } },
+      { titulo: 'Tom Baker', sub: 'tom@mail.com', col2: 'Volver a entrenar', chip: chip('Contactado', 'activo'), meta: '9 sep 19:02',
+        detalle: { titulo: 'Tom Baker', sub: 'Lead · contactado · EN content', accion: 'Marcar como convertido', destructiva: 'Descartar lead',
+          campos: [ { label: 'Objetivo', valor: 'Get back to training without injury' }, { label: 'Datos de evaluación', valor: '41 años · 1,80 m · 88 kg · 2 días/semana' }, { label: 'Idioma', valor: 'English' } ],
+          auditoria: [ { texto: 'Estado cambiado a contactado', meta: 'admin@sv · 10 sep 07:50' } ] } },
+      { titulo: 'Elena Ruiz', sub: 'elena@correo.com', col2: 'Ganar fuerza', chip: chip('Convertido', 'completado'), meta: '7 sep 12:10',
+        detalle: { titulo: 'Elena Ruiz', sub: 'Lead · convertido', accion: 'Ver cuenta de cliente', destructiva: 'Descartar lead',
+          campos: [ { label: 'Objetivo', valor: 'Ganar fuerza y recomponer' }, { label: 'Cuenta creada', valor: '8 sep · cliente' } ],
+          auditoria: [ { texto: 'Lead convertido en cuenta', meta: 'sistema · 8 sep 09:14' } ] } },
+      { titulo: 'Nico Pardo', sub: 'nico@correo.com', col2: 'Bajar grasa', chip: chip('Descartado', 'cancelado'), meta: '5 sep 16:44',
+        detalle: { titulo: 'Nico Pardo', sub: 'Lead · descartado', accion: 'Reabrir lead', destructiva: 'Borrar datos del lead',
+          campos: [ { label: 'Motivo', valor: 'Fuera de zona de servicio' }, { label: 'Idioma', valor: 'Español' } ],
+          auditoria: [ { texto: 'Lead descartado · motivo: fuera de zona', meta: 'admin@sv · 6 sep 10:00' } ] } }
+    ],
+    vacio: { titulo: 'Sin leads todavía', texto: 'Los leads llegan de la evaluación de la landing. Comprueba que el endpoint de assessment esté configurado antes de dar por hecho que no hay tráfico.', en: 'EN: No leads yet.', cta: 'Ver estado del endpoint' },
+    modal: { titulo: 'Marcar 2 leads como contactados', texto: 'Se actualizará el estado de Sara Molina y Tom Baker. No se envía ningún correo automático.', nota: 'Queda registrado en auditoría con tu usuario y la fecha.', placeholder: 'Llamada realizada el 10 sep', confirmar: 'Cambiar estado' },
+    exito: { titulo: 'Estado actualizado', texto: '2 leads pasaron a contactado.' }
+  },
+  {
+    id: 'operaciones', label: 'Operaciones', tipo: 'tabla', ruta: '/admin/operations', contador: '3',
+    titulo: 'Compras y pagos', tituloMinuscula: 'las operaciones',
+    subtitulo: 'Registro de compras con su estado de pago. Los importes vienen del proveedor sandbox; no hay cobros reales todavía.',
+    primaria: 'Ver registro de auditoría', placeholder: 'Referencia, cliente o coach',
+    filtros: ['Estado de pago: todos', 'Coach: cualquiera', 'Septiembre'], filtroActivo: 'Estado: pendiente',
+    columnas: { c1: 'Compra', c2: 'Importe', c3: 'Estado del pago', c4: 'Referencia' },
+    total: '3 de 3 compras',
+    filas: [
+      { titulo: 'Acompañamiento 12 semanas', sub: 'Ana Cortés → Marta Ruiz', col2: '149,00 €', chip: chip('Pendiente', 'pendiente'), meta: '#PUR-2419',
+        detalle: { titulo: 'Acompañamiento 12 semanas', sub: '#PUR-2419 · pago pendiente', accion: 'Reenviar enlace de pago', destructiva: 'Cancelar compra',
+          campos: [ { label: 'Cliente', valor: 'Ana Cortés · ana@correo.com' }, { label: 'Coach', valor: 'Marta Ruiz' }, { label: 'Importe', valor: '149,00 € · IVA incluido' }, { label: 'Proveedor', valor: 'Sandbox · webhook recibido' }, { label: 'Ciclo', valor: 'Sin iniciar hasta confirmar el pago' } ],
+          auditoria: [ { texto: 'Compra creada', meta: 'ana@correo.com · 10 sep 09:41' }, { texto: 'Webhook de pago: pendiente', meta: 'proveedor · 10 sep 09:41' } ] } },
+      { titulo: 'Plan mensual', sub: 'Elena Ruiz → Marta Ruiz', col2: '49,00 €', chip: chip('Confirmado', 'completado'), meta: '#PUR-2417',
+        detalle: { titulo: 'Plan mensual', sub: '#PUR-2417 · pago confirmado', accion: 'Ver ciclo de coaching', destructiva: 'Reembolsar',
+          campos: [ { label: 'Cliente', valor: 'Elena Ruiz' }, { label: 'Importe', valor: '49,00 €' }, { label: 'Ciclo', valor: 'Del 8 sep al 8 oct' } ],
+          auditoria: [ { texto: 'Pago confirmado', meta: 'proveedor · 8 sep 09:20' } ] } },
+      { titulo: 'Plan mensual', sub: 'Nico Pardo → Marta Ruiz', col2: '49,00 €', chip: chip('Fallido', 'fallido'), meta: '#PUR-2410',
+        detalle: { titulo: 'Plan mensual', sub: '#PUR-2410 · pago fallido', accion: 'Reenviar enlace de pago', destructiva: 'Cancelar compra',
+          campos: [ { label: 'Cliente', valor: 'Nico Pardo' }, { label: 'Motivo', valor: 'Tarjeta rechazada por el emisor' }, { label: 'Reintentos', valor: '2' } ],
+          auditoria: [ { texto: 'Pago fallido', meta: 'proveedor · 5 sep 16:50' } ] } }
+    ],
+    vacio: { titulo: 'Aún no hay compras', texto: 'Las compras aparecen cuando un cliente contrata un paquete publicado. Hoy no hay ofertas publicadas en la plataforma.', en: 'EN: No purchases yet.', cta: 'Ver coaches sin ofertas' },
+    modal: { titulo: '¿Cancelar la compra #PUR-2419?', texto: 'La compra queda cancelada y el cliente recibe el aviso. Solo es posible mientras el pago esté pendiente.', nota: 'Queda registrado en auditoría con tu usuario, el motivo y la fecha.', placeholder: 'Solicitud del cliente', confirmar: 'Cancelar compra' },
+    exito: { titulo: 'Compra cancelada', texto: '#PUR-2419 pasó a cancelada. El cliente recibió el aviso.' }
+  },
+  {
+    id: 'resenas', label: 'Reseñas', tipo: 'tabla', ruta: '/admin/reviews', contador: '2', requiereBackend: true,
+    titulo: 'Moderación de reseñas', tituloMinuscula: 'las reseñas',
+    subtitulo: 'La API permite cambiar la visibilidad de una reseña concreta, pero no existe endpoint que liste todas para moderar. Esta cola necesita backend nuevo antes de implementarse.',
+    primaria: 'Revisar pendientes', placeholder: 'Cliente, coach o texto',
+    filtros: ['Estado: todos', 'Coach: cualquiera', 'Puntuación: todas'], filtroActivo: 'Estado: pendiente',
+    columnas: { c1: 'Reseña', c2: 'Puntuación', c3: 'Estado', c4: 'Recibida' },
+    total: '2 de 2 reseñas · listado simulado',
+    filas: [
+      { titulo: 'Ana Cortés → Marta Ruiz', sub: '“Ajustó el plan cuando me lesioné la rodilla.”', col2: '5 de 5', chip: chip('Pendiente', 'pendiente'), meta: '9 sep 20:15',
+        detalle: { titulo: 'Reseña de Ana Cortés', sub: 'Sobre Marta Ruiz · pendiente de moderación', accion: 'Publicar reseña', destructiva: 'Ocultar reseña',
+          campos: [ { label: 'Puntuación', valor: '5 de 5' }, { label: 'Texto', valor: '“Ajustó el plan cuando me lesioné la rodilla y no perdí la constancia.”' }, { label: 'Ciclo', valor: 'Completado el 8 de septiembre' }, { label: 'Visibilidad actual', valor: 'Oculta hasta moderar' } ],
+          auditoria: [ { texto: 'Reseña enviada por la clienta', meta: 'ana@correo.com · 9 sep 20:15' } ] } },
+      { titulo: 'Tom Baker → Marta Ruiz', sub: '“Clear weekly check-ins, no pressure.”', col2: '4 de 5', chip: chip('Publicada', 'completado'), meta: '6 sep 11:02',
+        detalle: { titulo: 'Reseña de Tom Baker', sub: 'Sobre Marta Ruiz · publicada', accion: 'Ver en el perfil público', destructiva: 'Ocultar reseña',
+          campos: [ { label: 'Puntuación', valor: '4 de 5' }, { label: 'Texto', valor: '“Clear weekly check-ins, no pressure.”' }, { label: 'Idioma', valor: 'English' } ],
+          auditoria: [ { texto: 'Reseña publicada', meta: 'admin@sv · 6 sep 12:00' } ] } }
+    ],
+    vacio: { titulo: 'No hay reseñas para moderar', texto: 'Las reseñas llegan cuando termina un ciclo de coaching. Ningún ciclo ha terminado todavía.', en: 'EN: Nothing to moderate.', cta: 'Ver ciclos activos' },
+    modal: { titulo: '¿Publicar esta reseña?', texto: 'Aparecerá en el perfil público de Marta Ruiz con el nombre de la clienta y la fecha.', nota: 'Requiere backend: hoy no existe endpoint de listado para moderación.', placeholder: 'Cumple las normas de contenido', confirmar: 'Publicar reseña' },
+    exito: { titulo: 'Reseña publicada', texto: 'Ya aparece en el perfil de Marta Ruiz.' }
+  },
+  {
+    id: 'configuracion', label: 'Configuración', tipo: 'config', ruta: '/admin/settings',
+    titulo: 'Configuración', tituloMinuscula: 'la configuración',
+    subtitulo: 'Ajustes de la plataforma y acciones administrativas secundarias. Todo lo que cambia datos pide confirmación.',
+    primaria: 'Limpiar sesiones expiradas',
+    modal: { titulo: '¿Limpiar las sesiones expiradas?', texto: 'Se eliminarán 12 sesiones caducadas. Nadie pierde una sesión activa.', nota: 'Queda registrado en auditoría con tu usuario y la fecha.', placeholder: 'Mantenimiento programado', confirmar: 'Limpiar sesiones' },
+    exito: { titulo: 'Sesiones limpiadas', texto: '12 sesiones caducadas eliminadas.' }
+  }
+];
+
+const ESTADOS = [
+  { id: 'datos', label: 'Con datos' },
+  { id: 'vacio', label: 'Vacío' },
+  { id: 'skeleton', label: 'Cargando' },
+  { id: 'error', label: 'Error' },
+  { id: 'exito', label: 'Éxito' },
+  { id: 'permiso', label: 'Sin permiso' }
+];
+
+const KPIS = [
+  { label: 'Usuarios', valor: '2', nota: '1 cliente · 1 coach' },
+  { label: 'Coaches publicados', valor: '0', nota: 'Ningún perfil visible aún' },
+  { label: 'Compras del mes', valor: '3', nota: '1 pendiente de pago' },
+  { label: 'Leads sin contactar', valor: '1', nota: 'Recibido hoy' }
+];
+
+const RESUMEN_COMPRAS = [
+  { titulo: 'Acompañamiento 12 semanas · Ana Cortés', meta: '#PUR-2419 · 10 sep 09:41', chip: chip('Pendiente', 'pendiente') },
+  { titulo: 'Plan mensual · Elena Ruiz', meta: '#PUR-2417 · 8 sep 09:20', chip: chip('Confirmado', 'completado') },
+  { titulo: 'Plan mensual · Nico Pardo', meta: '#PUR-2410 · 5 sep 16:50', chip: chip('Fallido', 'fallido') }
+];
+
+const AUDITORIA = [
+  { texto: 'Usuario bloqueado · motivo: reporte de conducta', meta: 'admin@sv · 9 sep 17:12' },
+  { texto: 'Invitación de coach creada para lucia@correo.com', meta: 'admin@sv · 10 sep 09:20' },
+  { texto: 'Sesiones expiradas limpiadas', meta: 'sistema · 9 sep 03:00' }
+];
+
+const VACIO_RESUMEN = { titulo: 'Sin actividad todavía', texto: 'La plataforma no registra compras ni leads en el periodo elegido.', en: 'EN: No activity yet.', cta: 'Crear invitación de coach' };
+
+class Component extends DCLogic {
+  state = { seccion: 0, estado: 'datos', panel: false, fila: 0, modal: false, menu: false };
+
+  seleccionarSeccion(i) {
+    this.setState({ seccion: i, panel: false, modal: false, fila: 0, menu: false });
+  }
+
+  renderVals() {
+    const s = SECCIONES[this.state.seccion];
+    const est = this.state.estado;
+    const conDatos = est === 'datos' || est === 'exito';
+    const filas = s.filas || [];
+    const filaSel = filas[this.state.fila] || filas[0];
+    return {
+      secciones: SECCIONES.map((x, i) => ({
+        label: x.label,
+        contador: x.contador,
+        activo: this.state.seccion === i,
+        inactivo: this.state.seccion !== i,
+        select: () => this.seleccionarSeccion(i)
+      })),
+      estados: ESTADOS.map(e => ({
+        label: e.label,
+        activo: this.state.estado === e.id,
+        select: () => this.setState({ estado: e.id, panel: false, modal: false })
+      })),
+      pantalla: s,
+      esResumen: s.tipo === 'resumen' && est !== 'permiso' && est !== 'skeleton' && est !== 'error' && est !== 'vacio',
+      esConfig: s.tipo === 'config' && est !== 'permiso',
+      esTabla: s.tipo === 'tabla' && est !== 'permiso',
+      esDatos: conDatos,
+      esVacio: est === 'vacio',
+      esSkeleton: est === 'skeleton',
+      esError: est === 'error',
+      esExito: est === 'exito',
+      esPermiso: est === 'permiso',
+      conAcceso: est !== 'permiso',
+      filas: conDatos ? filas.map((r, i) => Object.assign({}, r, {
+        abrir: () => this.setState({ panel: true, fila: i })
+      })) : [],
+      lineas: [1, 2, 3, 4, 5, 6],
+      kpis: KPIS,
+      resumenCompras: RESUMEN_COMPRAS,
+      auditoria: AUDITORIA,
+      vacio: s.vacio || VACIO_RESUMEN,
+      exito: s.exito || { titulo: 'Cambio guardado', texto: 'La acción quedó registrada en auditoría.' },
+      detalle: (filaSel && filaSel.detalle) || { titulo: '', sub: '', campos: [], auditoria: [], accion: '', destructiva: '' },
+      panelAbierto: this.state.panel && !!filaSel && est !== 'permiso',
+      menuAbierto: this.state.menu,
+      alternarMenu: () => this.setState({ menu: !this.state.menu }),
+      cerrarPanel: () => this.setState({ panel: false }),
+      modalAbierto: this.state.modal,
+      modal: s.modal || { titulo: 'Confirmar acción', texto: 'Esta acción quedará registrada.', nota: 'Auditoría: tu usuario y la fecha.', placeholder: 'Motivo', confirmar: 'Confirmar' },
+      abrirModal: () => this.setState({ modal: true }),
+      cerrarModal: () => this.setState({ modal: false }),
+      confirmarModal: () => this.setState({ modal: false, estado: 'exito', panel: false })
+    };
+  }
+}
+</script>
+</body>
+</html>
+

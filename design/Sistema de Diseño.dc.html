@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: oklch(0.975 0.006 128); color: oklch(0.24 0.015 130); font-family: "Sora", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: oklch(0.44 0.09 128); text-decoration: none; }
+  a:hover { color: oklch(0.34 0.09 128); text-decoration: underline; }
+  @keyframes sv-shimmer { 0% { background-position: -240px 0; } 100% { background-position: 240px 0; } }
+  @keyframes sv-spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+<div style="max-width: 1120px; margin: 0 auto; padding: 0 20px 120px">
+
+  <header style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; justify-content: space-between; padding: 56px 0 32px; border-bottom: 1px solid oklch(0.90 0.012 128)">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <div style="width: 22px; height: 22px; border-radius: 7px; background: oklch(0.48 0.09 128)"></div>
+        <span style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em">Steady Vitality</span>
+      </div>
+      <h1 style="margin: 0; font-size: 44px; line-height: 1.05; font-weight: 600; letter-spacing: -0.03em; text-wrap: pretty">Sistema de diseño</h1>
+      <p style="margin: 0; max-width: 52ch; font-size: 15px; line-height: 1.6; color: oklch(0.45 0.012 130); text-wrap: pretty">Fundamentos, tokens y componentes para la landing y el área autenticada. Calma sobre intensidad, siguiente acción siempre visible, contraste AA y contenido bilingüe.</p>
+    </div>
+    <nav style="display: flex; flex-wrap: wrap; gap: 8px">
+      <a href="#fundamentos" style="padding: 8px 14px; border: 1px solid oklch(0.90 0.012 128); border-radius: 999px; font-size: 13px; color: oklch(0.34 0.015 130)">Fundamentos</a>
+      <a href="#componentes" style="padding: 8px 14px; border: 1px solid oklch(0.90 0.012 128); border-radius: 999px; font-size: 13px; color: oklch(0.34 0.015 130)">Componentes</a>
+      <a href="#voz" style="padding: 8px 14px; border: 1px solid oklch(0.90 0.012 128); border-radius: 999px; font-size: 13px; color: oklch(0.34 0.015 130)">Voz y contenido</a>
+    </nav>
+  </header>
+
+  <section id="fundamentos" style="padding: 56px 0 0">
+    <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: oklch(0.44 0.09 128)">01</span>
+      <h2 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.02em">Fundamentos</h2>
+    </div>
+
+    <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600">Paleta semántica · claro</h3>
+    <p style="margin: 0 0 16px; font-size: 13px; color: oklch(0.45 0.012 130)">Cada rol de color existe en claro y oscuro con contraste AA sobre su fondo previsto.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 32px">
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.975 0.006 128); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Fondo</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">bg · 0.975 0.006 128</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: #ffffff; border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Superficie</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">surface · #ffffff</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.24 0.015 130); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Texto</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">text · 10.5:1</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.45 0.012 130); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Texto tenue</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">muted · 5.1:1</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.90 0.012 128); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Borde</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">border</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.48 0.09 128); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Marca</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">brand · 5.3:1</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.52 0.10 150); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Éxito</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">success</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.62 0.10 75); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Advertencia</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">warning</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.52 0.13 25); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Error</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">error</div></div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 12px; overflow: hidden; background: #fff">
+        <div style="height: 64px; background: oklch(0.50 0.09 240); border-bottom: 1px solid oklch(0.90 0.012 128)"></div>
+        <div style="padding: 10px 12px 12px"><div style="font-size: 13px; font-weight: 500">Información</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); margin-top: 3px">info</div></div>
+      </div>
+    </div>
+
+    <div style="border-radius: 16px; background: oklch(0.20 0.012 130); padding: 24px; margin-bottom: 40px">
+      <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; color: oklch(0.96 0.008 130)">Paleta semántica · oscuro</h3>
+      <p style="margin: 0 0 18px; font-size: 13px; color: oklch(0.74 0.012 130)">Mismos roles, superficie elevada por luminosidad y no por sombra.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px">
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.20 0.012 130)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Fondo</div>
+        </div>
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.26 0.012 130)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Superficie</div>
+        </div>
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.95 0.008 130)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Texto</div>
+        </div>
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.74 0.11 128)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Marca</div>
+        </div>
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.74 0.12 150)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Éxito</div>
+        </div>
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.76 0.13 75)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Advertencia</div>
+        </div>
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.72 0.15 25)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Error</div>
+        </div>
+        <div style="border: 1px solid oklch(0.32 0.012 130); border-radius: 12px; overflow: hidden">
+          <div style="height: 56px; background: oklch(0.74 0.11 240)"></div>
+          <div style="padding: 10px 12px; background: oklch(0.24 0.012 130); font-size: 12px; color: oklch(0.96 0.008 130)">Información</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin: 0 0 16px; font-size: 15px; font-weight: 600">Escala tipográfica</h3>
+    <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; overflow: hidden; margin-bottom: 40px">
+      <div style="display: grid; grid-template-columns: 1fr; gap: 0">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">display / 56</span>
+          <span style="font-size: 44px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05">Constancia sostenible</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">H1 / 32</span>
+          <span style="font-size: 32px; font-weight: 600; letter-spacing: -0.02em">Tu día de hoy</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">H2 / 24</span>
+          <span style="font-size: 24px; font-weight: 600; letter-spacing: -0.015em">Clientes activos</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">H3 / 18</span>
+          <span style="font-size: 18px; font-weight: 600">Plan de entrenamiento</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">cuerpo / 15</span>
+          <span style="font-size: 15px; line-height: 1.6; max-width: 56ch">Tu coach revisó tu semana y ajustó el bloque de fuerza. Los días de descanso no rompen tu racha.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">etiqueta / 12</span>
+          <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.45 0.012 130)">Relación de coaching</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px; border-bottom: 1px solid oklch(0.94 0.008 128)">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">dato / 34</span>
+          <span style="font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em">84&#37;<span style="font-size: 14px; font-weight: 400; color: oklch(0.45 0.012 130); margin-left: 8px">adherencia</span></span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; padding: 18px 20px">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); min-width: 92px">cita / Lora</span>
+          <span style="font-family: 'Lora', Georgia, serif; font-size: 20px; font-style: italic; line-height: 1.45; max-width: 40ch">Un plan que puedas repetir vale más que uno perfecto.</span>
+        </div>
+      </div>
+      <div style="padding: 14px 20px; background: oklch(0.975 0.006 128); border-top: 1px solid oklch(0.94 0.008 128); font-size: 12px; color: oklch(0.45 0.012 130)">Sora para interfaz y datos · Lora en itálica solo para citas y prueba social · JetBrains Mono para identificadores y metadatos técnicos.</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 40px">
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 20px">
+        <h3 style="margin: 0 0 14px; font-size: 15px; font-weight: 600">Espaciado</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">4</span><div style="height: 10px; width: 4px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">8</span><div style="height: 10px; width: 8px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">12</span><div style="height: 10px; width: 12px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">16</span><div style="height: 10px; width: 16px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">24</span><div style="height: 10px; width: 24px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">32</span><div style="height: 10px; width: 32px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">48</span><div style="height: 10px; width: 48px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130); width: 34px">64</span><div style="height: 10px; width: 64px; background: oklch(0.48 0.09 128); border-radius: 2px"></div></div>
+        </div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 20px">
+        <h3 style="margin: 0 0 14px; font-size: 15px; font-weight: 600">Radio y elevación</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px">
+          <div style="width: 56px; height: 56px; border: 1px solid oklch(0.90 0.012 128); border-radius: 6px; display: flex; align-items: flex-end; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); padding-bottom: 4px">6</div>
+          <div style="width: 56px; height: 56px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; display: flex; align-items: flex-end; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); padding-bottom: 4px">10</div>
+          <div style="width: 56px; height: 56px; border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; display: flex; align-items: flex-end; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); padding-bottom: 4px">16</div>
+          <div style="width: 56px; height: 56px; border: 1px solid oklch(0.90 0.012 128); border-radius: 999px; display: flex; align-items: flex-end; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130); padding-bottom: 4px">full</div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px">
+          <div style="width: 84px; height: 52px; border-radius: 12px; background: #fff; border: 1px solid oklch(0.92 0.012 128); display: flex; align-items: center; justify-content: center; font-size: 11px; color: oklch(0.45 0.012 130)">plano</div>
+          <div style="width: 84px; height: 52px; border-radius: 12px; background: #fff; box-shadow: 0 1px 2px oklch(0.24 0.015 130 / 0.06), 0 4px 12px oklch(0.24 0.015 130 / 0.05); display: flex; align-items: center; justify-content: center; font-size: 11px; color: oklch(0.45 0.012 130)">tarjeta</div>
+          <div style="width: 84px; height: 52px; border-radius: 12px; background: #fff; box-shadow: 0 8px 32px oklch(0.24 0.015 130 / 0.14); display: flex; align-items: center; justify-content: center; font-size: 11px; color: oklch(0.45 0.012 130)">overlay</div>
+        </div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 20px">
+        <h3 style="margin: 0 0 14px; font-size: 15px; font-weight: 600">Grid y breakpoints</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: oklch(0.34 0.015 130)">
+          <div style="display: flex; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid oklch(0.94 0.008 128)"><span>Móvil</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130)">&lt; 640 · 4 col · 16</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid oklch(0.94 0.008 128)"><span>Tableta</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130)">640–1024 · 8 col · 24</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid oklch(0.94 0.008 128)"><span>Escritorio</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130)">&gt; 1024 · 12 col · 24</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 12px"><span>Área táctil mínima</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.45 0.012 130)">44 &times; 44</span></div>
+        </div>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px">
+          <div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div><div style="height: 40px; border-radius: 3px; background: oklch(0.94 0.03 128)"></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600">Tokens de estado</h3>
+    <p style="margin: 0 0 16px; font-size: 13px; color: oklch(0.45 0.012 130)">Un solo vocabulario para compras, pagos, planes, invitaciones y reseñas.</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px">
+      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; background: oklch(0.96 0.02 75); color: oklch(0.42 0.09 60)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.62 0.10 75)"></span>Pendiente</span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; background: oklch(0.95 0.03 128); color: oklch(0.38 0.08 128)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.48 0.09 128)"></span>Activo</span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; background: oklch(0.95 0.04 150); color: oklch(0.38 0.09 150)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.10 150)"></span>Completado</span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; background: oklch(0.96 0.03 25); color: oklch(0.44 0.13 25)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.52 0.13 25)"></span>Fallido</span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; background: oklch(0.96 0.005 130); color: oklch(0.42 0.012 130)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.45 0.012 130)"></span>Cancelado</span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; background: #fff; border: 1px dashed oklch(0.80 0.012 130); color: oklch(0.42 0.012 130)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.80 0.012 130)"></span>Borrador</span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; background: oklch(0.95 0.02 240); color: oklch(0.40 0.09 240)"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.50 0.09 240)"></span>Archivado</span>
+    </div>
+    <p style="margin: 0; font-size: 12px; color: oklch(0.45 0.012 130); font-family: 'JetBrains Mono', monospace">EN: pending · active · completed · failed · canceled · draft · archived</p>
+  </section>
+
+  <section id="componentes" style="padding: 64px 0 0">
+    <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: oklch(0.44 0.09 128)">02</span>
+      <h2 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.02em">Componentes</h2>
+    </div>
+
+    <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px; margin-bottom: 16px">
+      <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600">Botones</h3>
+      <p style="margin: 0 0 18px; font-size: 13px; color: oklch(0.45 0.012 130)">Una sola acción primaria por pantalla. Altura 44 px en móvil, 40 px en escritorio.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 18px">
+        <button style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer" style-hover="background: oklch(0.42 0.09 128)">Crear cuenta</button>
+        <button style="min-height: 44px; padding: 0 20px; border: 1px solid oklch(0.48 0.09 128); border-radius: 10px; background: #fff; color: oklch(0.38 0.08 128); font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer" style-hover="background: oklch(0.96 0.02 128)">Iniciar sesión</button>
+        <button style="min-height: 44px; padding: 0 14px; border: 0; border-radius: 10px; background: transparent; color: oklch(0.38 0.015 130); font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer" style-hover="background: oklch(0.96 0.005 130)">Ver detalle</button>
+        <button style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 10px; background: oklch(0.52 0.13 25); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer" style-hover="background: oklch(0.45 0.13 25)">Eliminar cuenta</button>
+        <button style="width: 44px; height: 44px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; color: oklch(0.38 0.015 130); font-size: 18px; cursor: pointer" style-hover="background: oklch(0.96 0.005 130)">&#43;</button>
+        <button style="min-height: 44px; padding: 0 20px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 9px; cursor: progress; opacity: 0.9">
+          <span style="width: 14px; height: 14px; border-radius: 999px; border: 2px solid #ffffff66; border-top-color: #fff; animation: sv-spin 0.7s linear infinite; display: inline-block"></span>Guardando
+        </button>
+        <button disabled="disabled" style="min-height: 44px; padding: 0 20px; border: 1px solid oklch(0.92 0.012 128); border-radius: 10px; background: oklch(0.97 0.005 130); color: oklch(0.68 0.012 130); font-family: inherit; font-size: 14px; font-weight: 500; cursor: not-allowed">Asignar plan</button>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 12px; color: oklch(0.45 0.012 130)">
+        <span>Foco: anillo de 2 px marca &#43; 2 px de separación</span>
+        <span style="font-family: 'JetBrains Mono', monospace">EN: Create account · Log in · Details · Delete account</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 16px">
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px">
+        <h3 style="margin: 0 0 18px; font-size: 15px; font-weight: 600">Formularios</h3>
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 13px; font-weight: 500">Correo electrónico</span>
+            <input type="email" value="ana@correo.com" style="min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.86 0.012 128); border-radius: 10px; font-family: inherit; font-size: 14px; color: oklch(0.24 0.015 130); background: #fff" style-focus="outline: 2px solid oklch(0.48 0.09 128); outline-offset: 1px; border-color: oklch(0.48 0.09 128)" />
+            <span style="font-size: 12px; color: oklch(0.45 0.012 130)">Te enviamos un enlace de verificación.</span>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 13px; font-weight: 500">Peso actual</span>
+            <div style="display: flex; align-items: center; gap: 0; border: 1px solid oklch(0.86 0.012 128); border-radius: 10px; overflow: hidden">
+              <input type="text" value="68" style="min-height: 44px; padding: 0 14px; border: 0; font-family: inherit; font-size: 14px; font-variant-numeric: tabular-nums; width: 100%; color: oklch(0.24 0.015 130)" />
+              <span style="padding: 0 14px; font-size: 13px; color: oklch(0.45 0.012 130); border-left: 1px solid oklch(0.90 0.012 128); min-height: 44px; display: flex; align-items: center">kg</span>
+            </div>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 13px; font-weight: 500">Objetivo</span>
+            <select style="min-height: 44px; padding: 0 12px; border: 1px solid oklch(0.86 0.012 128); border-radius: 10px; font-family: inherit; font-size: 14px; background: #fff; color: oklch(0.24 0.015 130)">
+              <option>Recomponer y ganar fuerza</option>
+              <option>Bajar grasa con sostenibilidad</option>
+              <option>Volver a entrenar sin lesionarme</option>
+            </select>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 13px; font-weight: 500; color: oklch(0.44 0.13 25)">Contraseña</span>
+            <input type="password" value="1234" style="min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.52 0.13 25); border-radius: 10px; font-family: inherit; font-size: 14px; background: oklch(0.995 0.008 25)" />
+            <span style="font-size: 12px; color: oklch(0.44 0.13 25)">Usa al menos 8 caracteres, una mayúscula y un número.</span>
+          </label>
+          <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5">
+            <input type="checkbox" checked="checked" style="width: 18px; height: 18px; margin: 2px 0 0; accent-color: oklch(0.48 0.09 128)" />
+            <span>Acepto la política de privacidad y el tratamiento de mis datos de salud.</span>
+          </label>
+        </div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px">
+        <h3 style="margin: 0 0 18px; font-size: 15px; font-weight: 600">Alertas, toasts y skeletons</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px; background: oklch(0.96 0.03 150); border: 1px solid oklch(0.88 0.05 150)">
+            <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.45 0.10 150); margin-top: 6px; flex: none"></span>
+            <div><div style="font-size: 14px; font-weight: 500; color: oklch(0.32 0.08 150)">Pago confirmado</div><div style="font-size: 13px; color: oklch(0.40 0.05 150); line-height: 1.5">Tu ciclo de coaching empieza hoy. Tu coach recibirá el aviso.</div></div>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px; background: oklch(0.97 0.02 75); border: 1px solid oklch(0.90 0.05 75)">
+            <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.58 0.10 75); margin-top: 6px; flex: none"></span>
+            <div><div style="font-size: 14px; font-weight: 500; color: oklch(0.38 0.07 60)">Pago pendiente</div><div style="font-size: 13px; color: oklch(0.44 0.05 60); line-height: 1.5">La compra queda reservada 24 h. Puedes cancelarla mientras esté pendiente.</div></div>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px; background: oklch(0.97 0.02 25); border: 1px solid oklch(0.90 0.05 25)">
+            <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.52 0.13 25); margin-top: 6px; flex: none"></span>
+            <div><div style="font-size: 14px; font-weight: 500; color: oklch(0.40 0.12 25)">No pudimos guardar el plan</div><div style="font-size: 13px; color: oklch(0.44 0.09 25); line-height: 1.5">Revisa tu conexión e inténtalo otra vez. No se perdieron los ejercicios.</div></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: oklch(0.22 0.012 130); color: oklch(0.96 0.008 130); box-shadow: 0 8px 32px oklch(0.24 0.015 130 / 0.18)">
+            <span style="font-size: 14px">Invitación enviada a lucia@correo.com</span>
+            <a href="#componentes" style="margin-left: auto; font-size: 13px; color: oklch(0.80 0.10 128)">Deshacer</a>
+          </div>
+          <div style="border: 1px solid oklch(0.94 0.008 128); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+            <div style="height: 12px; width: 45%; border-radius: 6px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+            <div style="height: 12px; width: 80%; border-radius: 6px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+            <div style="height: 12px; width: 62%; border-radius: 6px; background: linear-gradient(90deg, oklch(0.94 0.008 128) 0%, oklch(0.98 0.006 128) 50%, oklch(0.94 0.008 128) 100%); background-size: 240px 100%; animation: sv-shimmer 1.3s linear infinite"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: oklch(0.45 0.012 130)">skeleton · 3 líneas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px; margin-bottom: 16px">
+      <h3 style="margin: 0 0 18px; font-size: 15px; font-weight: 600">Tarjetas</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px">
+        <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 18px">
+          <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.45 0.012 130)">Adherencia 7 días</div>
+          <div style="font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin: 8px 0 6px">84&#37;</div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: oklch(0.38 0.08 150)">&#43;6 pts vs. semana anterior</div>
+          <div style="display: flex; gap: 4px; margin-top: 14px">
+            <div style="flex: 1; height: 28px; border-radius: 4px; background: oklch(0.48 0.09 128)"></div>
+            <div style="flex: 1; height: 28px; border-radius: 4px; background: oklch(0.48 0.09 128)"></div>
+            <div style="flex: 1; height: 28px; border-radius: 4px; background: oklch(0.90 0.012 128)"></div>
+            <div style="flex: 1; height: 28px; border-radius: 4px; background: oklch(0.48 0.09 128)"></div>
+            <div style="flex: 1; height: 28px; border-radius: 4px; background: oklch(0.48 0.09 128)"></div>
+            <div style="flex: 1; height: 28px; border-radius: 4px; background: oklch(0.94 0.03 128)"></div>
+            <div style="flex: 1; height: 28px; border-radius: 4px; background: oklch(0.48 0.09 128)"></div>
+          </div>
+        </div>
+        <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 18px">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <div style="width: 44px; height: 44px; border-radius: 999px; background: oklch(0.94 0.03 128); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: oklch(0.38 0.08 128)">MR</div>
+            <div><div style="font-size: 15px; font-weight: 600">Marta Ruiz</div><div style="font-size: 12px; color: oklch(0.45 0.012 130)">Fuerza · Nutrición · ES/EN</div></div>
+          </div>
+          <p style="margin: 12px 0 14px; font-size: 13px; line-height: 1.55; color: oklch(0.38 0.015 130)">Acompaña a personas que vuelven a entrenar después de una pausa larga.</p>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+            <span style="font-size: 13px; font-variant-numeric: tabular-nums">Desde 49 &euro;/mes</span>
+            <button style="min-height: 36px; padding: 0 14px; border: 1px solid oklch(0.48 0.09 128); border-radius: 9px; background: #fff; color: oklch(0.38 0.08 128); font-family: inherit; font-size: 13px; cursor: pointer">Ver perfil</button>
+          </div>
+        </div>
+        <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 18px">
+          <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start">
+            <div><div style="font-size: 15px; font-weight: 600">Fuerza · Tren inferior</div><div style="font-size: 12px; color: oklch(0.45 0.012 130); margin-top: 2px">Asignado por Marta · 8 sep</div></div>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.95 0.03 128); color: oklch(0.38 0.08 128)">Activo</span>
+          </div>
+          <div style="margin: 14px 0 10px; height: 6px; border-radius: 999px; background: oklch(0.94 0.008 128); overflow: hidden"><div style="width: 60%; height: 100%; background: oklch(0.48 0.09 128)"></div></div>
+          <div style="font-size: 13px; color: oklch(0.45 0.012 130)">3 de 5 bloques completados</div>
+        </div>
+        <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 18px">
+          <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.45 0.012 130)">Compra</div>
+          <div style="font-size: 15px; font-weight: 600; margin: 8px 0 2px">Acompañamiento 12 semanas</div>
+          <div style="font-size: 13px; color: oklch(0.45 0.012 130); margin-bottom: 12px">Marta Ruiz · 149 &euro;</div>
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.96 0.02 75); color: oklch(0.42 0.09 60)">Pago pendiente</span>
+          <div style="margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">#PUR-2419 · 10 sep 09:41</div>
+        </div>
+        <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 18px">
+          <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.45 0.012 130); margin-bottom: 12px">Auditoría</div>
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; gap: 10px"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.48 0.09 128); margin-top: 6px; flex: none"></span><div><div style="font-size: 13px">Rol cambiado a <strong style="font-weight: 600">coach</strong></div><div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">admin@sv · 10 sep 08:12</div></div></div>
+            <div style="display: flex; gap: 10px"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.62 0.10 75); margin-top: 6px; flex: none"></span><div><div style="font-size: 13px">Invitación revocada</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">admin@sv · 9 sep 17:30</div></div></div>
+            <div style="display: flex; gap: 10px"><span style="width: 7px; height: 7px; border-radius: 999px; background: oklch(0.80 0.012 130); margin-top: 6px; flex: none"></span><div><div style="font-size: 13px">Sesiones expiradas limpiadas</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">sistema · 9 sep 03:00</div></div></div>
+          </div>
+        </div>
+        <div style="border: 1px dashed oklch(0.84 0.012 130); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; background: oklch(0.985 0.005 128)">
+          <div style="width: 36px; height: 36px; border-radius: 10px; border: 1px dashed oklch(0.80 0.012 130)"></div>
+          <div style="font-size: 15px; font-weight: 600">Aún no tienes coach</div>
+          <p style="margin: 0; font-size: 13px; line-height: 1.55; color: oklch(0.45 0.012 130)">Explora coaches por especialidad e idioma, o reserva una llamada de 15 minutos.</p>
+          <button style="min-height: 40px; padding: 0 16px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer">Explorar coaches</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px; margin-bottom: 16px">
+      <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600">Tabla responsiva</h3>
+      <p style="margin: 0 0 16px; font-size: 13px; color: oklch(0.45 0.012 130)">En móvil cada fila colapsa a tarjeta con las mismas acciones. Selección múltiple habilita acciones en lote.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px">
+        <div style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; border: 1px solid oklch(0.88 0.012 128); border-radius: 10px; flex: 1 1 220px">
+          <span style="color: oklch(0.44 0.012 130); font-size: 13px">Buscar</span>
+          <input type="text" placeholder="Nombre o correo" style="border: 0; font-family: inherit; font-size: 13px; width: 100%; color: oklch(0.24 0.015 130)" />
+        </div>
+        <button style="min-height: 40px; padding: 0 14px; border: 1px solid oklch(0.88 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 13px; cursor: pointer">Rol: todos</button>
+        <button style="min-height: 40px; padding: 0 14px; border: 1px solid oklch(0.48 0.09 128); border-radius: 10px; background: oklch(0.96 0.02 128); color: oklch(0.36 0.08 128); font-family: inherit; font-size: 13px; cursor: pointer">Estado: bloqueado &#215;</button>
+      </div>
+      <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: 28px minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr) 88px; gap: 12px; padding: 12px 16px; background: oklch(0.975 0.006 128); border-bottom: 1px solid oklch(0.92 0.012 128); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: oklch(0.45 0.012 130)">
+          <span></span><span>Usuario</span><span>Rol</span><span>Estado</span><span>Último acceso</span><span></span>
+        </div>
+        <div style="display: grid; grid-template-columns: 28px minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr) 88px; gap: 12px; padding: 14px 16px; border-bottom: 1px solid oklch(0.95 0.008 128); align-items: center; font-size: 13px">
+          <input type="checkbox" style="width: 16px; height: 16px; accent-color: oklch(0.48 0.09 128)" />
+          <div style="min-width: 0"><div style="font-weight: 500">Ana Cortés</div><div style="color: oklch(0.45 0.012 130); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">ana@correo.com</div></div>
+          <span>Cliente</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; font-size: 12px; background: oklch(0.95 0.03 128); color: oklch(0.38 0.08 128); justify-self: start">Activo</span>
+          <span style="font-variant-numeric: tabular-nums; color: oklch(0.45 0.012 130)">10 sep 09:12</span>
+          <button style="min-height: 34px; padding: 0 10px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; background: #fff; font-family: inherit; font-size: 12px; cursor: pointer">Acciones</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 28px minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr) 88px; gap: 12px; padding: 14px 16px; border-bottom: 1px solid oklch(0.95 0.008 128); align-items: center; font-size: 13px; background: oklch(0.985 0.005 128)">
+          <input type="checkbox" checked="checked" style="width: 16px; height: 16px; accent-color: oklch(0.48 0.09 128)" />
+          <div style="min-width: 0"><div style="font-weight: 500">Diego Peña</div><div style="color: oklch(0.45 0.012 130); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">diego@correo.com</div></div>
+          <span>Coach</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; font-size: 12px; background: oklch(0.96 0.03 25); color: oklch(0.44 0.13 25); justify-self: start">Bloqueado</span>
+          <span style="font-variant-numeric: tabular-nums; color: oklch(0.45 0.012 130)">2 sep 14:05</span>
+          <button style="min-height: 34px; padding: 0 10px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; background: #fff; font-family: inherit; font-size: 12px; cursor: pointer">Acciones</button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 13px; color: oklch(0.45 0.012 130)">
+          <span>1 seleccionado · 2 de 2 usuarios</span>
+          <div style="display: flex; gap: 8px">
+            <button style="min-height: 34px; padding: 0 12px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; background: #fff; font-family: inherit; font-size: 12px; cursor: pointer">Anterior</button>
+            <button style="min-height: 34px; padding: 0 12px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; background: #fff; font-family: inherit; font-size: 12px; cursor: pointer">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 16px">
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px">
+        <h3 style="margin: 0 0 18px; font-size: 15px; font-weight: 600">Navegación</h3>
+        <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; padding: 12px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 14px">
+          <div style="display: flex; align-items: center; gap: 8px; margin-right: auto"><div style="width: 16px; height: 16px; border-radius: 5px; background: oklch(0.48 0.09 128)"></div><span style="font-size: 13px; font-weight: 600">Steady Vitality</span></div>
+          <span style="font-size: 13px; color: oklch(0.42 0.015 130)">Servicios</span>
+          <span style="font-size: 13px; color: oklch(0.42 0.015 130)">Evaluación</span>
+          <span style="font-size: 12px; padding: 5px 9px; border: 1px solid oklch(0.90 0.012 128); border-radius: 8px; font-family: 'JetBrains Mono', monospace">ES</span>
+          <span style="font-size: 13px; color: oklch(0.38 0.08 128); font-weight: 500">Iniciar sesión</span>
+          <span style="font-size: 13px; padding: 8px 12px; border-radius: 9px; background: oklch(0.48 0.09 128); color: #fff; font-weight: 500">Crear cuenta</span>
+        </div>
+        <div style="display: flex; gap: 6px; margin-bottom: 14px; border-bottom: 1px solid oklch(0.92 0.012 128); padding-bottom: 0">
+          <span style="font-size: 13px; padding: 10px 12px; border-bottom: 2px solid oklch(0.48 0.09 128); color: oklch(0.30 0.06 128); font-weight: 500">Hoy</span>
+          <span style="font-size: 13px; padding: 10px 12px; color: oklch(0.45 0.012 130)">Mi plan</span>
+          <span style="font-size: 13px; padding: 10px 12px; color: oklch(0.45 0.012 130)">Mi coach</span>
+          <span style="font-size: 13px; padding: 10px 12px; color: oklch(0.45 0.012 130)">Mensajes</span>
+          <span style="font-size: 13px; padding: 10px 12px; color: oklch(0.45 0.012 130)">Perfil</span>
+        </div>
+        <div style="max-width: 280px; border: 1px solid oklch(0.92 0.012 128); border-radius: 12px; overflow: hidden">
+          <div style="padding: 10px 14px; font-size: 12px; color: oklch(0.45 0.012 130); border-bottom: 1px solid oklch(0.95 0.008 128)">Barra inferior móvil · 44 px</div>
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr)">
+            <div style="min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: oklch(0.36 0.07 128)"><div style="width: 18px; height: 18px; border-radius: 5px; background: oklch(0.48 0.09 128)"></div><span style="font-size: 10px">Hoy</span></div>
+            <div style="min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: oklch(0.44 0.012 130)"><div style="width: 18px; height: 18px; border-radius: 5px; background: oklch(0.88 0.012 128)"></div><span style="font-size: 10px">Plan</span></div>
+            <div style="min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: oklch(0.44 0.012 130)"><div style="width: 18px; height: 18px; border-radius: 5px; background: oklch(0.88 0.012 128)"></div><span style="font-size: 10px">Coach</span></div>
+            <div style="min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: oklch(0.44 0.012 130)"><div style="width: 18px; height: 18px; border-radius: 5px; background: oklch(0.88 0.012 128)"></div><span style="font-size: 10px">Chat</span></div>
+            <div style="min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: oklch(0.44 0.012 130)"><div style="width: 18px; height: 18px; border-radius: 5px; background: oklch(0.88 0.012 128)"></div><span style="font-size: 10px">Perfil</span></div>
+          </div>
+        </div>
+        <div style="margin-top: 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: oklch(0.45 0.012 130)">
+          <a href="#componentes">Clientes</a><span>/</span><a href="#componentes">Ana Cortés</a><span>/</span><span style="color: oklch(0.24 0.015 130)">Plan de la semana</span>
+        </div>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px">
+        <h3 style="margin: 0 0 18px; font-size: 15px; font-weight: 600">Inbox y conversación</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px">
+          <div style="display: flex; gap: 12px; padding: 12px; border-radius: 12px; background: oklch(0.975 0.006 128); align-items: center">
+            <div style="width: 38px; height: 38px; border-radius: 999px; background: oklch(0.94 0.03 128); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: oklch(0.38 0.08 128); flex: none">MR</div>
+            <div style="min-width: 0"><div style="font-size: 14px; font-weight: 500">Marta Ruiz</div><div style="font-size: 12px; color: oklch(0.45 0.012 130); overflow: hidden; text-overflow: ellipsis; white-space: nowrap">Check-in semanal: ¿cómo fue el bloque de fuerza?</div></div>
+            <span style="margin-left: auto; font-size: 11px; color: oklch(0.44 0.012 130); flex: none; font-variant-numeric: tabular-nums">09:41</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="align-self: flex-start; max-width: 78%; padding: 12px 14px; border-radius: 14px 14px 14px 4px; background: oklch(0.96 0.008 128); font-size: 14px; line-height: 1.5">
+            <span style="display: block; font-size: 11px; font-weight: 600; color: oklch(0.38 0.08 128); margin-bottom: 4px">Marta · check-in</span>
+            ¿Cómo te sentiste en las sentadillas? Si molestó la rodilla, bajamos el rango esta semana.
+          </div>
+          <div style="align-self: flex-end; max-width: 78%; padding: 12px 14px; border-radius: 14px 14px 4px 14px; background: oklch(0.48 0.09 128); color: #fff; font-size: 14px; line-height: 1.5">Bien, sin molestias. Descansé el jueves.</div>
+          <div style="align-self: center; font-size: 11px; color: oklch(0.44 0.012 130); font-family: 'JetBrains Mono', monospace">10 sep · los mensajes no son en tiempo real</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 24px; margin-bottom: 16px">
+      <h3 style="margin: 0 0 18px; font-size: 15px; font-weight: 600">Confirmación destructiva y permiso denegado</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
+        <div style="border-radius: 14px; padding: 20px; box-shadow: 0 8px 32px oklch(0.24 0.015 130 / 0.14); border: 1px solid oklch(0.94 0.008 128)">
+          <div style="font-size: 17px; font-weight: 600; margin-bottom: 8px">¿Bloquear a Diego Peña?</div>
+          <p style="margin: 0 0 8px; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">No podrá iniciar sesión ni atender clientes. Sus 3 relaciones activas quedan en pausa.</p>
+          <p style="margin: 0 0 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">Se registrará en auditoría con tu usuario y la fecha.</p>
+          <label style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px">
+            <span style="font-size: 13px; font-weight: 500">Motivo (visible en auditoría)</span>
+            <input type="text" placeholder="Reporte de conducta" style="min-height: 44px; padding: 0 14px; border: 1px solid oklch(0.86 0.012 128); border-radius: 10px; font-family: inherit; font-size: 14px" />
+          </label>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end">
+            <button style="min-height: 44px; padding: 0 16px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 14px; cursor: pointer">Cancelar</button>
+            <button style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: oklch(0.52 0.13 25); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Bloquear usuario</button>
+          </div>
+        </div>
+        <div style="border: 1px solid oklch(0.92 0.012 128); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; background: oklch(0.985 0.005 128)">
+          <span style="display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: oklch(0.95 0.02 240); color: oklch(0.40 0.09 240)">403</span>
+          <div style="font-size: 17px; font-weight: 600">No tienes permiso para ver esta pantalla</div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">Operaciones está disponible solo para administración. Si crees que es un error, escribe a soporte.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <button style="min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: oklch(0.48 0.09 128); color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Volver a mi panel</button>
+            <button style="min-height: 44px; padding: 0 16px; border: 1px solid oklch(0.90 0.012 128); border-radius: 10px; background: #fff; font-family: inherit; font-size: 14px; cursor: pointer">Contactar soporte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="voz" style="padding: 64px 0 0">
+    <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: oklch(0.44 0.09 128)">03</span>
+      <h2 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.02em">Voz y contenido ES/EN</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 22px">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.38 0.08 150); margin-bottom: 12px">Así sí</div>
+        <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.55; color: oklch(0.30 0.015 130)">
+          <li>Hoy toca fuerza. 35 minutos.<br /><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">EN: Strength today. 35 minutes.</span></li>
+          <li>Descansaste ayer. Tu racha sigue intacta.<br /><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">EN: You rested yesterday. Your streak is safe.</span></li>
+          <li>Tu coach responde normalmente en 24 h.<br /><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: oklch(0.44 0.012 130)">EN: Your coach usually replies within 24 h.</span></li>
+        </ul>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 22px">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.44 0.13 25); margin-bottom: 12px">Así no</div>
+        <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.55; color: oklch(0.42 0.015 130)">
+          <li>¡Sin excusas! Rompe tus límites hoy.</li>
+          <li>Perdiste tu racha por saltarte el día.</li>
+          <li>Transforma tu cuerpo en 30 días garantizado.</li>
+          <li>Chat en vivo con tu coach.</li>
+        </ul>
+      </div>
+      <div style="border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: #fff; padding: 22px">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.45 0.012 130); margin-bottom: 12px">Reglas de traducción</div>
+        <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.55; color: oklch(0.30 0.015 130)">
+          <li>Ningún string fijo en componentes: todo entra por clave de locale.</li>
+          <li>Reservar 30&#37; extra de ancho: el español es más largo que el inglés.</li>
+          <li>Fechas, monedas y unidades según locale, no hardcodeadas.</li>
+          <li>Términos de dominio con traducción única: relación de coaching / coaching relationship, oferta / package, compra / purchase, ciclo / cycle.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top: 16px; border: 1px solid oklch(0.90 0.012 128); border-radius: 16px; background: oklch(0.985 0.005 128); padding: 22px">
+      <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(0.45 0.012 130); margin-bottom: 10px">Nota de alcance</div>
+      <p style="margin: 0; font-size: 14px; line-height: 1.6; max-width: 76ch; color: oklch(0.30 0.015 130); text-wrap: pretty">Este sistema no representa funciones inexistentes. Pago en producción, entrega de correo real, chat en tiempo real, agenda dentro de la app, planificación semanal completa y reportes analíticos siguen pendientes de backend; cualquier pantalla que los use debe marcarse como propuesta, no como estado actual.</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+</body>
+</html>
