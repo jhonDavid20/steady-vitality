@@ -8,12 +8,7 @@ const links: Record<AuthUser["role"], Array<{ href: string; label: string }>> = 
   coach: [
     { href: "/today", label: "Overview" }, { href: "/clients", label: "Clients" }, { href: "/plans", label: "Plan" }, { href: "/packages", label: "Packages" }, { href: "/messages", label: "Messages" }, { href: "/profile", label: "Profile" },
   ],
-  admin: [
-    { href: "/admin", label: "Admin" },
-    { href: "/admin/users", label: "Users" },
-    { href: "/operations", label: "Operations" },
-    { href: "/profile", label: "Profile" },
-  ],
+  admin: [],
 };
 
 export function AppNavigation({ locale, user, labels }: { locale: string; user: AuthUser; labels: Record<string, string> }) {
