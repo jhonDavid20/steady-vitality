@@ -489,6 +489,24 @@
     "confirmStatusDescription": "This changes whether {name} can sign in.",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "invitationsTitle": "Coach invitations",
+    "invitationsDescription": "Only invited people can register as coaches. Pending invitations expire after seven days.",
+    "newInvitation": "New invitation",
+    "newInvitationDescription": "We will email a registration link for a coach account. The link expires after seven days.",
+    "sendInvitation": "Send invitation",
+    "inviteLoadError": "We could not load invitations.",
+    "inviteCreateError": "We could not create the invitation.",
+    "inviteRevokeError": "We could not revoke the invitation.",
+    "emptyInvitationsTitle": "No invitations yet",
+    "emptyInvitationsDescription": "Create an invitation to bring your first coach onto the platform.",
+    "invitedEmail": "Invited email",
+    "createdBy": "Created by",
+    "inviteStatus": "Status",
+    "expires": "Expires",
+    "inviteStates": { "pending": "Pending", "used": "Used", "expired": "Expired" },
+    "revoke": "Revoke",
+    "revokeInvitationTitle": "Revoke this invitation?",
+    "revokeInvitationDescription": "{email} will no longer be able to register with this invitation. You can create a new one later."
   }
 }

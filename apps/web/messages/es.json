@@ -489,6 +489,24 @@
     "confirmStatusDescription": "Esto cambia si {name} puede iniciar sesión.",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
-    "saving": "Guardando…"
+    "saving": "Guardando…",
+    "invitationsTitle": "Invitaciones de coach",
+    "invitationsDescription": "Solo las personas invitadas pueden registrarse como coaches. Las invitaciones pendientes caducan después de siete días.",
+    "newInvitation": "Nueva invitación",
+    "newInvitationDescription": "Enviaremos un enlace de registro para una cuenta de coach. El enlace caduca después de siete días.",
+    "sendInvitation": "Enviar invitación",
+    "inviteLoadError": "No pudimos cargar las invitaciones.",
+    "inviteCreateError": "No pudimos crear la invitación.",
+    "inviteRevokeError": "No pudimos revocar la invitación.",
+    "emptyInvitationsTitle": "Todavía no hay invitaciones",
+    "emptyInvitationsDescription": "Crea una invitación para incorporar al primer coach a la plataforma.",
+    "invitedEmail": "Correo invitado",
+    "createdBy": "Creada por",
+    "inviteStatus": "Estado",
+    "expires": "Caduca",
+    "inviteStates": { "pending": "Pendiente", "used": "Usada", "expired": "Caducada" },
+    "revoke": "Revocar",
+    "revokeInvitationTitle": "¿Revocar esta invitación?",
+    "revokeInvitationDescription": "{email} ya no podrá registrarse con esta invitación. Podrás crear otra más adelante."
   }
 }

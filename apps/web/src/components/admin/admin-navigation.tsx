@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const sections = [
   { href: "/admin", label: "overview" },
   { href: "/admin/users", label: "users" },
-  { href: "/admin/invitations", label: "invitations", unavailable: true },
+  { href: "/admin/invitations", label: "invitations" },
   { href: "/admin/leads", label: "leads", unavailable: true },
   { href: "/operations", label: "operations" },
   { href: "/admin/reviews", label: "reviews", unavailable: true },
