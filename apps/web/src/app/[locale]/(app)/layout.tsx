@@ -24,7 +24,7 @@ export default async function AppLayout({
       <header className="border-b border-border">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <span className="font-bold text-foreground">Steady Vitality</span>
-          <div className="hidden md:block"><AppNavigation locale={locale} user={user} labels={{ Today: navigation("today"), Plan: navigation("plan"), Coach: navigation("coach"), Profile: navigation("profile"), Overview: navigation("overview"), Clients: navigation("clients"), Packages: navigation("packages"), Messages: navigation("messages"), Operations: navigation("operations") }} /></div>
+          <div className="hidden md:block"><AppNavigation locale={locale} user={user} labels={{ Today: navigation("today"), Plan: navigation("plan"), Coach: navigation("coach"), Profile: navigation("profile"), Overview: navigation("overview"), Clients: navigation("clients"), Packages: navigation("packages"), Messages: navigation("messages"), Operations: navigation("operations"), Admin: navigation("admin"), Users: navigation("users") }} /></div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground hidden sm:inline">
               {user.firstName} · {t(`role.${user.role}`)}

@@ -167,6 +167,11 @@ router.patch('/users/:id/role', authenticate, requireAdmin, [
       return;
     }
 
+    if (user.role === UserRole.ADMIN && req.body.role !== UserRole.ADMIN) {
+      res.status(400).json({ success: false, message: 'Admin accounts cannot have their role changed' });
+      return;
+    }
+
     user.role = req.body.role as UserRole;
     await userRepository.save(user);
 
@@ -317,6 +322,56 @@ router.get('/operations', authenticate, requireAdmin, async (_req: Authenticated
   } catch (error) {
     console.error('Admin operations error:', error);
     res.status(500).json({ success: false, message: 'Failed to retrieve operations' });
+  }
+});
+
+/**
+ * GET /api/admin/reviews
+ * Paginated moderation queue. The review entity intentionally has no ORM
+ * relations, so names are projected from the user records without exposing
+ * account fields that an operator does not need.
+ */
+router.get('/reviews', authenticate, requireAdmin, [
+  query('page').optional().isInt({ min: 1 }),
+  query('limit').optional().isInt({ min: 1, max: 100 }),
+  query('visible').optional().isBoolean().withMessage('visible must be a boolean'),
+], async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const visible = req.query.visible === undefined ? undefined : req.query.visible === 'true';
+    const where = visible === undefined ? {} : { visible };
+    const [reviews, total] = await AppDataSource.getRepository(Review).findAndCount({
+      where,
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    const userIds = [...new Set(reviews.flatMap((review) => [review.clientId, review.coachId]))];
+    const users = userIds.length === 0 ? [] : await AppDataSource.getRepository(User).find({
+      where: userIds.map((id) => ({ id })),
+      select: { id: true, firstName: true, lastName: true },
+    });
+    const names = new Map(users.map((user) => [user.id, `${user.firstName} ${user.lastName}`]));
+    res.status(200).json({
+      success: true,
+      data: reviews.map((review) => ({
+        id: review.id,
+        rating: review.rating,
+        text: review.text,
+        anonymous: review.anonymous,
+        visible: review.visible,
+        createdAt: review.createdAt,
+        clientName: review.anonymous ? null : names.get(review.clientId) ?? null,
+        coachName: names.get(review.coachId) ?? null,
+      })),
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
+  } catch (error) {
+    console.error('Admin list reviews error:', error);
+    res.status(500).json({ success: false, message: 'Failed to retrieve reviews' });
   }
 });
 
