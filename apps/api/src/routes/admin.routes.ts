@@ -167,6 +167,11 @@ router.patch('/users/:id/role', authenticate, requireAdmin, [
       return;
     }
 
+    if (user.role === UserRole.ADMIN && req.body.role !== UserRole.ADMIN) {
+      res.status(400).json({ success: false, message: 'Admin accounts cannot have their role changed' });
+      return;
+    }
+
     user.role = req.body.role as UserRole;
     await userRepository.save(user);
 
