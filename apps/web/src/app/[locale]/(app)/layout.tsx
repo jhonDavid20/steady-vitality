@@ -20,11 +20,11 @@ export default async function AppLayout({
   const [t, navigation] = await Promise.all([getTranslations("AppNav"), getTranslations("Navigation")]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-          <span className="font-bold text-foreground">Steady Vitality</span>
-          <div className="hidden md:block"><AppNavigation locale={locale} user={user} labels={{ Today: navigation("today"), Plan: navigation("plan"), Coach: navigation("coach"), Profile: navigation("profile"), Overview: navigation("overview"), Clients: navigation("clients"), Packages: navigation("packages"), Messages: navigation("messages"), Operations: navigation("operations"), Admin: navigation("admin"), Users: navigation("users") }} /></div>
+    <div className={`min-h-screen bg-background ${user.role === "admin" ? "admin-app" : ""}`}>
+      <header className="sticky top-0 z-40 border-b border-border">
+        <div className={`mx-auto flex h-16 items-center justify-between px-4 ${user.role === "admin" ? "max-w-7xl" : "max-w-5xl"}`}>
+          <span className="font-semibold tracking-tight text-foreground">Steady Vitality</span>
+          {user.role !== "admin" ? <div className="hidden md:block"><AppNavigation locale={locale} user={user} labels={{ Today: navigation("today"), Plan: navigation("plan"), Coach: navigation("coach"), Profile: navigation("profile"), Overview: navigation("overview"), Clients: navigation("clients"), Packages: navigation("packages"), Messages: navigation("messages") }} /></div> : null}
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground hidden sm:inline">
               {user.firstName} · {t(`role.${user.role}`)}
@@ -33,7 +33,7 @@ export default async function AppLayout({
           </div>
         </div>
       </header>
-      <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
+      <main className={`mx-auto px-4 py-8 sm:py-10 ${user.role === "admin" ? "max-w-7xl" : "max-w-5xl"}`}>{children}</main>
     </div>
   );
 }

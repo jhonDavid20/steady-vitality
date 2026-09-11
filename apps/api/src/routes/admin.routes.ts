@@ -150,7 +150,8 @@ router.get('/users', authenticate, requireAdmin, [
 
 /**
  * PATCH /api/admin/users/:id/role
- * Change a user's role.
+ * Roles are assigned only through account creation and invitations.
+ * This compatibility endpoint intentionally rejects changes from the admin panel.
  */
 router.patch('/users/:id/role', authenticate, requireAdmin, [
   param('id').isUUID().withMessage('id must be a valid UUID'),
@@ -158,24 +159,10 @@ router.patch('/users/:id/role', authenticate, requireAdmin, [
 ], async (req: AuthenticatedRequest, res: Response) => {
   try {
     if (handleValidationErrors(req, res)) return;
-
-    const userRepository = AppDataSource.getRepository(User);
-    const user = await userRepository.findOne({ where: { id: req.params.id } });
-
-    if (!user) {
-      res.status(404).json({ success: false, message: 'User not found' });
-      return;
-    }
-
-    if (user.role === UserRole.ADMIN && req.body.role !== UserRole.ADMIN) {
-      res.status(400).json({ success: false, message: 'Admin accounts cannot have their role changed' });
-      return;
-    }
-
-    user.role = req.body.role as UserRole;
-    await userRepository.save(user);
-
-    res.status(200).json({ success: true, message: 'Role updated', user: { id: user.id, role: user.role } });
+    res.status(409).json({
+      success: false,
+      message: 'User roles are assigned at account creation and cannot be changed from administration',
+    });
   } catch (error) {
     console.error('Admin update role error:', error);
     res.status(500).json({ error: 'Failed to update role', message: 'Internal server error' });
@@ -198,6 +185,11 @@ router.patch('/users/:id/status', authenticate, requireAdmin, [
 
     if (!user) {
       res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    if (user.role === UserRole.ADMIN && req.body.isActive === false) {
+      res.status(400).json({ success: false, message: 'Admin accounts cannot be locked' });
       return;
     }
 
