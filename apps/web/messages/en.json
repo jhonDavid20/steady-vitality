@@ -534,6 +534,25 @@
     "exportsTitle": "Data exports",
     "exportsDescription": "CSV exports for users, purchases, and leads need a dedicated backend endpoint before they can be enabled.",
     "requiresBackend": "Requires backend",
-    "exportCsv": "Export CSV"
+    "exportCsv": "Export CSV",
+    "reviewsTitle": "Review moderation",
+    "reviewsDescription": "Review client feedback before it appears on a coach’s public profile.",
+    "allReviews": "All reviews",
+    "published": "Published",
+    "hidden": "Hidden",
+    "reviewLoadError": "We could not load or update reviews.",
+    "emptyReviewsTitle": "No reviews match this filter",
+    "emptyReviewsDescription": "Reviews arrive after a completed coaching cycle.",
+    "anonymousClient": "Anonymous client",
+    "unknownClient": "Unknown client",
+    "unknownCoach": "Unknown coach",
+    "rating": "{count, plural, one {# star} other {# stars}}",
+    "noReviewText": "This client did not leave written feedback.",
+    "hideReview": "Hide",
+    "publishReview": "Publish",
+    "hideReviewTitle": "Hide this review?",
+    "publishReviewTitle": "Publish this review?",
+    "hideReviewDescription": "It will no longer appear on the coach’s public profile.",
+    "publishReviewDescription": "It will appear on the coach’s public profile."
   }
 }
