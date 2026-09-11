@@ -9,7 +9,7 @@ const sections = [
   { href: "/admin", label: "overview" },
   { href: "/admin/users", label: "users" },
   { href: "/admin/invitations", label: "invitations" },
-  { href: "/admin/leads", label: "leads", unavailable: true },
+  { href: "/admin/leads", label: "leads" },
   { href: "/operations", label: "operations" },
   { href: "/admin/reviews", label: "reviews", unavailable: true },
   { href: "/admin/settings", label: "settings", unavailable: true },

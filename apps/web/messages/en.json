@@ -507,6 +507,20 @@
     "inviteStates": { "pending": "Pending", "used": "Used", "expired": "Expired" },
     "revoke": "Revoke",
     "revokeInvitationTitle": "Revoke this invitation?",
-    "revokeInvitationDescription": "{email} will no longer be able to register with this invitation. You can create a new one later."
+    "revokeInvitationDescription": "{email} will no longer be able to register with this invitation. You can create a new one later.",
+    "leadsTitle": "Assessment leads",
+    "leadsDescription": "People who completed the public assessment. Update their status after a real follow-up.",
+    "searchLeads": "Search name, email, or goal",
+    "allLeadStatuses": "All lead statuses",
+    "lead": "Lead",
+    "goal": "Goal",
+    "leadStatus": "Status",
+    "received": "Received",
+    "leadStates": { "new": "New", "contacted": "Contacted", "converted": "Converted", "archived": "Archived" },
+    "leadLoadError": "We could not load or update leads.",
+    "emptyLeadsTitle": "No leads match these filters",
+    "emptyLeadsDescription": "Leads arrive when a visitor completes the public assessment.",
+    "confirmLeadStatusTitle": "Update this lead?",
+    "confirmLeadStatusDescription": "{name} will be marked as {status}. This does not send an automatic email."
   }
 }
