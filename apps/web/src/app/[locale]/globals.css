@@ -80,6 +80,35 @@
   .admin-page-title {
     letter-spacing: -0.035em;
   }
+
+  .admin-app .rounded-xl.border {
+    border-radius: 1rem;
+    border-color: hsl(var(--border) / 0.9);
+    box-shadow: 0 8px 24px hsl(139 20% 18% / 0.035);
+  }
+
+  .admin-app input,
+  .admin-app [role="combobox"] {
+    border-radius: 0.75rem;
+    background: hsl(var(--background));
+  }
+
+  .admin-app table thead {
+    background: hsl(var(--muted) / 0.65);
+  }
+
+  .admin-app table th {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+  }
+
+  .admin-app table tbody tr {
+    transition: background-color 160ms ease;
+  }
+
+  .admin-app table tbody tr:hover {
+    background: hsl(var(--secondary) / 0.55);
+  }
 }
 
 @layer base {
