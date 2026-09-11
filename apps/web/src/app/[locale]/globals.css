@@ -27,6 +27,61 @@
   }
 }
 
+/* The authenticated admin area uses the semantic palette and rounded surfaces
+   defined in the approved Claude Design handoff. The variables are scoped so
+   the public landing can be migrated deliberately instead of being restyled by
+   accident. */
+@layer components {
+  .admin-app {
+    --background: 48 24% 95%;
+    --foreground: 139 20% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 139 20% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 139 20% 18%;
+    --primary: 128 31% 34%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 108 18% 93%;
+    --secondary-foreground: 139 20% 18%;
+    --muted: 90 17% 94%;
+    --muted-foreground: 130 9% 42%;
+    --accent: 108 20% 89%;
+    --accent-foreground: 139 20% 18%;
+    --destructive: 8 67% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 100 13% 84%;
+    --input: 100 13% 80%;
+    --ring: 128 31% 34%;
+    --radius: 0.875rem;
+    background: hsl(var(--background));
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .admin-app header {
+    background: hsl(var(--background) / 0.92);
+    backdrop-filter: blur(12px);
+  }
+
+  .admin-shell {
+    border: 1px solid hsl(var(--border));
+    border-radius: 1.25rem;
+    background: hsl(var(--card));
+    box-shadow: 0 18px 55px hsl(139 20% 18% / 0.08);
+  }
+
+  .admin-kicker {
+    color: hsl(var(--primary));
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .admin-page-title {
+    letter-spacing: -0.035em;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

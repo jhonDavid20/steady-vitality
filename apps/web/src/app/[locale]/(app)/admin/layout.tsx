@@ -7,12 +7,14 @@ export default async function AdminLayout({ children, params }: { children: Reac
   const [{ locale }, user, t] = await Promise.all([params, getServerUser(), getTranslations("Admin")]);
   if (user?.role !== "admin") redirect(`/${locale}/today`);
 
-  return <section className="space-y-6">
-    <div>
-      <p className="text-sm font-medium text-primary">Steady Vitality</p>
-      <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+  return <section className="admin-shell overflow-hidden">
+    <div className="border-b border-border px-5 py-6 sm:px-8 sm:py-7">
+      <p className="admin-kicker">Steady Vitality · {t("title")}</p>
+      <h1 className="admin-page-title mt-2 text-3xl font-semibold text-foreground sm:text-4xl">{t("title")}</h1>
     </div>
-    <AdminNavigation locale={locale} />
-    {children}
+    <div className="border-b border-border bg-muted/30 px-3 py-3 sm:px-5">
+      <AdminNavigation locale={locale} />
+    </div>
+    <div className="p-5 sm:p-8">{children}</div>
   </section>;
 }
