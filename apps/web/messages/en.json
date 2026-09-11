@@ -521,6 +521,19 @@
     "emptyLeadsTitle": "No leads match these filters",
     "emptyLeadsDescription": "Leads arrive when a visitor completes the public assessment.",
     "confirmLeadStatusTitle": "Update this lead?",
-    "confirmLeadStatusDescription": "{name} will be marked as {status}. This does not send an automatic email."
+    "confirmLeadStatusDescription": "{name} will be marked as {status}. This does not send an automatic email.",
+    "settingsTitle": "Settings",
+    "settingsDescription": "Administrative maintenance actions. Every action that changes data requires confirmation.",
+    "cleanupTitle": "Expired sessions",
+    "cleanupDescription": "Remove expired and old revoked sessions from the database. Active sessions are not affected.",
+    "cleanupAction": "Clean up sessions",
+    "cleanupConfirmTitle": "Clean up expired sessions?",
+    "cleanupConfirmDescription": "This maintenance action removes expired sessions and records the result for administrators.",
+    "cleanupSuccess": "{count, plural, one {# expired session was removed.} other {# expired sessions were removed.}}",
+    "cleanupError": "We could not complete session cleanup.",
+    "exportsTitle": "Data exports",
+    "exportsDescription": "CSV exports for users, purchases, and leads need a dedicated backend endpoint before they can be enabled.",
+    "requiresBackend": "Requires backend",
+    "exportCsv": "Export CSV"
   }
 }

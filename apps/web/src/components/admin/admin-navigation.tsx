@@ -12,7 +12,7 @@ const sections = [
   { href: "/admin/leads", label: "leads" },
   { href: "/operations", label: "operations" },
   { href: "/admin/reviews", label: "reviews", unavailable: true },
-  { href: "/admin/settings", label: "settings", unavailable: true },
+  { href: "/admin/settings", label: "settings" },
 ] as const;
 
 export function AdminNavigation({ locale }: { locale: string }) {
